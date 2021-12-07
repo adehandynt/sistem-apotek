@@ -53,7 +53,7 @@
                     </a>
                 </li>
                 @endif
-                @if(session('position')=='owner' || session('position')=='apoteker')
+                @if(session('position')=='owner'|| session('position')=='manager' || session('position')=='apoteker')
                 <li class="menu-title mt-2">Pembelian</li>
                 <li>
                     <a href="#sidebarPembelian" data-bs-toggle="collapse">
@@ -100,7 +100,7 @@
                         </ul>
                     </div>
                 </li> @endif
-                @if(session('position')=='owner' || session('position')=='apoteker')
+                @if(session('position')=='owner' || session('position')=='manager' || session('position')=='apoteker')
                 <li class="menu-title mt-2">Stock</li>
                 <li>
                     <a href="#sidebarStock" data-bs-toggle="collapse">
@@ -123,7 +123,7 @@
                     </div>
                 </li>
                 @endif
-                @if(session('position')=='owner')
+                @if(session('position')=='owner' || session('position')=='manager')
                 <li class="menu-title mt-2">Laporan</li>
                 <li>
                     <a href="#sidebarDashboards" data-bs-toggle="collapse">
@@ -154,7 +154,7 @@
                         </ul>
                     </div>
                 </li>@endif
-                @if(session('position')=='dokter' || session('position')=='owner' )
+                @if(session('position')=='dokter' || session('position')=='manager'|| session('position')=='owner' )
                 <li class="menu-title mt-2">Dokter</li>
                 <li>
                     <a href="#sidebarDataDokter" data-bs-toggle="collapse">

@@ -25,7 +25,7 @@
                                         <div class="col-lg-12 mb-3">
                                             <div class="row">
                                                 <div class="col-lg-9">
-                                                    <input type="text" class="form-control numeric_form" id="kode_barang_other"
+                                                    <input type="text" class="form-control" id="kode_barang_other"
                                                         placeholder="Kode barang" onmouseover="this.focus();">
                                                 </div>
                                                 <div class="col-lg-3"> 
@@ -59,7 +59,7 @@
                                         <div class="col-lg-12 mb-3">
                                             <div class="row">
                                                 <div class="col-lg-9">
-                                                    <input type="text" class="form-control numeric_form" id="kode_barang"
+                                                    <input type="text" class="form-control" id="kode_barang"
                                                         placeholder="Kode barang" onmouseover="this.focus();">
                                                 </div>
                                                 <div class="col-lg-3">
@@ -496,7 +496,7 @@
 
         var kode = "";
         var timer = null;
-        $('#kode_barang').on('input', function() {
+        $('#kode_barang').on('change', function() {
             kode = $('#kode_barang').val();
             if (kode != null) {
                 clearTimeout(timer);
@@ -504,7 +504,7 @@
             }
         });
 
-        $('#kode_barang_other').on('input', function() {
+        $('#kode_barang_other').on('change', function() {
             kode = $('#kode_barang_other').val();
             if (kode != null) {
                 clearTimeout(timer);
