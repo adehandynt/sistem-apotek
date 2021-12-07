@@ -102,7 +102,8 @@ class StockController extends Controller
             $data[$i]->jml_diterimas = '<input type="number" class="form-control numeric_form" name="jml_diterima[]" value="0" required/>';
             $data[$i]->id_list_orders ='<input type="hidden" class="form-control" name="id_list_order[]" value="'.$data[$i]->id_list_order.'" required/>';
             $data[$i]->exps ='<input type="date" class="form-control" name="exp[]" value=""/>';
-            $data[$i]->status_receives ='<select class="form-control" id="status_receive" name="status_receive[]" style="width:150px" required>
+            $data[$i]->status_receives ='<input type="hidden" class="form-control" name="id_list_order[]" value="'.$data[$i]->id_list_order.'" required/>
+            <select class="form-control" id="status_receive" name="status_receive[]" style="width:150px" required>
                     <option value="1">Full</option>
                     <option value="0">Pending</option>
                     <option value="2">Cancel</option>
@@ -158,16 +159,23 @@ class StockController extends Controller
         ->leftJoin('stok', 'stok.kode_barang', '=', 'barang.kode_barang')
         ->where('orders.id_order','=',$request->input('order_id'))
         ->select('barang.*','list_order.*')->get(); 
-   
-      
+        $pembelian = Pembelian::where('id_order', '=', $request->input('order_id'))->firstOrFail();
+        $pembelian->grn = $request->grn;
+        $pembelian->no_faktur =  $request->faktur;
+        $pembelian->supplier_do =  $request->do;
+        $pembelian->status_pembelian = 1;
+        $pembelian->penerima = Auth::user()->nip;
+        $pembelian->save();
+ 
         $idx=0;
         foreach($data as $val){
+            
             $id_stok = IdGenerator::generate(['table' => 'stok','field'=>'stock_id', 'length' => 9, 'prefix' =>'STK-']);
             $stok = new Stok;
             $stok->stock_id=$id_stok;
             $stok->kode_barang=$val->kode_barang;
             $stok->tgl_masuk=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
-            $stok->tgl_exp= $request->input('exp')[$idx];
+            $stok->tgl_exp= $request->exp[$idx];
             $stok->jml_masuk= $request->jml_diterima[$idx];
             $stok->jml_akumulasi= $val->sisa + $val->jumlah;
             $stok->id_order=$val->id_order;
@@ -204,7 +212,7 @@ class StockController extends Controller
         $pembelian->status_pembelian = 1;
         $pembelian->penerima = Auth::user()->nip;
         $pembelian->save();
-        
+      
         return true;
     }
 

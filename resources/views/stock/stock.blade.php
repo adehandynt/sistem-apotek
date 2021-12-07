@@ -415,7 +415,11 @@
                     }
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
-                errorAlertServer('Response Not Found, Please Check Your Data');
+                Swal.fire({
+                            title: "Gagal",
+                            text: 'Reposn tidak diketahui, cek koneksi anda',
+                            icon: "error"
+                        });
             });
         });
 
@@ -478,7 +482,11 @@
                     });
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
-                errorAlertServer('Response Not Found, Please Check Your Data');
+                Swal.fire({
+                            title: "Gagal",
+                            text: 'Reposn tidak diketahui, cek koneksi anda',
+                            icon: "error"
+                        });
             });
         });
 
