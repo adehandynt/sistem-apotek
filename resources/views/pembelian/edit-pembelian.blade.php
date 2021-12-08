@@ -236,8 +236,33 @@
                                             </tr>`);
         });
 
-        $('#table-pesanan tbody').on('change', '.harga, .jumlah, .diskon', function() {
+        $('#table-pesanan tbody').on('change', '.harga', function() {
             let idx = $('.harga').index(this);
+            if(parseInt($('.diskon').eq(idx).val())==0){
+                $('.total').eq(idx).val(parseInt($('.harga').eq(idx).val()) * parseInt($('.jumlah').eq(idx)
+                .val()));
+            }else{
+                $('.total').eq(idx).val((parseInt($('.harga').eq(idx).val())-(parseInt($('.harga').eq(idx).val())*(parseInt($('.diskon').eq(idx).val())/100))) * parseInt($('.jumlah').eq(idx)
+                .val()));
+            }
+            
+        });
+
+        $('#table-pesanan tbody').on('change', '.jumlah', function() {
+            let idx = $('.jumlah').index(this);
+            if(parseInt($('.diskon').eq(idx).val())==0){
+                $('.total').eq(idx).val(parseInt($('.harga').eq(idx).val()) * parseInt($('.jumlah').eq(idx)
+                .val()));
+            }else{
+                $('.total').eq(idx).val((parseInt($('.harga').eq(idx).val())-(parseInt($('.harga').eq(idx).val())*(parseInt($('.diskon').eq(idx).val())/100))) * parseInt($('.jumlah').eq(idx)
+                .val()));
+            }
+            
+        });
+
+        
+        $('#table-pesanan tbody').on('change', '.diskon', function() {
+            let idx = $('.diskon').index(this);
             if(parseInt($('.diskon').eq(idx).val())==0){
                 $('.total').eq(idx).val(parseInt($('.harga').eq(idx).val()) * parseInt($('.jumlah').eq(idx)
                 .val()));
