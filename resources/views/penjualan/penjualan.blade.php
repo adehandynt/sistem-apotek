@@ -29,9 +29,9 @@
                                                         placeholder="Kode barang" onmouseover="this.focus();">
                                                 </div>
                                                 <div class="col-lg-3"> 
-                                                    {{-- <button type="button" data-bs-toggle="modal" data-bs-target="#find-barang-modal"
+                                                    <button type="button" data-bs-toggle="modal" data-bs-target="#find-barang-modal"
                                                         class="form-control btn btn-success waves-effect waves-light"><i
-                                                            class="mdi mdi-magnify"></i> Cari Barang</button> --}}
+                                                            class="mdi mdi-magnify"></i> Cari Barang</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -63,9 +63,9 @@
                                                         placeholder="Kode barang" onmouseover="this.focus();">
                                                 </div>
                                                 <div class="col-lg-3">
-                                                    {{-- <button type="button" data-bs-toggle="modal" data-bs-target="#find-obat-modal"
+                                                    <button type="button" data-bs-toggle="modal" data-bs-target="#find-obat-modal"
                                                         class="form-control btn btn-success waves-effect waves-light"><i
-                                                        class="mdi mdi-magnify"></i> Cari Obat</button> --}}
+                                                        class="mdi mdi-magnify"></i> Cari Obat</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -459,6 +459,50 @@
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
+        <div class="modal fade" id="find-obat-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-light">
+                        <h4 class="modal-title" id="myCenterModalLabel">Cari Obat</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <select class="form-control cari_obat mb-2" id="cari_obat" name="cari_obat" data-width="100%" data-toggle="select2">
+                            <option value="0">-Pilih-</option>
+                            @foreach ($obat as $item)
+                        <option value={{$item->kode_barang}}>{{$item->kode_barang.' - '.$item->nama_barang}}</option>
+                        @endforeach
+                        </select>
+                        <div class="text-end mt-3">
+                            <button id="btn-cari-obat" class="btn btn-success waves-effect waves-light">Pilih Obat</button>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div class="modal fade" id="find-barang-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-light">
+                        <h4 class="modal-title" id="myCenterModalLabel">Cari Barang</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <select class="form-control cari_barang mb-2" id="cari_barang" name="cari_barang" data-width="100%" data-toggle="select2">
+                            <option value="0">-Pilih-</option>
+                            @foreach ($barang as $item)
+                        <option value={{$item->kode_barang}}>{{$item->kode_barang.' - '.$item->nama_barang}}</option>
+                        @endforeach
+                        </select>
+                        <div class="text-end mt-3">
+                            <button id="btn-cari-barang" class="btn btn-success waves-effect waves-light">Pilih Barang</button>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
         <!-- Footer Start -->
         <footer class="footer">
             <div class="container-fluid">
@@ -492,6 +536,12 @@
             $('#form-layanan-racik')[0].reset();
             $('#id_rekam').select2();
             $('.layanan').select2();
+            $('#cari_barang').select2({
+                dropdownParent: $('#find-barang-modal')
+            });
+            $('#cari_obat').select2({
+                dropdownParent: $('#find-obat-modal')
+            });
         });
 
         var kode = "";
@@ -510,6 +560,24 @@
                 clearTimeout(timer);
                 timer = setTimeout(doStuff('2'), 1000)
             }
+        });
+
+        $('#btn-cari-obat').click(function(e) {
+            let kode_cari = $('#cari_obat').val();
+            $('#kode_barang').val(kode);
+            kode=kode_cari;
+            $('#find-obat-modal').modal('toggle');
+            $("#cari_obat").val("0").trigger('change');
+            doStuff('1');
+        });
+
+        $('#btn-cari-barang').click(function(e) {
+            let kode_cari = $('#cari_barang').val();
+            $('#kode_barang_other').val(kode_cari);
+            kode=kode_cari;
+            $('#find-barang-modal').modal('toggle');
+            $("#cari_barang").val("0").trigger('change');
+            doStuff('2');
         });
 
         function doStuff(type) {

@@ -35,6 +35,8 @@ class PenjualanController extends Controller
         ->select('rekam_medis.id_rekam_medis','resep.*')
         ->get();
         $res['staf']=Staf::where('nip','=',Auth::user()->nip)->select('nama_staf')->get();
+        $res['obat']= Obat::Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')->where('kode_barang','!=',null)->where('tipe.jenis_barang','obat')->select('barang.*')->get();
+        $res['barang']= Obat::Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')->where('kode_barang','!=',null)->where('tipe.jenis_barang','barang_lain')->select('barang.*')->get();
         return view('penjualan/penjualan',$res);
     }
     public function v_list_penjualan()

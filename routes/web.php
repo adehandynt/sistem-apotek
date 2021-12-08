@@ -129,6 +129,7 @@ Route::get('/get-stock-produk', [StockController::class, 'get_stock_produk']);
 Route::get('/get-grn', [StockController::class, 'get_grn']);
 
 Route::get('/data-pembelian', [PembelianController::class, 'v_pembelian'])->name('data-pembelian');
+Route::get('/data-pembelian-restock', [PembelianController::class, 'v_pembelian_restock'])->name('data-pembelian-restock');
 Route::get('/data-pembelians', [PembelianController::class, 'v_list_pembelian']);
 Route::post('/detail-pembelians', [PembelianController::class, 'detail_barang']);
 Route::post('/detail-barang-pembelian', [PembelianController::class, 'detail_barang_pembelian']);
