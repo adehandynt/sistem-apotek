@@ -470,7 +470,7 @@
                         <select class="form-control cari_obat mb-2" id="cari_obat" name="cari_obat" data-width="100%" data-toggle="select2">
                             <option value="0">-Pilih-</option>
                             @foreach ($obat as $item)
-                        <option value={{$item->kode_barang}}>{{$item->kode_barang.' - '.$item->nama_barang}}</option>
+                        <option value={{$item->kode_barang}}>{{$item->kode_barang.' - '.$item->nama_barang.' - Tersedia ('.$item->sisa.')'}}</option>
                         @endforeach
                         </select>
                         <div class="text-end mt-3">
@@ -492,7 +492,7 @@
                         <select class="form-control cari_barang mb-2" id="cari_barang" name="cari_barang" data-width="100%" data-toggle="select2">
                             <option value="0">-Pilih-</option>
                             @foreach ($barang as $item)
-                        <option value={{$item->kode_barang}}>{{$item->kode_barang.' - '.$item->nama_barang}}</option>
+                        <option value={{$item->kode_barang}}>{{$item->kode_barang.' - '.$item->nama_barang.' - Tersedia ('.$item->sisa.')'}}</option>
                         @endforeach
                         </select>
                         <div class="text-end mt-3">

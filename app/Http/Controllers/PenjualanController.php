@@ -35,8 +35,31 @@ class PenjualanController extends Controller
         ->select('rekam_medis.id_rekam_medis','resep.*')
         ->get();
         $res['staf']=Staf::where('nip','=',Auth::user()->nip)->select('nama_staf')->get();
-        $res['obat']= Obat::Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')->where('kode_barang','!=',null)->where('tipe.jenis_barang','obat')->select('barang.*')->get();
-        $res['barang']= Obat::Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')->where('kode_barang','!=',null)->where('tipe.jenis_barang','barang_lain')->select('barang.*')->get();
+        $res['obat']= Obat::Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
+        ->leftJoin(DB::raw('(SELECT
+        t.kode_barang,
+        min(t.sisa) as sisa
+           FROM
+        ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
+        INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
+        AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS history_barang'),
+       'history_barang.kode_barang', '=', 'barang.kode_barang')
+        ->where('barang.kode_barang','!=',"")->where('tipe.jenis_barang','obat')
+        ->select('barang.*',DB::raw('coalesce(history_barang.sisa,0) as sisa'))
+        ->get();
+        $res['barang']= Obat::Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
+        ->leftJoin(DB::raw('(SELECT
+        t.kode_barang,
+        min(t.sisa) as sisa
+           FROM
+        ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
+        INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
+        AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS history_barang'),
+       'history_barang.kode_barang', '=', 'barang.kode_barang')
+        ->where('barang.kode_barang','!=',"")
+        ->where('tipe.jenis_barang','barang_lain')
+        ->select('barang.*',DB::raw('coalesce(history_barang.sisa,0) as sisa'))
+        ->get();
         return view('penjualan/penjualan',$res);
     }
     public function v_list_penjualan()
