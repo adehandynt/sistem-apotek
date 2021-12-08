@@ -81,7 +81,7 @@
                     </a>
                 </li>
                 @endif
-                @if(session('position')=='manager' ||session('position')=='owner' || session('position')=='kasir')
+                @if(session('position')=='manager' ||session('position')=='owner' || session('position')=='ass_apoteker' || session('position')=='apoteker'|| session('position')=='kasir')
                 <li class="menu-title mt-2">Penjualan</li>
                 <li>
                     <a href="#sidebarPenjualan" data-bs-toggle="collapse">
@@ -100,7 +100,7 @@
                         </ul>
                     </div>
                 </li> @endif
-                @if(session('position')=='owner' || session('position')=='manager' || session('position')=='apoteker')
+                @if(session('position')=='owner' || session('position')=='manager' || session('position')=='ass_apoteker' || session('position')=='apoteker')
                 <li class="menu-title mt-2">Stock</li>
                 <li>
                     <a href="#sidebarStock" data-bs-toggle="collapse">
@@ -201,17 +201,19 @@
                             <li>
                                 <a href="/data-jasa">Jasa</a>
                             </li>
+                            @if(session('position')=='manager'|| session('position')=='owner' )
+                            <li>
+                                <a href="/data-pasien">Pasien</a>
+                            </li>
                             <li>
                                 <a href="/data-akun">Akun</a>
                             </li>
                             <li>
                                 <a href="/data-staf">Staf</a>
                             </li>
+                            @endif
                             <li>
                                 <a href="/data-supplier">Supplier</a>
-                            </li>
-                            <li>
-                                <a href="/data-pasien">Pasien</a>
                             </li>
                         </ul>
                     </div>

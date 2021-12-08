@@ -177,7 +177,7 @@ class StockController extends Controller
             $stok->tgl_masuk=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
             $stok->tgl_exp= $request->exp[$idx];
             $stok->jml_masuk= $request->jml_diterima[$idx];
-            $stok->jml_akumulasi= $val->sisa + $val->jumlah;
+            $stok->jml_akumulasi= $val->sisa + $request->jml_diterima[$idx];
             $stok->id_order=$val->id_order;
             $stok->save();
 
