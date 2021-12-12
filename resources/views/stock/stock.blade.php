@@ -263,7 +263,7 @@
                                 <select class="form-control" id="margin" name="margin" placeholder="margin Barang"
                                 required>
                                 @foreach ($margin as $item)
-                                    <option value="{{ $item->margin_percentage }}">{{ $item->margin_name.' ( '.$item->margin_percentage.'% )' }}</option>
+                                    <option value="{{ $item->margin_percentage }}" selected>{{ $item->margin_name.' ( '.$item->margin_percentage.'% )' }}</option>
                                 @endforeach
                             </select>
                             </div>
@@ -847,10 +847,10 @@
                          id: id
                      }
                  }).done(function (msg) {
-                     
+                  
                      $('#harga_beli').val(msg.harga_beli);
                      $('#nama_barang').val(msg.kode_barang);
-                     $('#harga_jual').val(msg.harga_beli);
+                     $('#harga_jual').val(msg.harga_beli+ (msg.harga_beli *($('#margin').val()/100)) );
                      $("#satuan select").val(msg.kode_satuan);
 
                  });
@@ -895,7 +895,7 @@
         });
 
 
-        $('#harga_beli, #margin').on('input', function() {
+        $('#harga_beli, #margin').on('change', function() {
             let harga = $('#harga_beli').val();
             $('#harga_jual').val(((parseInt(harga)) + parseInt(harga * ($('#margin').val()/100))));
         });
