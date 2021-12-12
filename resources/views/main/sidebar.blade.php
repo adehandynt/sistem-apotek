@@ -114,7 +114,7 @@
                                 <a href="reorder">Re-Order Point</a>
                             </li> --}}
                             <li>
-                                <a href="stock">Stock Obat</a>
+                                <a href="stock">Stock Obat / Barang</a>
                             </li>
                             <li>
                                 <a href="stock-opname">Stock Opname</a>
@@ -201,6 +201,9 @@
                             <li>
                                 <a href="/data-jasa">Jasa</a>
                             </li>
+                            <li>
+                                <a href="/data-margin">Margin</a>
+                            </li>
                             @if(session('position')=='manager'|| session('position')=='owner' )
                             <li>
                                 <a href="/data-pasien">Pasien</a>
@@ -226,5 +229,13 @@
 
     </div>
     <!-- Sidebar -left -->
+    @if (Auth::check()) 
+    <script>
+    var timeout = ({{config('session.lifetime')}} * 60000) -10 ;
+    setTimeout(function(){
+        window.location.reload(1);
+    },  timeout);
 
+    </script>
+@endif
 </div>

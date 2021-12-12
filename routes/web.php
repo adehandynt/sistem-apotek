@@ -17,6 +17,7 @@ use App\Http\Controllers\DokterController;
 use App\Http\Controllers\JasaController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\MarginController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -204,3 +205,8 @@ Route::post('/edit-jasa', [JasaController::class, 'edit_jasa']);
 Route::post('/update-jasa', [JasaController::class, 'update_jasa']);
 
 Route::post('/print-bill', [ReceiptController::class, 'print']);
+Route::get('/data-margin', [MarginController::class, 'margin_page']);
+Route::get('/list-data-margin', [MarginController::class, 'list_margin_page']);
+Route::post('/add-margin', [MarginController::class, 'add_margin']);
+Route::post('/update-margin', [MarginController::class, 'update_margin']);
+Route::post('/edit-margin', [MarginController::class, 'edit_margin']);

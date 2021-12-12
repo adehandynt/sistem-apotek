@@ -102,7 +102,15 @@
     
         <!-- LOGO -->
         <div class="logo-box">
-            <a href="index.html" class="logo logo-dark text-center">
+            @if(session('position')=='dokter')
+            <a href="{{url('/data-pasien')}}" class="logo logo-dark text-center">
+            @elseif(session('position')=='manager'|| session('position')=='owner' )
+            <a href="{{url('/dashboard')}}" class="logo logo-dark text-center">
+            @elseif(session('position')=='apoteker')
+            <a href="{{url('/pembelian')}}" class="logo logo-dark text-center">
+            @elseif(session('position')=='ass_apoteker')
+            <a href="{{url('/penjualan')}}" class="logo logo-dark text-center">
+            @endif
                 <span class="logo-sm">
                     <img src="../assets/images/logo.png" alt="" height="22">
                     <!-- <span class="logo-lg-text-light">UBold</span> -->
@@ -112,8 +120,16 @@
                     <!-- <span class="logo-lg-text-light">U</span> -->
                 </span>
             </a>
-    
-            <a href="index.html" class="logo logo-light text-center">
+
+            @if(session('position')=='dokter')
+            <a href="{{url('/data-pasien')}}" class="logo logo-light text-center">
+            @elseif(session('position')=='manager'|| session('position')=='owner' )
+            <a href="{{url('/dashboard')}}" class="logo logo-light text-center">
+            @elseif(session('position')=='apoteker')
+            <a href="{{url('/pembelian')}}" class="logo logo-light text-center">
+            @elseif(session('position')=='ass_apoteker')
+            <a href="{{url('/penjualan')}}" class="logo logo-light text-center">
+            @endif
                 <span class="logo-sm">
                     <img src="../assets/images/logo.png" alt="" height="22">
                 </span>

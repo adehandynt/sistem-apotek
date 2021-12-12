@@ -256,7 +256,7 @@
                             <div class="mb-3">
                                 <label for="company" class="form-label">Harga Beli</label>
                                 <input type="number" class="form-control" min="0" value="0" id="harga_beli"
-                                    name="harga_beli" placeholder="Harga Jual" required>
+                                    name="harga_beli" placeholder="Harga Beli" required>
                             </div>
                             <div class="mb-3">
                                 <label for="company" class="form-label">Margin ( % )</label>
@@ -385,42 +385,61 @@
         });
         $("#form-order").submit(function(event) {
             event.preventDefault();
-            var formData = new FormData($('#form-order')[0]);
-            $.ajax({
-                url: '{{ url('add-stock') }}',
-                type: 'post',
-                data: formData,
-                contentType: false, //untuk upload image
-                processData: false, //untuk upload image
-                timeout: 300000, // sets timeout to 3 seconds
-                dataType: 'json',
-                success: function(e) {
-                    if (e) {
-                        Swal.fire({
-                            title: "Sukses",
-                            text: "Data Berhasil Diinput!",
-                            icon: "success"
+            swal.fire({
+                    title: "Input Penerimaan Barang ",
+                    text: "Pastikan bahwa data barang telah diisi semua dan memiliki Barcode/Kode Barang,\n Lanjutkan Proses ? ",
+                    icon: "warning",
+                    showCancelButton: !0,
+                    confirmButtonColor: "#28bb4b",
+                    cancelButtonColor: "#f34e4e",
+                    confirmButtonText: "Ya, Lanjutkan",
+                    cancelButtonText: "Batal, Periksa Kembali"
+                })
+                .then(function(e) {
+                    if(e.value){
+                        var formData = new FormData($('#form-order')[0]);
+                        $.ajax({
+                            url: '{{ url('add-stock') }}',
+                            type: 'post',
+                            data: formData,
+                            contentType: false, //untuk upload image
+                            processData: false, //untuk upload image
+                            timeout: 300000, // sets timeout to 3 seconds
+                            dataType: 'json',
+                            success: function(e) {
+                                if (e) {
+                                    Swal.fire({
+                                        title: "Sukses",
+                                        text: "Data Berhasil Diinput!",
+                                        icon: "success"
+                                    });
+                                    setTimeout(location.reload(), 2000);
+                                } else {
+                                    var text = "";
+                                    $.each(e.customMessages, function(key, value) {
+                                        text += `<br>` + value;
+                                    });
+                                    Swal.fire({
+                                        title: "Gagal",
+                                        text: text,
+                                        icon: "error"
+                                    });
+                                }
+                            }
+                        }).fail(function(jqXHR, textStatus, errorThrown) {
+                            Swal.fire({
+                                        title: "Gagal",
+                                        text: 'Reposn tidak diketahui, cek koneksi anda',
+                                        icon: "error"
+                                    });
                         });
-                        setTimeout(location.reload(), 2000);
-                    } else {
-                        var text = "";
-                        $.each(e.customMessages, function(key, value) {
-                            text += `<br>` + value;
-                        });
-                        Swal.fire({
-                            title: "Gagal",
-                            text: text,
-                            icon: "error"
-                        });
+                        
+                    }else{
+                        swal.fire("Input Dibatalkan, Silahkan Periksa Kembali Data Anda !");
                     }
-                }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                Swal.fire({
-                            title: "Gagal",
-                            text: 'Reposn tidak diketahui, cek koneksi anda',
-                            icon: "error"
-                        });
-            });
+
+                });
+            
         });
 
         $('#basic-datatables tbody').on('click', '.btn-delete', function() {
@@ -496,6 +515,7 @@
 
         $('#order_id').change(function(e) {
             $("#scan").focus();
+            $('#order-datatables ').DataTable().destroy();
             $.ajax({
                 url: '/get-grn',
                 type: 'get',

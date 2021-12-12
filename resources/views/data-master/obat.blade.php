@@ -83,12 +83,18 @@
                                     <div class="mb-3">
                                         <label for="company" class="form-label">Harga Beli</label>
                                         <input type="number" class="form-control numeric_form" min="0" value="0" id="harga_beli"
-                                            name="harga_beli" placeholder="Harga Jual" required>
+                                            name="harga_beli" placeholder="Harga Beli" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="company" class="form-label">Margin ( % )</label>
-                                        <input type="number" class="form-control numeric_form" min="0" value="0" id="margin"
-                                            name="margin" placeholder="Margin Penjualan" required>
+                                        <select class="form-control" id="margin" name="margin" placeholder="margin Barang"
+                                            required>
+                                            @foreach ($margin as $item)
+                                                <option value="{{ $item->margin_percentage }}">{{ $item->margin_name.' ( '.$item->margin_percentage.'% )' }}</option>
+                                            @endforeach
+                                        </select>
+                                        {{-- <input type="number" class="form-control numeric_form" min="0" value="0" id="margin"
+                                            name="margin" placeholder="Margin Penjualan" required> --}}
                                     </div>
                                     <div class="mb-3">
                                         <label for="company" class="form-label">Harga Jual</label>
