@@ -234,7 +234,7 @@
                                 </select>
                             </div> --}}
                             <div class="mb-3">
-                                <label for="position" class="form-label">Satuan</label>
+                                <label for="position" class="form-label">Satuan Jual</label>
                                 <select class="form-control" id="satuan" name="satuan" placeholder="Satuan Barang"
                                     required>
                                     @foreach ($satuan as $item)
@@ -260,8 +260,12 @@
                             </div>
                             <div class="mb-3">
                                 <label for="company" class="form-label">Margin ( % )</label>
-                                <input type="number" class="form-control" min="0" value="0" id="margin"
-                                    name="margin" placeholder="Margin Penjualan" required>
+                                <select class="form-control" id="margin" name="margin" placeholder="margin Barang"
+                                required>
+                                @foreach ($margin as $item)
+                                    <option value="{{ $item->margin_percentage }}">{{ $item->margin_name.' ( '.$item->margin_percentage.'% )' }}</option>
+                                @endforeach
+                            </select>
                             </div>
                             <div class="mb-3">
                                 <label for="company" class="form-label">Harga Jual</label>

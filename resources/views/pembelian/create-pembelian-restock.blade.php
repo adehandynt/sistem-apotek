@@ -85,7 +85,7 @@
                                             <tr>
                                                 <th>Nama Barang</th>
                                                 <th>Jumlah</th>
-                                                <th>Satuan</th>
+                                                <th>Satuan Beli</th>
                                                 <th>Harga (@satuan)</th>
                                                 <th>Diskon</th>
                                                 <th>Total</th>
