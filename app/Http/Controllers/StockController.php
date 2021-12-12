@@ -13,6 +13,7 @@ use App\Models\Pembelian;
 use App\Models\HistoryBarang;
 use App\Models\StockOpname;
 use App\Models\ListOpname;
+use App\Models\Margin;
 use Validator;
 use Hash;
 use Session;
@@ -33,6 +34,7 @@ class StockController extends Controller
         ->get();
         $res['satuan'] = Satuan::get();
         $res['tipe'] = Tipe::get();
+        $res['margin'] = Margin::get();
         return view('stock/stock',$res);
     }
 
