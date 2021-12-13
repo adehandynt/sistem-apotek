@@ -36,13 +36,11 @@ class TipeController extends Controller
         $rules = [
             'nama_tipe'              => 'required|string',
             'jenis_barang'              => 'required',
-            'simbol'              => 'required'
         ];
 
         $messages = [
             'nama_tipe.required'              => 'Nama wajib diisi',
             'jenis_barang.required'           => 'Jenis wajib diisi',
-            'simbol.required'       => 'Simbol wajib diisi',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -51,14 +49,14 @@ class TipeController extends Controller
             return json_encode($validator);
         }
         $id = IdGenerator::generate(['table' => 'tipe','field'=>'kode_tipe', 'length' => 6, 'prefix' =>'TP-']);
-        $file = $request->file('simbol');
-        $directory = 'document/simbol';
-        $path = $directory . '/' . $file->getClientOriginalName();
-        $file->move($directory, $file->getClientOriginalName());
+        // $file = $request->file('simbol');
+        // $directory = 'document/simbol';
+        // $path = $directory . '/' . $file->getClientOriginalName();
+        // $file->move($directory, $file->getClientOriginalName());
         $list = Tipe::updateOrCreate(['kode_tipe' => $id], [
             'nama_tipe' => $request->nama_tipe,
             'jenis_barang' => $request->jenis_barang,
-            'simbol' => $path,
+            'simbol' => '',
         ]);
 
         $simpan = $list->save();
@@ -93,14 +91,14 @@ class TipeController extends Controller
             'kode_tipe'                 => 'required|string',
             'nama_tipe'              => 'required|string',
             'jenis_barang'              => 'required',
-            'simbol'              => 'required'
+            // 'simbol'              => 'required'
         ];
 
         $messages = [
             'kode_tipe.required'               => 'Kode wajib diisi',
             'nama_tipe.required'              => 'Nama wajib diisi',
             'jenis_barang.required'           => 'Jenis wajib diisi',
-            'simbol.required'       => 'Simbol wajib diisi',
+            // 'simbol.required'       => 'Simbol wajib diisi',
         ];
 
          $validator = Validator::make($request->all(), $rules, $messages);
@@ -109,25 +107,25 @@ class TipeController extends Controller
             return json_encode($validator);
         }
 
-        $file = $request->file('simbol');
-        $directory = 'document/simbol';
-        $path = $directory . '/' . $file->getClientOriginalName();
-        $file->move($directory, $file->getClientOriginalName());
+        // $file = $request->file('simbol');
+        // $directory = 'document/simbol';
+        // $path = $directory . '/' . $file->getClientOriginalName();
+        // $file->move($directory, $file->getClientOriginalName());
 
         $list = Tipe::findOrFail($request->id);
         $list->kode_tipe = $request->kode_tipe;
         $list->nama_tipe = $request->nama_tipe;
         $list->jenis_barang = $request->jenis_barang;
-        $list->simbol = $path;
+        $list->simbol = '';
 
         $simpan = $list->save();
 
         if ($simpan) {
             Session::flash('success', 'Update berhasil! Silahkan periksa data terbaru');
-            return redirect()->route('data-list');
+            return redirect()->route('data-tipe');
         } else {
             Session::flash('errors', ['' => 'Update gagal! Silahkan ulangi kembali']);
-            return redirect()->route('data-list');
+            return redirect()->route('data-tipe');
         }
     }
 
@@ -136,10 +134,10 @@ class TipeController extends Controller
         $simpan = $list->delete();
         if ($simpan) {
             Session::flash('success', 'Hapus berhasil! Silahkan periksa data terbaru');
-            return redirect()->route('data-list');
+            return 'success';
         } else {
             Session::flash('errors', ['' => 'Hapus gagal! Silahkan ulangi kembali']);
-            return redirect()->route('data-list');
+            return 'error';
         }
     }
 }

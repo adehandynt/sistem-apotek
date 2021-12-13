@@ -36,7 +36,7 @@
                                                 <th>ID Tipe</th>
                                                 <th>Nama Tipe</th>
                                                 <th>Jenis</th>
-                                                <th>Lambang</th>
+                                                {{-- <th>Lambang</th> --}}
                                                 <th style="width: 85px;">Action</th>
                                             </tr>
                                         </thead>
@@ -77,11 +77,11 @@
                                     <option value="barang_lain">Barang Lainnya</option>
                             </select>
                             </div>
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <label for="position" class="form-label">Lambang</label>
                                 <input type="file" class="form-control" id="simbol" name="simbol"
                                     placeholder="File Lambang">
-                            </div>
+                            </div> --}}
                             <div class="text-end">
                                 <button type="submit" class="btn btn-success waves-effect waves-light">Simpan</button>
                                 <button type="button" class="btn btn-danger waves-effect waves-light"
@@ -141,9 +141,9 @@
                 },{
                     data: "jenis_barang"
                 },
-                {
-                    data: "simbol"
-                },
+                // {
+                //     data: "simbol"
+                // },
                 {
                     data: "action"
                 }
@@ -213,9 +213,10 @@
                                 id: id
                             }
                         }).done(function(msg) {
-                            datob = JSON.parse(msg);
+                           // console.log(msg)
+                           // datob = JSON.parse(msg);
                             $('#basic-datatables').DataTable().ajax.reload();
-                            if (datob != 'error') {
+                            if (msg != 'error') {
                                 swal.fire("Your Data has been deleted!", {
                                     icon: "success",
                                 });
