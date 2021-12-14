@@ -78,6 +78,8 @@
                                                         <th>Harga</th>
                                                         <th>Jumlah</th>
                                                         <th>Satuan</th>
+                                                        <th>Margin (%)</th>
+                                                        <th>Tuslah</th>
                                                         <th>Diskon</th>
                                                         <th>Total</th>
                                                         <th style="width: 50px;"></th>
@@ -375,6 +377,11 @@
                                                     <td>Rp <span id="bill-diskon">0</span></td>
                                                 </tr>
                                                 <tr>
+                                                    <td>Tuslah <i>(Sudah termasuk pada Sub Total)</i> </td>
+                                                    <td><input type="hidden" class="form-control" value="0" id="bill-tuslah-total"
+                                                        name="bill_tuslah_total" min="0">Rp <span id="bill-tuslah">0</span></td>
+                                                </tr>
+                                                <tr>
                                                     <th>Total :</th>
                                                     <th><input type="hidden" class="form-control" value="0" id="bill-grand-total"
                                                         name="bill_grand_total" placeholder="Grand Total" min="0">
@@ -542,6 +549,8 @@
             $('#cari_obat').select2({
                 dropdownParent: $('#find-obat-modal')
             });
+
+            $('#metode_pembayaran').val("cash");
         });
 
         var kode = "";
@@ -597,50 +606,107 @@
                         let opt_ecer = e[0].status_ecer == 1 ? `<option value='1'>Ecer</option>` : "";
                         if(type==1){
                             var table = $('#table-produk tbody');
+                            table.append(`<tr><td>
+                                                                <p class="m-0 d-inline-block align-middle font-14 fw-medium">
+                                                                        <a href="ecommerce-product-detail.html" data-kode='${e[0].kode_barang}''
+                                                                            class="nama-brg text-reset font-family-secondary">${e[0].nama_barang}</a>
+                                                                        <br>
+                                                                        <small class="me-2"><b>Satuan:</b> ${e[0].satuan} </small>
+                                                                        <small><b>Kategori:</b> ${e[0].nama_tipe}</small>
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="hidden" min="1" class="harga_beli form-control"
+                                                                        placeholder="Qty" name="harga_beli[]" style="width: 90px;" value="${e[0].harga_beli}">
+                                                                    <input type="hidden" min="1" class="harga_jual form-control"
+                                                                        placeholder="Qty" name="harga_jual[]" style="width: 90px;" value="${e[0].harga_jual}">
+                                                                    <input type="hidden" min="1" class="harga_eceran form-control"
+                                                                        placeholder="Qty" name="harga_eceran[]" style="width: 90px;" value="${e[0].harga_eceran}">
+                                                                    <input type="hidden" min="1" class="diskon form-control"
+                                                                        placeholder="Qty" name="diskon[]" style="width: 90px;" value="${e[0].diskon}">
+                                                                    ${e[0].satuan} : Rp ${e[0].harga_jual} / <br>Ecer : Rp ${parseFloat(e[0].harga_eceran).toFixed(2)}
+                                                                </td>
+                                                                <td>
+                                                                    <input type="number" min="1" value="1" class="jml_produk form-control"
+                                                                        placeholder="Qty" name="jml_produk[]" style="width: 90px;">
+                                                                </td>
+                                                                <td>
+                                                                    <select class="satuan_produk form-control" style="width: 90px;" name="satuan_produk[]">
+                                                                        <option value='${e[0].satuan}'>${e[0].satuan}</option>
+                                                                        ${opt_ecer}
+                                                                        </select>
+                                                                    
+                                                                </td>
+                                                                <td>
+                                                                    <input type="number" min="1" value="${e[0].margin}" class="margin_produk form-control"
+                                                                        placeholder="Qty" name="margin_produk[]" style="width: 90px;">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="number" min="1" value="0" class="tuslah_produk form-control"
+                                                                        placeholder="Qty" name="tuslah_produk[]" style="width: 90px;">
+                                                                </td>
+                                                                <td>
+                                                                    <p class="besar_disc">${e[0].diskon} % </p>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="hidden" min="1" class="harga_total form-control"
+                                                                        placeholder="Qty" name="harga_total[]" style="width: 90px;" value="${e[0].harga_jual-(e[0].harga_jual*(e[0].diskon/100))}">
+                                                                    Rp <span class="disp_total"> ${e[0].harga_jual-(e[0].harga_jual*(e[0].diskon/100)).toFixed(2)} </span>
+                                                                </td>
+                                                                <td>
+                                                                    ${e[0].action}
+                                                                </td>
+                                                            </tr>`);
                         }else{
                             var table = $('#table-produk-other tbody');
+                            table.append(`<tr><td>
+                                                                <p class="m-0 d-inline-block align-middle font-14 fw-medium">
+                                                                        <a href="ecommerce-product-detail.html" data-kode='${e[0].kode_barang}''
+                                                                            class="nama-brg text-reset font-family-secondary">${e[0].nama_barang}</a>
+                                                                        <br>
+                                                                        <small class="me-2"><b>Satuan:</b> ${e[0].satuan} </small>
+                                                                        <small><b>Kategori:</b> ${e[0].nama_tipe}</small>
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="hidden" min="1" class="harga_beli form-control"
+                                                                        placeholder="Qty" name="harga_beli[]" style="width: 90px;" value="${e[0].harga_beli}">
+                                                                    <input type="hidden" min="1" class="harga_jual form-control"
+                                                                        placeholder="Qty" name="harga_jual[]" style="width: 90px;" value="${e[0].harga_jual}">
+                                                                    <input type="hidden" min="1" class="harga_eceran form-control"
+                                                                        placeholder="Qty" name="harga_eceran[]" style="width: 90px;" value="${e[0].harga_eceran}">
+                                                                    <input type="hidden" min="1" class="diskon form-control"
+                                                                        placeholder="Qty" name="diskon[]" style="width: 90px;" value="${e[0].diskon}">
+                                                                    ${e[0].satuan} : Rp ${e[0].harga_jual} / <br>Ecer : Rp ${parseFloat(e[0].harga_eceran).toFixed(2)}
+                                                                </td>
+                                                                <td>
+                                                                    <input type="number" min="1" value="1" class="jml_produk form-control"
+                                                                        placeholder="Qty" name="jml_produk[]" style="width: 90px;">
+                                                                </td>
+                                                                <td>
+                                                                    <select class="satuan_produk form-control" style="width: 90px;" name="satuan_produk[]">
+                                                                        <option value='${e[0].satuan}'>${e[0].satuan}</option>
+                                                                        ${opt_ecer}
+                                                                        </select>
+                                                                    
+                                                                </td>
+                                                                <td>
+                                                                    <input type="hidden" min="1" value="${e[0].margin}" class="margin_produk form-control"
+                                                                        placeholder="Qty" name="margin_produk[]" style="width: 90px;">
+                                                                        <input type="hidden" min="1" value="0" class="tuslah_produk form-control"
+                                                                        placeholder="Qty" name="tuslah_produk[]" style="width: 90px;">
+                                                                    <p class="besar_disc">${e[0].diskon} % </p>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="hidden" min="1" class="harga_total form-control"
+                                                                        placeholder="Qty" name="harga_total[]" style="width: 90px;" value="${e[0].harga_jual-(e[0].harga_jual*(e[0].diskon/100))}">
+                                                                    Rp <span class="disp_total"> ${e[0].harga_jual-(e[0].harga_jual*(e[0].diskon/100)).toFixed(2)} </span>
+                                                                </td>
+                                                                <td>
+                                                                    ${e[0].action}
+                                                                </td>
+                                                            </tr>`);
                         }
-                        table.append(`<tr><td>
-                                                            <p class="m-0 d-inline-block align-middle font-14 fw-medium">
-                                                                    <a href="ecommerce-product-detail.html" data-kode='${e[0].kode_barang}''
-                                                                        class="nama-brg text-reset font-family-secondary">${e[0].nama_barang}</a>
-                                                                    <br>
-                                                                    <small class="me-2"><b>Satuan:</b> ${e[0].satuan} </small>
-                                                                    <small><b>Kategori:</b> ${e[0].nama_tipe}</small>
-                                                                </p>
-                                                            </td>
-                                                            <td>
-                                                                <input type="hidden" min="1" class="harga_jual form-control"
-                                                                    placeholder="Qty" name="harga_jual[]" style="width: 90px;" value="${e[0].harga_jual}">
-                                                                <input type="hidden" min="1" class="harga_eceran form-control"
-                                                                    placeholder="Qty" name="harga_eceran[]" style="width: 90px;" value="${e[0].harga_eceran}">
-                                                                <input type="hidden" min="1" class="diskon form-control"
-                                                                    placeholder="Qty" name="diskon[]" style="width: 90px;" value="${e[0].diskon}">
-                                                                ${e[0].satuan} : Rp ${e[0].harga_jual} / <br>Ecer : Rp ${parseFloat(e[0].harga_eceran).toFixed(2)}
-                                                            </td>
-                                                            <td>
-                                                                <input type="number" min="1" value="1" class="jml_produk form-control"
-                                                                    placeholder="Qty" name="jml_produk[]" style="width: 90px;">
-                                                            </td>
-                                                            <td>
-                                                                <select class="satuan_produk form-control" style="width: 90px;" name="satuan_produk[]">
-                                                                    <option value='${e[0].satuan}'>${e[0].satuan}</option>
-                                                                    ${opt_ecer}
-                                                                    </select>
-                                                                
-                                                            </td>
-                                                            <td>
-                                                                <p class="besar_disc">${e[0].diskon} % </p>
-                                                            </td>
-                                                            <td>
-                                                                <input type="hidden" min="1" class="harga_total form-control"
-                                                                    placeholder="Qty" name="harga_total[]" style="width: 90px;" value="${e[0].harga_jual-(e[0].harga_jual*(e[0].diskon/100))}">
-                                                                Rp <span class="disp_total"> ${e[0].harga_jual-(e[0].harga_jual*(e[0].diskon/100)).toFixed(2)} </span>
-                                                            </td>
-                                                            <td>
-                                                                ${e[0].action}
-                                                            </td>
-                                                        </tr>`);
 
                         var sum = 0;
                         $('.harga_total').each(function() {
@@ -689,9 +755,11 @@
             if ($(this).val() == "1") {
                 total = ($('.harga_eceran').eq(idx).val() * $('.jml_produk').eq(idx).val());
             } else {
-                total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
+                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
+                 total = (harga_jual * $('.jml_produk').eq(idx).val());
+                //total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
             }
-            // console.log(total);
+             console.log(total);
             let sub_total = $('#sub_total').val();
             let diskon = parseFloat($('.diskon').eq(idx).val()) / 100;
             let diskon_total = $('#diskon').val();
@@ -715,7 +783,114 @@
         $('#table-produk tbody').on('change', '.jml_produk', function() {
             let idx = $('.jml_produk').index(this);
             if ($('.satuan_produk').eq(idx).val() != '1') {
-                let total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
+                // let total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
+                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
+                let total = (harga_jual * $('.jml_produk').eq(idx).val());
+                console.log(idx);
+                let sub_total = $('#sub_total').val();
+                let diskon = parseFloat($('.diskon').eq(idx).val()) / 100;
+                let diskon_total = $('#diskon').val();
+                let grand_total = $('#grand_total').val();
+                $('.harga_total').eq(idx).val(parseFloat(total) - (parseFloat(total) * parseFloat(diskon)));
+                var sum = 0;
+                $('.harga_total').each(function() {
+                    sum += parseFloat($(this).val());
+                });
+                sum = sum.toFixed(2);
+                $('.disp_total').eq(idx).text((parseFloat(total) - (parseFloat(total) * parseFloat(diskon)).toFixed(
+                    2)).toLocaleString('id-ID'));
+                $('#sub_total').val(parseFloat(parseFloat(sum) + (parseFloat(total) * parseFloat(diskon))).toFixed(
+                    2));
+                $('#disp_sub_total').text((parseFloat(parseFloat(sum) + (parseFloat(total) * parseFloat(diskon)))
+                    .toFixed(2)).toLocaleString('id-ID'));
+                $('#diskon').val(diskon * total);
+                // $('#disp_diskon').text((diskon * total).toLocaleString('id-ID'));
+                // $('#grand_total').val(sum);
+                // $('#disp_grand_total').text(sum.toLocaleString('id-ID'));
+            } else {
+                let total = ($('.harga_eceran').eq(idx).val() * $('.jml_produk').eq(idx).val());
+                let sub_total = $('#sub_total').val();
+                let diskon = parseFloat($('.diskon').eq(idx).val()) / 100;
+                let diskon_total = $('#diskon').val();
+                let grand_total = $('#grand_total').val();
+                $('.harga_total').eq(idx).val(parseFloat(total) - (parseFloat(total) * parseFloat(diskon)));
+                var sum = 0;
+                $('.harga_total').each(function() {
+                    sum += parseFloat($(this).val());
+                });
+                sum = sum.toFixed(2);
+                $('.disp_total').eq(idx).text(parseFloat(total) - (parseFloat(total) * parseFloat(diskon)).toFixed(
+                    2));
+                $('#sub_total').val(parseFloat(sum) + (parseFloat(total) * parseFloat(diskon)).toFixed(2));
+                $('#disp_sub_total').text((parseFloat(sum) + (parseFloat(total) * parseFloat(diskon)).toFixed(2)).toLocaleString('id-ID'));
+                // $('#diskon').val(diskon * total);
+                // $('#disp_diskon').text((diskon * total).toLocaleString('id-ID'));
+                // $('#grand_total').val(sum);
+                // $('#disp_grand_total').text(sum.toLocaleString('id-ID'));
+            }
+            // console.log(1);
+            generate_tagihan();
+        });
+
+        $('#table-produk tbody').on('change', '.margin_produk', function() {
+            let idx = $('.margin_produk').index(this);
+            
+            if ($('.satuan_produk').eq(idx).val() != '1') {
+                let harga_jual = ($('.harga_beli').eq(idx).val() * ($(this).val()/100))+parseInt($('.harga_beli').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
+                let total = (harga_jual * $('.jml_produk').eq(idx).val());
+           
+                let sub_total = $('#sub_total').val();
+                let diskon = parseFloat($('.diskon').eq(idx).val()) / 100;
+                let diskon_total = $('#diskon').val();
+                let grand_total = $('#grand_total').val();
+                $('.harga_total').eq(idx).val(parseFloat(total) - (parseFloat(total) * parseFloat(diskon)));
+                var sum = 0;
+                $('.harga_total').each(function() {
+                    sum += parseFloat($(this).val());
+                });
+                sum = sum.toFixed(2);
+                $('.disp_total').eq(idx).text((parseFloat(total) - (parseFloat(total) * parseFloat(diskon)).toFixed(
+                    2)).toLocaleString('id-ID'));
+                $('#sub_total').val(parseFloat(parseFloat(sum) + (parseFloat(total) * parseFloat(diskon))).toFixed(
+                    2));
+                $('#disp_sub_total').text((parseFloat(parseFloat(sum) + (parseFloat(total) * parseFloat(diskon)))
+                    .toFixed(2)).toLocaleString('id-ID'));
+                $('#diskon').val(diskon * total);
+                // $('#disp_diskon').text((diskon * total).toLocaleString('id-ID'));
+                // $('#grand_total').val(sum);
+                // $('#disp_grand_total').text(sum.toLocaleString('id-ID'));
+            } else {
+                let total = ($('.harga_eceran').eq(idx).val() * $('.jml_produk').eq(idx).val());
+                let sub_total = $('#sub_total').val();
+                let diskon = parseFloat($('.diskon').eq(idx).val()) / 100;
+                let diskon_total = $('#diskon').val();
+                let grand_total = $('#grand_total').val();
+                $('.harga_total').eq(idx).val(parseFloat(total) - (parseFloat(total) * parseFloat(diskon)));
+                var sum = 0;
+                $('.harga_total').each(function() {
+                    sum += parseFloat($(this).val());
+                });
+                sum = sum.toFixed(2);
+                $('.disp_total').eq(idx).text(parseFloat(total) - (parseFloat(total) * parseFloat(diskon)).toFixed(
+                    2));
+                $('#sub_total').val(parseFloat(sum) + (parseFloat(total) * parseFloat(diskon)).toFixed(2));
+                $('#disp_sub_total').text((parseFloat(sum) + (parseFloat(total) * parseFloat(diskon)).toFixed(2)).toLocaleString('id-ID'));
+                // $('#diskon').val(diskon * total);
+                // $('#disp_diskon').text((diskon * total).toLocaleString('id-ID'));
+                // $('#grand_total').val(sum);
+                // $('#disp_grand_total').text(sum.toLocaleString('id-ID'));
+            }
+            // console.log(1);
+            generate_tagihan();
+        });
+
+        $('#table-produk tbody').on('change', '.tuslah_produk', function() {
+            let idx = $('.tuslah_produk').index(this);
+            if ($('.satuan_produk').eq(idx).val() != '1') {
+                // let total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
+                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
+                let total = (harga_jual * $('.jml_produk').eq(idx).val());
+                console.log(idx);
                 let sub_total = $('#sub_total').val();
                 let diskon = parseFloat($('.diskon').eq(idx).val()) / 100;
                 let diskon_total = $('#diskon').val();
@@ -768,7 +943,9 @@
             if ($(this).val() == "1") {
                 total = ($('.harga_eceran').eq(idx).val() * $('.jml_produk').eq(idx).val());
             } else {
-                total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
+                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
+                 total = (harga_jual * $('.jml_produk').eq(idx).val());
+                //total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
             }
             // console.log(total);
             let sub_total = $('#sub_total').val();
@@ -794,7 +971,10 @@
         $('#table-produk-other tbody').on('change', '.jml_produk', function() {
             let idx = $('.jml_produk').index(this);
             if ($('.satuan_produk').eq(idx).val() != '1') {
-                let total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
+                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
+                let total = (harga_jual * $('.jml_produk').eq(idx).val());
+            
+               // let total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
                 let sub_total = $('#sub_total').val();
                 let diskon = parseFloat($('.diskon').eq(idx).val()) / 100;
                 let diskon_total = $('#diskon').val();
@@ -1054,6 +1234,7 @@
             var granddiskon = 0;
             var grandsubtotal = 0;
             var component = "";
+            var tuslah=0;
 
             $('#uang_diterima').val("");
             $('#kembali').text("-");
@@ -1069,10 +1250,12 @@
                     let jml = $('.jml_produk').eq(idx).val();
                     let satuan = $('.satuan_produk').eq(idx).val();
                     let harga = 0;
+                    tuslah+=parseInt($('.tuslah_produk').eq(idx).val());
                     if (satuan == 1) {
                         harga = $('.harga_eceran').eq(idx).val();
                     } else {
-                        harga = $('.harga_jual').eq(idx).val();
+                        harga = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
+                        //harga = $('.harga_jual').eq(idx).val();
                     }
                     let total = $('.harga_total').eq(idx).val();
                     let besar_disc = $('.besar_disc').eq(idx).text();
@@ -1169,10 +1352,11 @@
             $('#bill-sub-total').text(grandsubtotal.toLocaleString('id-ID'));
 
             $('#bill-diskon').text(granddiskon.toLocaleString('id-ID'));
-
-            $('#bill-total2').text(grandtotal.toLocaleString('id-ID'));
-            $('#bill-total').val(grandtotal);
-            $('#bill-grand-total').val(grandtotal);
+            $('#bill-tuslah').text(tuslah.toLocaleString('id-ID'));
+            $('#bill-total2').text((Math.ceil(grandtotal/100)*100).toLocaleString('id-ID'));
+            $('#bill-total').val(Math.ceil(grandtotal/100)*100);
+            $('#bill-grand-total').val(Math.ceil(grandtotal/100)*100);
+            $('#bill-tuslah-total').val(tuslah);
         });
 
         $('#metode_pembayaran').change(function(e) {
@@ -1197,7 +1381,7 @@
                 $('#container-no_bpjs').show();
                 $('#container-bank').hide();
                 $('#no_kartu').val("");
-                $('#no_bpjs').val("");
+                $('#no_bpjs').val(0);
                 $('#uang_kembali').val(0);
             }
         });

@@ -18,6 +18,7 @@ use App\Models\ReturJual;
 use App\Models\HistoryBarang;
 use App\Models\RekamMedis;
 use App\Models\ListJasa;
+use App\Models\Margin;
 use Validator;
 use Hash;
 use DB;
@@ -60,6 +61,7 @@ class PenjualanController extends Controller
         ->where('tipe.jenis_barang','barang_lain')
         ->select('barang.*',DB::raw('coalesce(history_barang.sisa,0) as sisa'))
         ->get();
+        $res['margin'] = Margin::get();
         return view('penjualan/penjualan',$res);
     }
     public function v_list_penjualan()
@@ -88,7 +90,7 @@ class PenjualanController extends Controller
         ->Join('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
         ->Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
         ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
-        ->select('barang.*','harga.diskon','harga.harga_jual','harga.harga_beli','harga.harga_eceran','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe',DB::raw('(select sisa from history_barang where kode_barang="'.$request->kode.'" order by id_history DESC limit 1) AS sisa'))
+        ->select('barang.*','harga.diskon','harga.harga_jual','harga.harga_beli','harga.harga_eceran','harga.margin','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe',DB::raw('(select sisa from history_barang where kode_barang="'.$request->kode.'" order by id_history DESC limit 1) AS sisa'))
         ->where('sisa','!=','0')
         ->where('jenis_barang','=','obat')
         ->get();
@@ -110,7 +112,7 @@ class PenjualanController extends Controller
         ->Join('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
         ->Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
         ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
-        ->select('barang.*','harga.diskon','harga.harga_jual','harga.harga_beli','harga.harga_eceran','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe',DB::raw('(select sisa from history_barang where kode_barang="'.$request->kode.'" order by id_history DESC limit 1) AS sisa'))
+        ->select('barang.*','harga.diskon','harga.harga_jual','harga.harga_beli','harga.harga_eceran','harga.margin','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe',DB::raw('(select sisa from history_barang where kode_barang="'.$request->kode.'" order by id_history DESC limit 1) AS sisa'))
         ->where('sisa','!=','0')
         ->where('jenis_barang','!=','obat')
         ->get();

@@ -42,8 +42,8 @@
                                                 <th>Nama Barang</th>
                                                 <th>Tanggal Masuk</th>
                                                 <th>Tanggal Expired</th>
-                                                <th>Akumulasi Jumlah</th>
-                                                <th>Sisa Barang</th>
+                                                {{-- <th>Akumulasi Jumlah</th>
+                                                <th>Sisa Barang</th> --}}
                                                 <th style="width: 85px;">Action</th>
                                             </tr>
                                         </thead>
@@ -372,12 +372,12 @@
                     data: "tgl_exp",
                     render: $.fn.dataTable.render.moment('D MMMM YYYY')
                 },
-                {
-                    data: "jml_akumulasi"
-                },
-                {
-                    data: "sisa"
-                },
+                // {
+                //     data: "jml_akumulasi"
+                // },
+                // {
+                //     data: "sisa"
+                // },
                 {
                     data: "action"
                 }
