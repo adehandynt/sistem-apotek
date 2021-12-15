@@ -191,6 +191,7 @@
                                             <select class="form-control" id="posisi" name="posisi">
                                                 <option value="manager">Manager</option>
                                                 <option value="apoteker">Apoteker</option>
+                                                <option value="ass_apoteker">Asisten Apoteker</option>
                                                 <option value="dokter">Dokter</option>
                                                 <option value="owner">Owner</option>
                                             </select>

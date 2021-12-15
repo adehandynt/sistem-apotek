@@ -10,6 +10,7 @@ use Auth;
 use App\Models\notification;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use View;
+use session;
 
 class Controller extends BaseController
 {
@@ -21,10 +22,12 @@ class Controller extends BaseController
     }
     
     public function authCheck()
-    {
+    {  
         try{
-            if(Auth::user()==null)
-            return redirect()->route('logout');
+          
+                if(Auth::user()==null)
+                return redirect()->route('logout');
+        
         }catch (Throwable $e) {
             return redirect()->route('logout');
         }

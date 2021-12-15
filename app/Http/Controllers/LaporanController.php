@@ -92,7 +92,8 @@ class LaporanController extends Controller
             ->join('barang','item_penjualan.kode_barang','=','barang.kode_barang')
             ->join('tipe','barang.kode_tipe','=','tipe.kode_tipe')
             ->select('transaksi.*','barang.nama_barang','barang.kode_barang')
-            ->where('tipe.nama_tipe','Narkotika')
+            ->where('tipe.nama_tipe','like','%Narkotika%')
+            ->orwhere('tipe.nama_tipe','like','%Psikotropika%')
             ->groupBy('barang.nama_barang')
             ->get();
             for ($i = 0; $i < count($data); $i++) {

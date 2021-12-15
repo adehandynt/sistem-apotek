@@ -42,8 +42,8 @@
                                                 <th>Nama Barang</th>
                                                 <th>Tanggal Masuk</th>
                                                 <th>Tanggal Expired</th>
-                                                <th>Akumulasi Jumlah</th>
-                                                <th>Sisa Barang</th>
+                                                {{-- <th>Akumulasi Jumlah</th>
+                                                <th>Sisa Barang</th> --}}
                                                 <th style="width: 85px;">Action</th>
                                             </tr>
                                         </thead>
@@ -234,7 +234,7 @@
                                 </select>
                             </div> --}}
                             <div class="mb-3">
-                                <label for="position" class="form-label">Satuan</label>
+                                <label for="position" class="form-label">Satuan Jual</label>
                                 <select class="form-control" id="satuan" name="satuan" placeholder="Satuan Barang"
                                     required>
                                     @foreach ($satuan as $item)
@@ -256,12 +256,16 @@
                             <div class="mb-3">
                                 <label for="company" class="form-label">Harga Beli</label>
                                 <input type="number" class="form-control" min="0" value="0" id="harga_beli"
-                                    name="harga_beli" placeholder="Harga Jual" required>
+                                    name="harga_beli" placeholder="Harga Beli" required>
                             </div>
                             <div class="mb-3">
                                 <label for="company" class="form-label">Margin ( % )</label>
-                                <input type="number" class="form-control" min="0" value="0" id="margin"
-                                    name="margin" placeholder="Margin Penjualan" required>
+                                <select class="form-control" id="margin" name="margin" placeholder="margin Barang"
+                                required>
+                                @foreach ($margin as $item)
+                                    <option value="{{ $item->margin_percentage }}" selected>{{ $item->margin_name.' ( '.$item->margin_percentage.'% )' }}</option>
+                                @endforeach
+                            </select>
                             </div>
                             <div class="mb-3">
                                 <label for="company" class="form-label">Harga Jual</label>
@@ -368,12 +372,12 @@
                     data: "tgl_exp",
                     render: $.fn.dataTable.render.moment('D MMMM YYYY')
                 },
-                {
-                    data: "jml_akumulasi"
-                },
-                {
-                    data: "sisa"
-                },
+                // {
+                //     data: "jml_akumulasi"
+                // },
+                // {
+                //     data: "sisa"
+                // },
                 {
                     data: "action"
                 }
@@ -385,38 +389,61 @@
         });
         $("#form-order").submit(function(event) {
             event.preventDefault();
-            var formData = new FormData($('#form-order')[0]);
-            $.ajax({
-                url: '{{ url('add-stock') }}',
-                type: 'post',
-                data: formData,
-                contentType: false, //untuk upload image
-                processData: false, //untuk upload image
-                timeout: 300000, // sets timeout to 3 seconds
-                dataType: 'json',
-                success: function(e) {
-                    if (e) {
-                        Swal.fire({
-                            title: "Sukses",
-                            text: "Data Berhasil Diinput!",
-                            icon: "success"
+            swal.fire({
+                    title: "Input Penerimaan Barang ",
+                    text: "Pastikan bahwa data barang telah diisi semua dan memiliki Barcode/Kode Barang,\n Lanjutkan Proses ? ",
+                    icon: "warning",
+                    showCancelButton: !0,
+                    confirmButtonColor: "#28bb4b",
+                    cancelButtonColor: "#f34e4e",
+                    confirmButtonText: "Ya, Lanjutkan",
+                    cancelButtonText: "Batal, Periksa Kembali"
+                })
+                .then(function(e) {
+                    if(e.value){
+                        var formData = new FormData($('#form-order')[0]);
+                        $.ajax({
+                            url: '{{ url('add-stock') }}',
+                            type: 'post',
+                            data: formData,
+                            contentType: false, //untuk upload image
+                            processData: false, //untuk upload image
+                            timeout: 300000, // sets timeout to 3 seconds
+                            dataType: 'json',
+                            success: function(e) {
+                                if (e) {
+                                    Swal.fire({
+                                        title: "Sukses",
+                                        text: "Data Berhasil Diinput!",
+                                        icon: "success"
+                                    });
+                                    setTimeout(location.reload(), 2000);
+                                } else {
+                                    var text = "";
+                                    $.each(e.customMessages, function(key, value) {
+                                        text += `<br>` + value;
+                                    });
+                                    Swal.fire({
+                                        title: "Gagal",
+                                        text: text,
+                                        icon: "error"
+                                    });
+                                }
+                            }
+                        }).fail(function(jqXHR, textStatus, errorThrown) {
+                            Swal.fire({
+                                        title: "Gagal",
+                                        text: 'Reposn tidak diketahui, cek koneksi anda',
+                                        icon: "error"
+                                    });
                         });
-                        setTimeout(location.reload(), 2000);
-                    } else {
-                        var text = "";
-                        $.each(e.customMessages, function(key, value) {
-                            text += `<br>` + value;
-                        });
-                        Swal.fire({
-                            title: "Gagal",
-                            text: text,
-                            icon: "error"
-                        });
+                        
+                    }else{
+                        swal.fire("Input Dibatalkan, Silahkan Periksa Kembali Data Anda !");
                     }
-                }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                errorAlertServer('Response Not Found, Please Check Your Data');
-            });
+
+                });
+            
         });
 
         $('#basic-datatables tbody').on('click', '.btn-delete', function() {
@@ -478,7 +505,11 @@
                     });
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
-                errorAlertServer('Response Not Found, Please Check Your Data');
+                Swal.fire({
+                            title: "Gagal",
+                            text: 'Reposn tidak diketahui, cek koneksi anda',
+                            icon: "error"
+                        });
             });
         });
 
@@ -488,6 +519,7 @@
 
         $('#order_id').change(function(e) {
             $("#scan").focus();
+            $('#order-datatables ').DataTable().destroy();
             $.ajax({
                 url: '/get-grn',
                 type: 'get',
@@ -565,9 +597,6 @@
                 },
                 {
                     data: "jml_diterimas"
-                },
-                {
-                    data: "id_list_orders"
                 },
                 {
                     data: "exps"
@@ -818,10 +847,10 @@
                          id: id
                      }
                  }).done(function (msg) {
-                     
+                  
                      $('#harga_beli').val(msg.harga_beli);
                      $('#nama_barang').val(msg.kode_barang);
-                     $('#harga_jual').val(msg.harga_beli);
+                     $('#harga_jual').val(msg.harga_beli+ (msg.harga_beli *($('#margin').val()/100)) );
                      $("#satuan select").val(msg.kode_satuan);
 
                  });
@@ -866,7 +895,7 @@
         });
 
 
-        $('#harga_beli, #margin').on('input', function() {
+        $('#harga_beli, #margin').on('change', function() {
             let harga = $('#harga_beli').val();
             $('#harga_jual').val(((parseInt(harga)) + parseInt(harga * ($('#margin').val()/100))));
         });

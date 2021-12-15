@@ -39,7 +39,23 @@ class PembelianController extends Controller
             ->get();
         $res['satuan'] = Satuan::orderby('created_at', 'DESC')
             ->get();
+
         return view('pembelian/create-pembelian', $res);
+    }
+    public function v_pembelian_restock()
+    {
+        $res = [];
+        $year = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->year;
+        $id = IdGenerator::generate(['table' => 'orders', 'field' => 'id_order', 'length' => 15, 'prefix' => 'ORD-' . $year . '-']);
+        $res['id_pesan'] = 'ORD-' . $year.'-XXXX';
+        $res['staf'] = Auth::user()->nip;
+        $res['nama_pengaju'] = Staf::where('nip','=',Auth::user()->nip)->select('nama_staf')->get();
+        $res['supplier'] = Supplier::orderby('created_at', 'DESC')
+            ->get();
+        $res['satuan'] = Satuan::orderby('created_at', 'DESC')
+            ->get();
+            $res['obat']= Obat::where('kode_barang','!=',null)->get();
+        return view('pembelian/create-pembelian-restock', $res);
     }
     public function v_retur_pembelian()
     {

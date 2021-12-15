@@ -30,6 +30,15 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+        $position=Staf::where('nip',Auth::user()->nip)->get();
+        $request->session()->put('position',$position[0]->posisi);
+        if($position[0]->posisi=='apoteker'){
+            return redirect('/pembelian');
+        }elseif($position[0]->posisi=='dokter'){
+            return redirect('/data-pasien');
+        }elseif($position[0]->posisi=='kasir'){
+            return redirect('/penjualan');
+        }
         $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
         $penjualan=Penjualan::select(DB::raw('sum(total) as penjualan'))
         ->where('tgl_transaksi','like', $date.'%')
@@ -47,7 +56,7 @@ class DashboardController extends Controller
         ->get();
         $ret['pasien']=$pasien;
         
-        $date = \Carbon\Carbon::now()->add(180, 'day')->timezone('Asia/Jakarta')->format('Y-m-d');
+        $date = \Carbon\Carbon::now()->add(120, 'day')->timezone('Asia/Jakarta')->format('Y-m-d');
         $datenow = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
         $kadaluwarsa = DB::select("SELECT
         count(t.kode_barang) as kadaluwarsa,
@@ -126,8 +135,6 @@ class DashboardController extends Controller
          $ret['lalu']=$pendapatan_lalu;
          $ret['sekarang']=$pendapatan_ini;
          $ret['rata']=$rata[0]->total;
-         $position=Staf::where('nip',Auth::user()->nip)->get();
-         $request->session()->put('position',$position[0]->posisi);
         // dd($ret);
         return view('dashboard/dashboard',$ret);
     }

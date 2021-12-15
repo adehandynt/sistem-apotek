@@ -9,6 +9,7 @@ use App\Models\Tipe;
 use App\Models\Harga;
 use App\Models\SetHarga;
 use App\Models\Stok;
+use App\Models\Margin;
 use App\Models\ListItem;
 use Validator;
 use Hash;
@@ -21,6 +22,7 @@ class ObatController extends Controller
     {
         $res['satuan'] = Satuan::get();
         $res['tipe'] = Tipe::get();
+        $res['margin'] = Margin::get();
         
         return view('data-master/obat',$res);
     }

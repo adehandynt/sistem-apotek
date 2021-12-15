@@ -40,6 +40,7 @@ class DokterController extends Controller
             ->leftJoin(DB::raw('(SELECT * FROM barang_keluar order by created_at desc limit 1) AS barang_keluar'),
             'barang_keluar.stock_id', '=', 'stok.stock_id')
             ->select('barang.*','stok.tgl_exp','barang_keluar.sisa','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe')
+            ->where('tipe.jenis_barang','obat')
             ->get();
         return json_encode($data);
     }

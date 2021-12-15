@@ -26,7 +26,8 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="text-lg-end">
-                                        <a href="data-pembelian" class="btn btn-light waves-effect mb-2">Buat Pesanan Baru</a>
+                                        <a href="data-pembelian" class="btn btn-light waves-effect mb-2">Buat Pesanan Barang Baru</a>
+                                        <a href="data-pembelian-restock" class="btn btn-light waves-effect mb-2">Buat Pesanan (Restock)</a>
                                     </div>
                                 </div><!-- end col-->
                             </div>
@@ -178,6 +179,7 @@
 </script>
 @endif
     <script>
+
         $('#default-datatable').DataTable();
         $.fn.dataTable.render.moment = function(from, to, locale) {
             // Argument shifting

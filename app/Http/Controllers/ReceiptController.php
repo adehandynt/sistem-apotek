@@ -34,6 +34,7 @@ class ReceiptController extends Controller
         $transaksi->uang_diterima = $request->input('uang_diterima');
         $transaksi->uang_kembalian = $request->input('uang_kembali')==null?0:$request->input('uang_kembali');
         $transaksi->metode_pembayaran = $request->input('metode_pembayaran');
+        $transaksi->tuslah = $request->input('bill_tuslah_total');
         if(isset($request->no_kartu)){
             $transaksi->bank = $request->input('bank');
             $transaksi->no_kartu = $request->input('no_kartu');

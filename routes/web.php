@@ -17,6 +17,7 @@ use App\Http\Controllers\DokterController;
 use App\Http\Controllers\JasaController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\MarginController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -129,6 +130,7 @@ Route::get('/get-stock-produk', [StockController::class, 'get_stock_produk']);
 Route::get('/get-grn', [StockController::class, 'get_grn']);
 
 Route::get('/data-pembelian', [PembelianController::class, 'v_pembelian'])->name('data-pembelian');
+Route::get('/data-pembelian-restock', [PembelianController::class, 'v_pembelian_restock'])->name('data-pembelian-restock');
 Route::get('/data-pembelians', [PembelianController::class, 'v_list_pembelian']);
 Route::post('/detail-pembelians', [PembelianController::class, 'detail_barang']);
 Route::post('/detail-barang-pembelian', [PembelianController::class, 'detail_barang_pembelian']);
@@ -203,3 +205,8 @@ Route::post('/edit-jasa', [JasaController::class, 'edit_jasa']);
 Route::post('/update-jasa', [JasaController::class, 'update_jasa']);
 
 Route::post('/print-bill', [ReceiptController::class, 'print']);
+Route::get('/data-margin', [MarginController::class, 'margin_page']);
+Route::get('/list-data-margin', [MarginController::class, 'list_margin_page']);
+Route::post('/add-margin', [MarginController::class, 'add_margin']);
+Route::post('/update-margin', [MarginController::class, 'update_margin']);
+Route::post('/edit-margin', [MarginController::class, 'edit_margin']);

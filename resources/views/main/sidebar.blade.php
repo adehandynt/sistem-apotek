@@ -53,7 +53,7 @@
                     </a>
                 </li>
                 @endif
-                @if(session('position')=='owner' || session('position')=='apoteker')
+                @if(session('position')=='owner'|| session('position')=='manager' || session('position')=='apoteker')
                 <li class="menu-title mt-2">Pembelian</li>
                 <li>
                     <a href="#sidebarPembelian" data-bs-toggle="collapse">
@@ -81,7 +81,7 @@
                     </a>
                 </li>
                 @endif
-                @if(session('position')=='manager' ||session('position')=='owner' || session('position')=='kasir')
+                @if(session('position')=='manager' ||session('position')=='owner' || session('position')=='ass_apoteker' || session('position')=='apoteker'|| session('position')=='kasir')
                 <li class="menu-title mt-2">Penjualan</li>
                 <li>
                     <a href="#sidebarPenjualan" data-bs-toggle="collapse">
@@ -100,7 +100,7 @@
                         </ul>
                     </div>
                 </li> @endif
-                @if(session('position')=='owner' || session('position')=='apoteker')
+                @if(session('position')=='owner' || session('position')=='manager' || session('position')=='ass_apoteker' || session('position')=='apoteker')
                 <li class="menu-title mt-2">Stock</li>
                 <li>
                     <a href="#sidebarStock" data-bs-toggle="collapse">
@@ -114,7 +114,7 @@
                                 <a href="reorder">Re-Order Point</a>
                             </li> --}}
                             <li>
-                                <a href="stock">Stock Obat</a>
+                                <a href="stock">Stock Obat / Barang</a>
                             </li>
                             <li>
                                 <a href="stock-opname">Stock Opname</a>
@@ -123,7 +123,7 @@
                     </div>
                 </li>
                 @endif
-                @if(session('position')=='owner')
+                @if(session('position')=='owner' || session('position')=='manager')
                 <li class="menu-title mt-2">Laporan</li>
                 <li>
                     <a href="#sidebarDashboards" data-bs-toggle="collapse">
@@ -154,7 +154,7 @@
                         </ul>
                     </div>
                 </li>@endif
-                @if(session('position')=='dokter' || session('position')=='owner' )
+                @if(session('position')=='dokter' || session('position')=='manager'|| session('position')=='owner' )
                 <li class="menu-title mt-2">Dokter</li>
                 <li>
                     <a href="#sidebarDataDokter" data-bs-toggle="collapse">
@@ -202,16 +202,21 @@
                                 <a href="/data-jasa">Jasa</a>
                             </li>
                             <li>
+                                <a href="/data-margin">Margin</a>
+                            </li>
+                            @if(session('position')=='manager'|| session('position')=='owner' )
+                            <li>
+                                <a href="/data-pasien">Pasien</a>
+                            </li>
+                            <li>
                                 <a href="/data-akun">Akun</a>
                             </li>
                             <li>
                                 <a href="/data-staf">Staf</a>
                             </li>
+                            @endif
                             <li>
                                 <a href="/data-supplier">Supplier</a>
-                            </li>
-                            <li>
-                                <a href="/data-pasien">Pasien</a>
                             </li>
                         </ul>
                     </div>
@@ -224,5 +229,13 @@
 
     </div>
     <!-- Sidebar -left -->
+    @if (Auth::check()) 
+    <script>
+    var timeout = ({{config('session.lifetime')}} * 60000) -10 ;
+    setTimeout(function(){
+        window.location.reload(1);
+    },  timeout);
 
+    </script>
+@endif
 </div>
