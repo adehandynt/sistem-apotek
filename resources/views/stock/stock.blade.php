@@ -354,7 +354,8 @@
         };
    
         var table = $('#basic-datatables').DataTable({
-            lengthChange: false,
+            lengthChange: true,
+            lengthMenu:[[-1],["All"]],
             //buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
             buttons: [],
             ajax: {
@@ -579,7 +580,8 @@
             // });
 
             var table = $('#order-datatables ').DataTable({
-            lengthChange: false,
+                lengthChange: true,
+            lengthMenu:[[-1],["All"]],
             //buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
             buttons: [],
             ajax: {
@@ -623,7 +625,8 @@
 
             $('#list-order-datatables').DataTable().destroy();
             var table = $('#list-order-datatables').DataTable({
-            lengthChange: false,
+                lengthChange: true,
+            lengthMenu:[[-1],["All"]],
             //buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
             buttons: [],
             ajax: {
@@ -663,7 +666,8 @@
             $('#id_hide').val(id);
             $('#detail-datatables').DataTable().destroy();
             var table = $('#detail-datatables').DataTable({
-            lengthChange: false,
+                lengthChange: true,
+            lengthMenu:[[-1],["All"]],
             //buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
             buttons: [],
             ajax: {
@@ -713,7 +717,8 @@
             var date = $('#set_date').val();
             $('#detail-datatables').DataTable().destroy();
             var table = $('#detail-datatables').DataTable({
-            lengthChange: false,
+                lengthChange: true,
+            lengthMenu:[[-1],["All"]],
             //buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
             buttons: [],
             ajax: {
