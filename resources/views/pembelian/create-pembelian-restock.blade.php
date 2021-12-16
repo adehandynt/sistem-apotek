@@ -120,7 +120,7 @@
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control diskon" name="diskon[]" value='0' min='0' max='100' required
+                                                    <input type="number" class="form-control diskon" name="diskon[]" value='0' step="0.01"  min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
@@ -187,6 +187,14 @@
 @endsection
 @section('script')
     <script>
+           $(document).ready(function() {
+                $(window).keydown(function(event){
+                    if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                    }
+                });
+        });
          
         $('#btn-barang').click(function(e) {
             $('#table-pesanan tbody').append(`<tr>

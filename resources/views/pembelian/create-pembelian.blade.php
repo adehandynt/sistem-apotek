@@ -181,6 +181,14 @@
 @endsection
 @section('script')
     <script>
+        $(document).ready(function() {
+                $(window).keydown(function(event){
+                    if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                    }
+                });
+        });
 
         $('#btn-barang').click(function(e) {
             $('#table-pesanan tbody').append(`<tr>
