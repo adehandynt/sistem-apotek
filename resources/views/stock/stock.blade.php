@@ -319,7 +319,14 @@
                 $('#add-modal').modal({backdrop: 'static', keyboard: false});
                 $('#order_id').prop('selectedIndex',0);
                 $('#form-order')[0].reset();
+                $(window).keydown(function(event){
+                    if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                    }
+                });
         });
+        
   
         $("#order_id select").val("0").change();
         $('#default-datatable').DataTable();
@@ -753,12 +760,11 @@
 
         var kode = "";
         var timer = null;
-        $('#scan').on('input', function() {
+        $('#scan').on('change', function() {
             kode = $('#scan').val();
             $('#scanHidden').val(kode);
             if (kode != null) {
-                clearTimeout(timer);
-                timer = setTimeout(doStuff, 1000)
+                doStuff()
             } 
             $('#form-barang').hide();
         });

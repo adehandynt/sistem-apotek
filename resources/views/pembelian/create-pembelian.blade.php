@@ -88,6 +88,7 @@
                                                 <th>Satuan Beli</th>
                                                 <th>Harga (@satuan)</th>
                                                 <th>Diskon</th>
+                                                <th>Ppn</th>
                                                 <th>Total</th>
                                                 <th style="width: 50px;"></th>
                                             </tr>
@@ -113,7 +114,11 @@
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control diskon" name="diskon[]" value='0' min='0' max='100' required
+                                                    <input type="number" class="form-control diskon" name="diskon[]" step="0.01" value='0' min='0' max='100' required
+                                                         />
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control ppn" name="ppn[]" step="0.01" value='10' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
@@ -198,7 +203,11 @@
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control diskon" name="diskon[]" value='0' min='0' max='100' required
+                                                    <input type="number" class="form-control diskon" name="diskon[]" step="0.01" value='0' min='0' max='100' required
+                                                         />
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control ppn" name="ppn[]" step="0.01" value='10' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
@@ -214,12 +223,12 @@
 
         $('#table-pesanan tbody').on('change', '.harga, .jumlah, .diskon', function() {
             let idx = $('.harga').index(this);
-            if(parseInt($('.diskon').eq(idx).val())==0){
-                $('.total').eq(idx).val(parseInt($('.harga').eq(idx).val()) * parseInt($('.jumlah').eq(idx)
-                .val()));
+            if(parseFloat($('.diskon').eq(idx).val())==0){
+                let total = (parseInt($('.harga').eq(idx).val()) * parseInt($('.jumlah').eq(idx).val()));
+                $('.total').eq(idx).val(total + (total*(parseFloat($('.ppn').eq(idx).val())/100)));
             }else{
-                $('.total').eq(idx).val((parseInt($('.harga').eq(idx).val())-(parseInt($('.harga').eq(idx).val())*(parseInt($('.diskon').eq(idx).val())/100))) * parseInt($('.jumlah').eq(idx)
-                .val()));
+                let total = (parseInt($('.harga').eq(idx).val())-(parseInt($('.harga').eq(idx).val())*(parseFloat($('.diskon').eq(idx).val())/100))) * parseInt($('.jumlah').eq(idx).val())
+                $('.total').eq(idx).val(total + (total*(parseFloat($('.ppn').eq(idx).val())/100)));
             }
             
         });

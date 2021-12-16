@@ -21,9 +21,10 @@ class TableListOrder extends Migration
 			$table->string('id_order');
 			$table->integer('jumlah');
 			$table->bigInteger('harga_beli');
-			$table->bigInteger('diskon');
+			$table->double('diskon');
 			$table->bigInteger('total');
 			$table->string('kode_satuan');
+			$table->double('ppn')->default(0);
 			$table->integer('jumlah_diterima')->nullable();
 			$table->string('status_terima')->nullable();
 			$table->string('deskripsi')->nullable();
