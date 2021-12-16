@@ -161,7 +161,7 @@ class StockController extends Controller
         }
         $data = Order::Join('list_order', 'orders.id_order', '=', 'list_order.id_order')
         ->Join('barang', 'list_order.kode_barang', '=', 'barang.kode_barang')
-        ->leftJoin('stok', 'stok.kode_barang', '=', 'barang.kode_barang')
+        // ->leftJoin('stok', 'stok.kode_barang', '=', 'barang.kode_barang')
         ->where('orders.id_order','=',$request->input('order_id'))
         ->select('barang.*','list_order.*')->get(); 
         $pembelian = Pembelian::where('id_order', '=', $request->input('order_id'))->firstOrFail();
@@ -176,13 +176,14 @@ class StockController extends Controller
         foreach($data as $val){
             
             $id_stok = IdGenerator::generate(['table' => 'stok','field'=>'stock_id', 'length' => 9, 'prefix' =>'STK-']);
+            $sisa = HistoryBarang::select('sisa')->orderby('created_at','desc')->where('kode_barang','=',$val->kode_barang)->get()->first();
             $stok = new Stok;
             $stok->stock_id=$id_stok;
             $stok->kode_barang=$val->kode_barang;
             $stok->tgl_masuk=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
             $stok->tgl_exp= $request->exp[$idx];
             $stok->jml_masuk= $request->jml_diterima[$idx];
-            $stok->jml_akumulasi= $val->sisa + $request->jml_diterima[$idx];
+            $stok->jml_akumulasi= ($sisa==null?0:$sisa->sisa) + $request->jml_diterima[$idx];
             $stok->id_order=$val->id_order;
             $stok->save();
 

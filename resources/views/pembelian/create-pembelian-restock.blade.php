@@ -244,6 +244,32 @@
             
         });
 
+        $('#table-pesanan tbody').on('change', '.nama_barang', function() {
+            let idx = $('.nama_barang').index(this);
+            if($(this).val()!=null||$(this).val()!=""){
+                $.ajax({
+                    url: '{{ url("detail-barang-item") }}',
+                    type: 'post',
+                    dataType: 'json',
+                    data: ({
+                        _token: "{{ csrf_token() }}",
+                        id: $(this).val()
+                    }),
+                    success: function(e) {
+                        $('.harga').eq(idx).val(e.harga_beli);
+                        $('.satuan').eq(idx).val(e.kode_satuan);
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    Swal.fire({
+                                title: "Gagal",
+                                text: "Cek Kembali Data Anda !",
+                                icon: "error"
+                            });
+                });
+            }
+            
+        });
+
         $('#table-pesanan tbody').on('click', '.btn-delete', function() {
             let idx = $('.btn-delete').index(this);
             $(this).closest("tr").remove();

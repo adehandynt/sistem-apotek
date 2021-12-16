@@ -141,7 +141,6 @@ class ObatController extends Controller
             ->get();
         return json_encode($res['data']);
     }
-
     function edit_obat(Request $request)
     {
         $data = Obat::where('barang.id', $request->id)
@@ -151,6 +150,19 @@ class ObatController extends Controller
         ->Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
         ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
         ->select('barang.*','harga.harga_jual','harga.harga_beli','harga.margin','harga.harga_eceran','satuan.satuan','tipe.nama_tipe')
+        ->firstOrFail();
+
+        return json_encode($data);
+    }
+
+    function detail_barang_item(Request $request)
+    {
+        $data = Obat::where('barang.kode_barang', $request->id)
+        ->leftJoin('set_harga', 'barang.kode_barang', '=', 'set_harga.kode_barang')
+        ->leftJoin('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
+        ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
+        ->select('barang.*','satuan.satuan','harga.harga_jual','harga.harga_beli')
+        ->orderby('harga.created_at','desc')
         ->firstOrFail();
 
         return json_encode($data);
