@@ -99,7 +99,7 @@
 			<tr>
 				<td>{{ $i++ }}</td>
                 <td></td>
-				<td>{{$p->kode_barang}}</td>
+				<td>{{$p->kode_barang.' - '.$p->nama_barang}}</td>
 				<td>{{$p->jumlah}}</td>
 				<td>{{$p->satuan}}</td>
 				<td> Rp {{number_format($p->harga_beli,2)}}</td>
@@ -114,12 +114,12 @@
         <tr>
             <td><b>Sub Total</b></td>
             <td>:</td>
-            <td>Rp {{number_format($order[0]->total,2)}}</td>
+            <td>Rp {{number_format($order[0]->total-($order[0]->total*0.1),2)}}</td>
         </tr>
         <tr>
             <td><b>Tax</b></td>
             <td>:</td>
-            <td>Rp -</td>
+            <td>Rp {{number_format($order[0]->total*0.1,2)}}</td>
         </tr>
         <tr>
             <td><b>Grand Total</b></td>

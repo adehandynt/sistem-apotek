@@ -344,20 +344,24 @@
                 }),
                 success: function(e) {
                     $('#id').val(id);
-                    $.each(e, function(key, value) {
-                        $('#' + key).val(value);
-                        if (key == 'kode_satuan') {
-                            $("#satuan select").val(value).change();
-                        } else if (key == 'kode_tipe') {
-                            $("#tipe_barang select").val(value).change();
-                        }
-            
-                        if(key == 'status_ecer' && value=='1'){
+                    $('#kode_barang').val(e.kode_barang);
+                    $('#nama_barang').val(e.nama_barang);
+                    $('#produsen').val(e.produsen);
+                    $('#tipe_barang').val(e.kode_tipe);
+                    $('#satuan').val(e.kode_satuan);
+                    $('#jml_per_satuan').val(e.jml_per_satuan);
+                    $('#penyimpanan').val(e.penyimpanan);
+                    $('#konsinyasi').val(e.konsinyasi);
+                    $('#harga_jual').val(e.harga_jual);
+                    $('#harga_beli').val(e.harga_beli);
+                    $('#harga_eceran').val(e.harga_eceran);
+                    $('#nama_tipe').val(e.nama_tipe);
+                    $('#margin').val(e.margin);
+                    if(e.status_ecer=='1'){
                             $("#status_ecer").prop('checked', true);
-                        }else if(key == 'status_ecer' && value=='0' ){
+                        }else if(e.status_ecer=='0' ){
                             $("#status_ecer").prop('checked', false);
                         }
-                    });
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 Swal.fire({

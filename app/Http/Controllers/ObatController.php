@@ -33,11 +33,11 @@ class ObatController extends Controller
             ->leftJoin('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
             ->Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
             ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
-            ->select('barang.*','harga.harga_jual','harga.harga_beli','harga.harga_eceran','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe')
+            ->select('barang.*','harga.harga_jual','harga.harga_beli','harga.margin','harga.harga_eceran','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe')
             ->get();
         //        return view('data-master/tipe', $res);
         for($i=0;$i<count($data);$i++){
-            $data[$i]->action=' <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#custom-modal" data-id="'.$data[$i]->id.'"
+            $data[$i]->action=' <a href="javascript:void(0);" data-id="'.$data[$i]->id.'"
             class="btn-update action-icon"> <i
                 class="mdi mdi-square-edit-outline"></i></a>
         <a href="javascript:void(0);" data-id="'.$data[$i]->id.'"
@@ -150,7 +150,7 @@ class ObatController extends Controller
         ->leftJoin('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
         ->Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
         ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
-        ->select('barang.*','harga.harga_jual','harga.harga_beli','harga.harga_eceran','satuan.satuan','tipe.nama_tipe')
+        ->select('barang.*','harga.harga_jual','harga.harga_beli','harga.margin','harga.harga_eceran','satuan.satuan','tipe.nama_tipe')
         ->firstOrFail();
 
         return json_encode($data);

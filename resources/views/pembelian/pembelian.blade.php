@@ -126,6 +126,7 @@
                                         <th>Satuan</th>
                                         <th>Harga</th>
                                         <th>Diskon</th>
+                                        <th>Ppn</th>
                                         <th>Total</th>
                                     </tr>
                                 </thead>
@@ -313,6 +314,9 @@
                     },
                     {
                         data: "diskon"
+                    },
+                    {
+                        data: "ppn"
                     },
                     {
                         data: "total",

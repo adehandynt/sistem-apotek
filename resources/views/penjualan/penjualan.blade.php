@@ -551,6 +551,12 @@
             });
 
             $('#metode_pembayaran').val("cash");
+            $(window).keydown(function(event){
+                    if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                    }
+                });
         });
 
         var kode = "";

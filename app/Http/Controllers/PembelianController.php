@@ -239,10 +239,11 @@ class PembelianController extends Controller
             $item->kode_satuan = $request->satuan[$idx];
             $item->harga_beli = $request->harga[$idx];
             $item->diskon = $request->diskon[$idx];
-            $item->total = ($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx];
+            $item->total = (($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx])+ (($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx]) *($request->ppn[$idx] / 100);
             $item->jumlah = $request->jumlah[$idx];
-            $totDiskon += ($request->harga[$idx] * ($request->diskon[$idx] / 100));
-            $totTotal += ($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx];
+            $item->ppn = $request->ppn[$idx];
+            $totDiskon += ($request->harga[$idx] * ($request->diskon[$idx] / 100))* $request->jumlah[$idx];
+            $totTotal += (($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx])+ (($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx]) *($request->ppn[$idx] / 100) ;
             $item->save();
         }
 
@@ -309,10 +310,11 @@ class PembelianController extends Controller
             $item->kode_satuan = $request->satuan[$idx];
             $item->harga_beli = $request->harga[$idx];
             $item->diskon = $request->diskon[$idx];
-            $item->total = ($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx];
+            $item->total = (($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx])+ (($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx]) *($request->ppn[$idx] / 100);
             $item->jumlah = $request->jumlah[$idx];
-            $totDiskon += ($request->harga[$idx] * ($request->diskon[$idx] / 100));
-            $totTotal += ($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx];
+            $item->ppn = $request->ppn[$idx];
+            $totDiskon += ($request->harga[$idx] * ($request->diskon[$idx] / 100))* $request->jumlah[$idx];
+            $totTotal += (($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx])+ (($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx]) *($request->ppn[$idx] / 100);
             $item->save();
         }
         $pembelian = Pembelian::where('id_order', '=', $request->nomor_surat)->firstOrFail();
@@ -356,7 +358,8 @@ class PembelianController extends Controller
                 ->where('id', '=', $id);
         })
             ->join('satuan', 'list_order.kode_satuan', '=', 'satuan.kode_satuan')
-            ->select('list_order.*', 'satuan.satuan')
+            ->leftjoin('barang', 'list_order.kode_barang', '=', 'barang.kode_barang')
+            ->select('list_order.*', 'satuan.satuan','barang.nama_barang')
             ->get();
 
         $res['data'] = $data;
