@@ -107,7 +107,7 @@
                                             <th>Kode Barang</th>
                                             <th>Nama Barang</th>
                                             <th>Jumlah Order</th>
-                                            <th>Jumlah Diterima</th>
+                                            <th>Jumlah Diterima(Satuan Kecil)</th>
                                             <th>Tanggal Expired</th>
                                             <th>Status</th>
                                             <th>Deskripsi</th>

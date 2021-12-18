@@ -44,6 +44,7 @@ class JasaController extends Controller
     {
         $data = ListJasa::orderby('created_at', 'DESC')->get();
         for($i=0;$i<count($data);$i++){
+            $data[$i]->setelah=$data[$i]->harga-($data[$i]->harga*($data[$i]->diskon_jasa/100));
             $data[$i]->action=' <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#custom-modal-edit" data-id="'.$data[$i]->id_list_jasa.'"
             class="btn-update action-icon"> <i
                 class="mdi mdi-square-edit-outline"></i></a><a href="javascript:void(0);" data-id="'.$data[$i]->id_list_jasa.'"
@@ -60,6 +61,7 @@ class JasaController extends Controller
         $jasa=new ListJasa;
         $jasa->id_list_jasa=$id;
         $jasa->nama=$request->nama_jasa;
+        $jasa->diskon_jasa=$request->diskon_jasa;
         $jasa->harga=$request->harga_jasa;
 
         if(!$jasa->save()){
@@ -93,6 +95,7 @@ class JasaController extends Controller
         ->firstOrFail();
         $jasa->nama=$request->nama_jasa;
         $jasa->harga=$request->harga_jasa;
+        $jasa->diskon_jasa=$request->diskon_jasa;
         if(!$jasa->save()){
             return false;
         }else{

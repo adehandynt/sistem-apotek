@@ -168,6 +168,13 @@ Route::post('/add-rekam', [DokterController::class, 'add_rekam'])->name('add-rek
 Route::post('/list-rekam', [DokterController::class, 'list_rekam_medis'])->name('list-rekam');
 Route::post('/detail-rekam', [DokterController::class, 'detail_rekam_medis'])->name('detail-rekam');
 Route::post('/get-detail-resep', [DokterController::class, 'get_detail_resep']);
+Route::post('/add-antrian-pasien', [DokterController::class, 'add_antrian']);
+Route::get('/get-antrian-pasien', [DokterController::class, 'get_antrian']);
+Route::get('/remove-antrian-pasien', [DokterController::class, 'remove_antrian']);
+Route::get('/reset-antrian-pasien', [DokterController::class, 'reset_antrian']);
+Route::get('/data-antrian', function () {
+    return view('dokter/antrian');
+});
 
 Route::post('/add-pembayaran', [PembayaranController::class, 'add_pembayaran'])->name('add-pembayaran');
 Route::get('/data-pembayaran', [PembayaranController::class, 'data_pembayaran']);

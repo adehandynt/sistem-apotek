@@ -120,11 +120,11 @@
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control diskon" name="diskon[]" value='0' step="0.01"  min='0' max='100' required
+                                                    <input type="number" class="form-control diskon" name="diskon[]" value='0' step="any"  min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control ppn" name="ppn[]" step="0.01" value='10' min='0' max='100' required
+                                                    <input type="number" class="form-control ppn" name="ppn[]" step="any" value='10' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
@@ -221,11 +221,11 @@
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control diskon" name="diskon[]" value='0' min='0' max='100' required
+                                                    <input type="number" class="form-control diskon" step="any" name="diskon[]" value='0' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control ppn" name="ppn[]" step="0.01" value='10' min='0' max='100' required
+                                                    <input type="number" class="form-control ppn" name="ppn[]" step="any" value='10' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>

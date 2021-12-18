@@ -169,6 +169,9 @@
                     <div class="collapse" id="sidebarDataDokter">
                         <ul class="nav-second-level">
                             <li>
+                                <a href="/data-antrian">Antrian</a>
+                            </li>
+                            <li>
                                 <a href="/data-pasien">Pasien</a>
                             </li>
                             <li>
