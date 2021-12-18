@@ -245,7 +245,7 @@ class DokterController extends Controller
         ->Join('tindakan', 'list_tindakan.id_tindakan', '=', 'tindakan.id_tindakan')
         ->where('resep.id_rekam_medis',$request->id)
         ->orderBy('harga.created_at','DESC')
-        ->select('rekam_medis.id_rekam_medis','barang.nama_barang','resep.*','harga.harga_eceran',DB::raw('SUM(tindakan.biaya) as total_dokter'))
+        ->select('rekam_medis.id_rekam_medis','barang.nama_barang','harga.margin','harga.harga_beli','resep.*','harga.harga_eceran','harga.harga_jual',DB::raw('SUM(tindakan.biaya) as total_dokter'))
         ->groupBy('rekam_medis.id_rekam_medis')
         ->get();
 

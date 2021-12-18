@@ -354,8 +354,8 @@
         };
    
         var table = $('#basic-datatables').DataTable({
-            lengthChange: true,
-            lengthMenu:[[-1],["All"]],
+            lengthChange: false,
+            //lengthMenu:[[-1],["All"]],
             //buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
             buttons: [],
             ajax: {

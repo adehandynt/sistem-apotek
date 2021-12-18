@@ -34,5 +34,15 @@
       $('.numeric_form').on('input', function (event) { 
     this.value = this.value.replace(/[^0-9]/g, '');
 });
+
+const numInputs = document.querySelectorAll('input[type=number]')
+
+numInputs.forEach(function(input) {
+  input.addEventListener('change', function(e) {
+    if (e.target.value == '') {
+      e.target.value = 0
+    }
+  })
+})
    </script>
    @yield('script');

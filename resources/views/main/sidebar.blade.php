@@ -92,14 +92,18 @@
                     <div class="collapse" id="sidebarPenjualan">
                         <ul class="nav-second-level">
                             <li>
+                                GUNAKAN FITUR PENJUALAN PADA URL " 127.0.0.1:8000 "
+                            </li>
+                            {{-- <li>
                                 <a href="/penjualan">Penjualan</a>
                             </li>
                             <li>
                                 <a href="/retur-penjualan">Retur Penjualan</a>
-                            </li>
+                            </li> --}}
                         </ul>
                     </div>
-                </li> @endif
+                </li>
+                 @endif
                 @if(session('position')=='owner' || session('position')=='manager' || session('position')=='ass_apoteker' || session('position')=='apoteker')
                 <li class="menu-title mt-2">Stock</li>
                 <li>

@@ -155,7 +155,8 @@ class PembelianController extends Controller
         })
             ->join('orders', 'orders.id_order', '=', 'list_order.id_order')
             ->join('satuan', 'list_order.kode_satuan', '=', 'satuan.kode_satuan')
-            ->select('list_order.*', 'satuan.satuan')
+            ->leftjoin('barang','barang.kode_barang','=','list_order.kode_barang')
+            ->select('list_order.*', 'satuan.satuan','barang.nama_barang')
             ->get();
         return json_encode($data);
     }

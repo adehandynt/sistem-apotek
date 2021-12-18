@@ -232,9 +232,9 @@
                                             <td>Rp {{number_format($val->harga_jual,2)}}</td>
                                             <td>{{$val->sisa}}</td>
                                             @if($val->sisa <= 30 && $val->sisa >= 1)
-                                            <td><span class="badge bg-soft-success text-warning">Hampir Habis</span></td>
+                                            <td><span class="badge bg-soft-warning text-warning">Hampir Habis</span></td>
                                             @elseif($val->sisa==0)
-                                            <td><span class="badge bg-soft-success text-danger">Habis</span></td>
+                                            <td><span class="badge bg-soft-danger text-danger">Habis</span></td>
                                             @else 
                                             <td><span class="badge bg-soft-success text-success">Tersedia</span></td>
                                             @endif

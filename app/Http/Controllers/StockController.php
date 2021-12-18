@@ -156,6 +156,7 @@ class StockController extends Controller
 
     public function add_stock(Request $request)
     {
+      
         if ($request->input('exp') == null) {
             return false;
         }
@@ -174,7 +175,7 @@ class StockController extends Controller
  
         $idx=0;
         foreach($data as $val){
-            
+            $idx= array_search($val->id_list_order,$request->id_list_order);
             $id_stok = IdGenerator::generate(['table' => 'stok','field'=>'stock_id', 'length' => 9, 'prefix' =>'STK-']);
             $sisa = HistoryBarang::select('sisa')->orderby('created_at','desc')->where('kode_barang','=',$val->kode_barang)->get()->first();
             $stok = new Stok;
