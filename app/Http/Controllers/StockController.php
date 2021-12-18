@@ -203,7 +203,7 @@ class StockController extends Controller
             $history->kode_barang=$val->kode_barang;
             $history->tgl_masuk=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
             $history->jml_masuk=$request->jml_diterima[$idx];
-            $history->sisa+=$request->jml_diterima[$idx];
+            $history->sisa=($sisa==null?0:$sisa->sisa)+$request->jml_diterima[$idx];
             $history->jenis_history='barang_masuk';
             $history->id_referensi=$request->id_list_order[$idx];
             $history->pic=Auth::user()->nip;
