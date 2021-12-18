@@ -220,6 +220,7 @@ class DokterController extends Controller
     public function list_rekam_medis(Request $request){
         $data = RekamMedis::Join('pasien', 'rekam_medis.nik', '=', 'pasien.nik')
         ->Join('staf', 'rekam_medis.nip', '=', 'staf.nip')
+        ->where('pasien.nik',$request->id)
         ->select('rekam_medis.*','staf.nama_staf','pasien.nik','pasien.nama_pasien')
         ->get();
         for ($i = 0; $i < count($data); $i++) {
