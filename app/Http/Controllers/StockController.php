@@ -173,7 +173,7 @@ class StockController extends Controller
         $pembelian->penerima = Auth::user()->nip;
         $pembelian->save();
  
-        $idx=0;
+        // $idx=0;
         foreach($data as $val){
             $idx= array_search($val->id_list_order,$request->id_list_order);
             $id_stok = IdGenerator::generate(['table' => 'stok','field'=>'stock_id', 'length' => 9, 'prefix' =>'STK-']);
@@ -209,7 +209,7 @@ class StockController extends Controller
             $history->pic=Auth::user()->nip;
             $history->save();
             
-            $idx++;
+            // $idx++;
         }
 
         $pembelian = Pembelian::where('id_order', '=', $request->input('order_id'))->firstOrFail();
