@@ -68,6 +68,8 @@ class ReceiptController extends Controller
                     ->take(1)
                     ->get();
 
+
+
                 $sisa = $data[0]->sisa==0||$data[0]->sisa==null? $data[0]->jml_akumulasi:$data[0]->sisa;
                 $id_keluar = IdGenerator::generate(['table' => 'barang_keluar', 'field' => 'id_keluar', 'length' => 9, 'prefix' => 'KLR-']);
                 $keluar = new BarangKeluar;
@@ -136,7 +138,7 @@ class ReceiptController extends Controller
                 }
             }
 
-            if ($request->input('nama_racik') != null) {
+            if ($request->input('nama_racik')[0] != null) {
                 foreach ($request->input('nama_racik') as $idx => $val) {
                     $id_item = IdGenerator::generate(['table' => 'item_penjualan', 'field' => 'id_item', 'length' => 9, 'prefix' => 'ITM']);
                     $item = new ItemPenjualan;
@@ -155,8 +157,9 @@ class ReceiptController extends Controller
                         ->take(1)
                         ->get();
     
-                    $sisa = $data[0]->sisa==0||$data[0]->sisa==null? $data[0]->jml_akumulasi:$data[0]->sisa;
+                    $sisa = 100;
                     $id_keluar = IdGenerator::generate(['table' => 'barang_keluar', 'field' => 'id_keluar', 'length' => 9, 'prefix' => 'KLR-']);
+                  
                     $keluar = new BarangKeluar;
                     $keluar->id_keluar = $id_keluar;
                     $keluar->stock_id = $data[0]->stock_id;
