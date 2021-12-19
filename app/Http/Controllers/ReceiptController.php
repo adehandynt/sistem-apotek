@@ -192,7 +192,7 @@ class ReceiptController extends Controller
         // Set params
         $staf=Staf::where('nip','=',Auth::user()->nip)->select('nama_staf')->get();
         $mid = $staf[0]->nama_staf;
-        $store_name = 'APOTEK SINDNANGSARI FARMA';
+        $store_name = 'APOTEK SINDANG SARI FARMA';
         $store_address = 'Jalan Sindang Sari 1, Antapani, Bandung';
         $store_phone = '';
         $store_email = '';
@@ -248,7 +248,7 @@ class ReceiptController extends Controller
         // Add items
         foreach ($items as $item) {
             $printer->addItem(
-                $item['name'],
+                $item['name'], 
                 $item['qty'],
                 $item['price']
             );
