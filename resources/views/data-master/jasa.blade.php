@@ -45,6 +45,8 @@
                                                 <th>ID Jasa</th>
                                                 <th>Nama Jasa</th>
                                                 <th>Harga</th>
+                                                <th>Diskon Jasa (%)</th>
+                                                <th>Setelah Diskon</th>
                                                 <th style="width: 85px;">Action</th>
                                             </tr>
                                         </thead>
@@ -81,6 +83,11 @@
                                 <label for="exampleInputEmail1" class="form-label">Harga</label>
                                 <input type="number" class="form-control numeric_form" id="harga_jasa" name="harga_jasa"
                                     placeholder="Harga Jasa">
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Diskon</label>
+                                <input type="number" class="form-control" value="0" step="any" id="diskon_jasa" name="diskon_jasa"
+                                    placeholder="Diskon Jasa">
                             </div>
                             <div class="mb-3">
                                 <label for="exampleInputEmail1" class="form-label">Alat</label>
@@ -123,6 +130,11 @@
                                 <label for="exampleInputEmail1" class="form-label">Harga</label>
                                 <input type="number" class="form-control numeric_form" id="harga_jasa_edit"
                                     name="harga_jasa" placeholder="Harga Jasa">
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Diskon</label>
+                                <input type="number" class="form-control" value="0" step="any" id="diskon_jasa_edit" name="diskon_jasa"
+                                    placeholder="Diskon Jasa">
                             </div>
                             <div class="mb-3">
                                 <label for="exampleInputEmail1" class="form-label">Alat</label>
@@ -204,6 +216,12 @@
                 },
                 {
                     data: "harga"
+                },
+                {
+                    data: "diskon_jasa"
+                },
+                {
+                    data: "setelah"
                 },
                 {
                     data: "action"
@@ -351,6 +369,7 @@
                     $('#id_jasa').val(id);
                     $('#nama_jasa_edit').val(e[0].nama);
                     $('#harga_jasa_edit').val(e[0].harga);
+                    $('#diskon_jasa_edit').val(e[0].diskon_jasa);
                     $.each(e, function(key, value) {
                         arr.push(value.kode_barang);
                     });

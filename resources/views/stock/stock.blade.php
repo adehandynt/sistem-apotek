@@ -107,7 +107,7 @@
                                             <th>Kode Barang</th>
                                             <th>Nama Barang</th>
                                             <th>Jumlah Order</th>
-                                            <th>Jumlah Diterima</th>
+                                            <th>Jumlah Diterima(Satuan Kecil)</th>
                                             <th>Tanggal Expired</th>
                                             <th>Status</th>
                                             <th>Deskripsi</th>
@@ -355,6 +355,7 @@
    
         var table = $('#basic-datatables').DataTable({
             lengthChange: false,
+            //lengthMenu:[[-1],["All"]],
             //buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
             buttons: [],
             ajax: {
@@ -579,7 +580,8 @@
             // });
 
             var table = $('#order-datatables ').DataTable({
-            lengthChange: false,
+                lengthChange: true,
+            lengthMenu:[[-1],["All"]],
             //buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
             buttons: [],
             ajax: {
@@ -623,7 +625,8 @@
 
             $('#list-order-datatables').DataTable().destroy();
             var table = $('#list-order-datatables').DataTable({
-            lengthChange: false,
+                lengthChange: true,
+            lengthMenu:[[-1],["All"]],
             //buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
             buttons: [],
             ajax: {
@@ -663,7 +666,8 @@
             $('#id_hide').val(id);
             $('#detail-datatables').DataTable().destroy();
             var table = $('#detail-datatables').DataTable({
-            lengthChange: false,
+                lengthChange: true,
+            lengthMenu:[[-1],["All"]],
             //buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
             buttons: [],
             ajax: {
@@ -713,7 +717,8 @@
             var date = $('#set_date').val();
             $('#detail-datatables').DataTable().destroy();
             var table = $('#detail-datatables').DataTable({
-            lengthChange: false,
+                lengthChange: true,
+            lengthMenu:[[-1],["All"]],
             //buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
             buttons: [],
             ajax: {

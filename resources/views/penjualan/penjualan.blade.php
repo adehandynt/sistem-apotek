@@ -44,6 +44,7 @@
                                                         <th>Harga</th>
                                                         <th>Jumlah</th>
                                                         <th>Satuan</th>
+                                                        <th>Margin (%)</th>
                                                         <th>Diskon</th>
                                                         <th>Total</th>
                                                         <th style="width: 50px;"></th>
@@ -183,8 +184,10 @@
                                                         <tr>
                                                             <th>Obat</th>
                                                             <th>Harga</th>
+                                                            <th>Margin</th>
                                                             <th>Dosis</th>
                                                             <th>Jumlah</th>
+                                                            <th>Tuslah</th>
                                                             <th>Total</th>
                                                             <th style="width: 50px;"></th>
                                                         </tr>
@@ -199,6 +202,10 @@
                                                                     name="harga_racik[]" />
                                                             </td>
                                                             <td>
+                                                                <input type="number" min="1" value="0" class="margin_racik form-control"
+                                                                        placeholder="Qty" name="margin_racik[]">
+                                                                    </td>
+                                                            <td>
                                                                 <input type="text" class="form-control dosis_racik"
                                                                     name="dosis_racik[]" />
                                                             </td>
@@ -207,7 +214,11 @@
                                                                     value='0' name="jml_racik[]" />
                                                             </td>
                                                             <td>
-                                                                <input type="number" class="form-control total_racik"
+                                                                <input type="number" min="1" value="0" class="tuslah_racik form-control"
+                                                                    placeholder="Qty" name="tuslah_racik[]" style="width: 90px;">
+                                                            </td>
+                                                            <td>
+                                                                <input type="number" class="form-control total_racik"  value="0"
                                                                     name="total_racik[]" readonly />
                                                             </td>
                                                         </tr>
@@ -697,10 +708,13 @@
                                                                     
                                                                 </td>
                                                                 <td>
-                                                                    <input type="hidden" min="1" value="${e[0].margin}" class="margin_produk form-control"
+                                                                    <input type="number" min="1" value="${e[0].margin}" class="margin_produk form-control"
                                                                         placeholder="Qty" name="margin_produk[]" style="width: 90px;">
                                                                         <input type="hidden" min="1" value="0" class="tuslah_produk form-control"
                                                                         placeholder="Qty" name="tuslah_produk[]" style="width: 90px;">
+                                                                    
+                                                                </td>
+                                                                <td>
                                                                     <p class="besar_disc">${e[0].diskon} % </p>
                                                                 </td>
                                                                 <td>
@@ -942,6 +956,59 @@
             generate_tagihan();
         });
 
+        $('#table-produk-other tbody').on('change', '.margin_produk', function() {
+            let idx = $('.margin_produk').index(this);
+            
+            if ($('.satuan_produk').eq(idx).val() != '1') {
+                let harga_jual = ($('.harga_beli').eq(idx).val() * ($(this).val()/100))+parseInt($('.harga_beli').eq(idx).val());
+                let total = (harga_jual * $('.jml_produk').eq(idx).val());
+           
+                let sub_total = $('#sub_total').val();
+                let diskon = parseFloat($('.diskon').eq(idx).val()) / 100;
+                let diskon_total = $('#diskon').val();
+                let grand_total = $('#grand_total').val();
+                $('.harga_total').eq(idx).val(parseFloat(total) - (parseFloat(total) * parseFloat(diskon)));
+                var sum = 0;
+                $('.harga_total').each(function() {
+                    sum += parseFloat($(this).val());
+                });
+                sum = sum.toFixed(2);
+                $('.disp_total').eq(idx).text((parseFloat(total) - (parseFloat(total) * parseFloat(diskon)).toFixed(
+                    2)).toLocaleString('id-ID'));
+                $('#sub_total').val(parseFloat(parseFloat(sum) + (parseFloat(total) * parseFloat(diskon))).toFixed(
+                    2));
+                $('#disp_sub_total').text((parseFloat(parseFloat(sum) + (parseFloat(total) * parseFloat(diskon)))
+                    .toFixed(2)).toLocaleString('id-ID'));
+                $('#diskon').val(diskon * total);
+                // $('#disp_diskon').text((diskon * total).toLocaleString('id-ID'));
+                // $('#grand_total').val(sum);
+                // $('#disp_grand_total').text(sum.toLocaleString('id-ID'));
+            } else {
+                let total = ($('.harga_eceran').eq(idx).val() * $('.jml_produk').eq(idx).val());
+                let sub_total = $('#sub_total').val();
+                let diskon = parseFloat($('.diskon').eq(idx).val()) / 100;
+                let diskon_total = $('#diskon').val();
+                let grand_total = $('#grand_total').val();
+                $('.harga_total').eq(idx).val(parseFloat(total) - (parseFloat(total) * parseFloat(diskon)));
+                var sum = 0;
+                $('.harga_total').each(function() {
+                    sum += parseFloat($(this).val());
+                });
+                sum = sum.toFixed(2);
+                $('.disp_total').eq(idx).text(parseFloat(total) - (parseFloat(total) * parseFloat(diskon)).toFixed(
+                    2));
+                $('#sub_total').val(parseFloat(sum) + (parseFloat(total) * parseFloat(diskon)).toFixed(2));
+                $('#disp_sub_total').text((parseFloat(sum) + (parseFloat(total) * parseFloat(diskon)).toFixed(2)).toLocaleString('id-ID'));
+                // $('#diskon').val(diskon * total);
+                // $('#disp_diskon').text((diskon * total).toLocaleString('id-ID'));
+                // $('#grand_total').val(sum);
+                // $('#disp_grand_total').text(sum.toLocaleString('id-ID'));
+            }
+            // console.log(1);
+            generate_tagihan();
+        });
+        
+
         $('#table-produk-other tbody').on('change', '.satuan_produk', function() {
             let idx = $('.satuan_produk').index(this);
             let total = 0;
@@ -949,7 +1016,7 @@
             if ($(this).val() == "1") {
                 total = ($('.harga_eceran').eq(idx).val() * $('.jml_produk').eq(idx).val());
             } else {
-                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
+                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val());
                  total = (harga_jual * $('.jml_produk').eq(idx).val());
                 //total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
             }
@@ -977,7 +1044,7 @@
         $('#table-produk-other tbody').on('change', '.jml_produk', function() {
             let idx = $('.jml_produk').index(this);
             if ($('.satuan_produk').eq(idx).val() != '1') {
-                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
+                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val());
                 let total = (harga_jual * $('.jml_produk').eq(idx).val());
             
                // let total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
@@ -1144,9 +1211,40 @@
             generate_tagihan();
         });
 
-        $('#table-racik tbody').on('change', '.jml_racik', function() {
+        $('#table-racik tbody').on('change', '.jml_racik,.tuslah_racik', function() {
             let idx = $('.jml_racik').index(this);
-            let harga = $('.harga_racik').eq(idx).val();
+            let harga = (parseInt($('.harga_racik_beli').eq(idx).val())*(parseInt($(".margin_racik").val())/100)) + parseInt($('.harga_racik_beli').eq(idx).val())+parseInt($('.tuslah_racik').eq(idx).val());
+            let jml = $('.jml_racik').eq(idx).val();
+            let racik_fee = 250;
+            // console.log(idx + "" + (parseInt(harga)) + "" + racik_fee + "" + jml);
+            $('.total_racik').eq(idx).val((parseFloat(harga)) * parseFloat(jml));
+            var sum = 0;
+            var sum_biaya=0;
+            $('.harga_total').each(function() {
+                sum += parseFloat($(this).val());
+            });
+            $('.total_dokter').each(function() {
+                sum += parseFloat($(this).val());
+            });
+            $('.total_biaya').each(function() {
+                sum += parseFloat($(this).val());
+                sum_biaya += parseFloat($(this).val());
+            });
+            $('.total_racik').each(function() {
+                sum += parseFloat($(this).val());
+                sum_biaya += parseFloat($(this).val());
+                //console.log(sum_biaya);
+            });
+            sum = sum.toFixed(2);
+            generate_tagihan();
+            // $('#grand_total').val(sum);
+            // $('#disp_grand_total').text(sum.toLocaleString('id-ID'));
+            // $('#disp_total_racik').text(sum_biaya.toLocaleString('id-ID'));
+        });
+
+        $('#table-racik tbody').on('change', '.margin_racik', function() {
+            let idx = $('.margin_racik').index(this);
+            let harga = (parseInt($('.harga_racik_beli').eq(idx).val())*(parseInt($(this).val())/100)) + parseInt($('.harga_racik_beli').eq(idx).val())+parseInt($('.tuslah_racik').eq(idx).val());
             let jml = $('.jml_racik').eq(idx).val();
             let racik_fee = 250;
             // console.log(idx + "" + (parseInt(harga)) + "" + racik_fee + "" + jml);
@@ -1335,6 +1433,7 @@
                     totalBiaya+=parseFloat(total);
                     grandtotal += parseFloat(total);
                     grandsubtotal += parseFloat(total);
+                    tuslah+=parseInt($('.tuslah_racik').eq(idx).val());
                     idx++;
                     $('#table-racik-bill tbody').append(
                         `<tr>
@@ -1456,19 +1555,28 @@
                         $('#disp_total_dokter').text(e[0].total_dokter.toLocaleString('id-ID'));
                         for(let i=0;i<e.length;i++){
                             $('#table-racik tbody').append(`<tr><td><input type="hidden" class="form-control id_obat" name="id_obat[]" value="`+e[i].kode_barang+`"/>
-                                                                <input type="text" class="form-control racik" name="racik[]" value="`+e[i].nama_barang+`"/>
+                                                                <input type="text" class="form-control racik" name="racik[]" style="width: 150px;" value="`+e[i].nama_barang+`"/>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="number" class="form-control harga_racik" name="harga_racik[]" value="`+e[i].harga_eceran+`"/>
+                                                                    <input type="number" class="form-control harga_racik" style="width: 110px;" name="harga_racik[]" value="`+(e[i].harga_eceran==0?e[i].harga_jual:e[i].harga_eceran)+`"/>
+                                                                    <input type="hidden" class="form-control harga_racik_beli" style="width: 110px;" name="harga_racik_beli[]" value="`+(e[i].harga_beli)+`"/>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="text" class="form-control dosis_racik" name="dosis_racik[]" value="`+e[i].dosis+`"/>
+                                                                <input type="number" min="1" value="`+e[i].margin+`" class="margin_racik form-control"
+                                                                        placeholder="Qty" name="margin_racik[]" style="width: 110px;">
+                                                                    </td>
+                                                                <td>
+                                                                    <input type="text" class="form-control dosis_racik" style="width: 110px;" name="dosis_racik[]" value="`+e[i].dosis+`"/>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="number" class="form-control jml_racik" value='0' name="jml_racik[]"/>
+                                                                    <input type="number" class="form-control jml_racik" style="width: 110px;" value='0' name="jml_racik[]"/>
                                                                 </td>
                                                                 <td>
-                                                                   <input type="number" class="form-control total_racik" name="total_racik[]" readonly/>
+                                                                <input type="number" min="1" value="0" class="tuslah_racik form-control"
+                                                                    placeholder="Qty" name="tuslah_racik[]" style="width: 90px;">
+                                                            </td>
+                                                                <td>
+                                                                   <input type="number" value="0" class="form-control total_racik" style="width: 110px;" name="total_racik[]" readonly/>
                                                                 </td>
                                                             </tr>`);
                         }

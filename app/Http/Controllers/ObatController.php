@@ -78,7 +78,7 @@ class ObatController extends Controller
 
         $id_brg = IdGenerator::generate(['table' => 'barang','field'=>'kode_barang', 'length' => 8, 'prefix' =>'BRG-']);
 
-        $list = Obat::updateOrCreate(['kode_barang' => $request->kode_barang], [
+        $list = Obat::updateOrCreate(['kode_barang' => str_replace(" ","",$request->kode_barang)], [
             'nama_barang' => $request->nama_barang,
             'produsen' => $request->produsen,
             'kode_tipe' =>  $request->tipe_barang,
@@ -98,18 +98,18 @@ class ObatController extends Controller
             'tgl_harga' =>  \Carbon\Carbon::now(),
             'diskon' => 0,
             'margin' => $request->margin,
-            'kode_barang' =>  $request->kode_barang
+            'kode_barang' =>  str_replace(" ","",$request->kode_barang)
         ]);
         $simpan = $list->save();
 
-        $list = SetHarga::updateOrCreate(['kode_barang' =>$request->kode_barang], [
+        $list = SetHarga::updateOrCreate(['kode_barang' =>str_replace(" ","",$request->kode_barang)], [
             'id_harga' => $id_harga
         ]);
         $simpan = $list->save();
 
         if($request->input('inbound')==true){
-            $list=ListItem::where('id_list_order', '=', $request->id_list_order)->firstOrFail();
-            $list->kode_barang=$request->kode_barang;
+            $list=ListItem::where('id_list_order', '=', str_replace(" ","",$request->kode_barang))->firstOrFail();
+            $list->kode_barang=str_replace(" ","",$request->kode_barang);
             $list->save();
         }
 

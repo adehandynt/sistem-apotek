@@ -15,6 +15,7 @@ use App\Models\RekamMedis;
 use App\Models\ListPenyakit;
 use App\Models\ListTindakan;
 use App\Models\Resep;
+use App\Models\Antrian;
 use App\Models\Tindakan;
 use Validator;
 use Hash;
@@ -37,9 +38,15 @@ class DokterController extends Controller
         $data = Obat::Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
             ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
             ->Join('stok', 'barang.kode_barang', '=', 'stok.kode_barang')
-            ->leftJoin(DB::raw('(SELECT * FROM barang_keluar order by created_at desc limit 1) AS barang_keluar'),
-            'barang_keluar.stock_id', '=', 'stok.stock_id')
-            ->select('barang.*','stok.tgl_exp','barang_keluar.sisa','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe')
+            ->join(DB::raw('(SELECT
+            t.kode_barang,
+            min(t.sisa) as sisa
+               FROM
+            ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
+            INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
+            AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS history_barang'),
+           'history_barang.kode_barang', '=', 'barang.kode_barang')
+            ->select('barang.*','stok.tgl_exp','history_barang.sisa','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe')
             ->where('tipe.jenis_barang','obat')
             ->get();
         return json_encode($data);
@@ -48,7 +55,8 @@ class DokterController extends Controller
     public function list_pasien(){
         $data = Pasien::get();
         for ($i = 0; $i < count($data); $i++) {
-            $data[$i]->action = '<a href="javascript:void(0);" class="action-icon btn-edit" data-id="' . $data[$i]->id . '" data-bs-toggle="modal" data-bs-target="#custom-modal-edit"> <i class="mdi mdi-square-edit-outline"></i></a>';
+            $data[$i]->action = '<a href="javascript:void(0);" class="action-icon btn-edit" data-id="' . $data[$i]->id . '" data-bs-toggle="modal" data-bs-target="#custom-modal-edit"> <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="javascript:void(0);" class="action-icon btn-antrian" data-id="' . $data[$i]->nik . '"> <i class="mdi mdi-human-queue"></i></a>';
         }
     return json_encode($data);
     }
@@ -212,6 +220,7 @@ class DokterController extends Controller
     public function list_rekam_medis(Request $request){
         $data = RekamMedis::Join('pasien', 'rekam_medis.nik', '=', 'pasien.nik')
         ->Join('staf', 'rekam_medis.nip', '=', 'staf.nip')
+        ->where('pasien.nik',$request->id)
         ->select('rekam_medis.*','staf.nama_staf','pasien.nik','pasien.nama_pasien')
         ->get();
         for ($i = 0; $i < count($data); $i++) {
@@ -245,11 +254,39 @@ class DokterController extends Controller
         ->Join('tindakan', 'list_tindakan.id_tindakan', '=', 'tindakan.id_tindakan')
         ->where('resep.id_rekam_medis',$request->id)
         ->orderBy('harga.created_at','DESC')
-        ->select('rekam_medis.id_rekam_medis','barang.nama_barang','resep.*','harga.harga_eceran',DB::raw('SUM(tindakan.biaya) as total_dokter'))
+        ->select('rekam_medis.id_rekam_medis','barang.nama_barang','harga.margin','harga.harga_beli','resep.*','harga.harga_eceran','harga.harga_jual',DB::raw('SUM(tindakan.biaya) as total_dokter'))
         ->groupBy('rekam_medis.id_rekam_medis')
         ->get();
 
         return json_encode($data);
+    }
+
+    public function add_antrian(Request $request){
+        $antrian = new Antrian;
+        $antrian->nik=$request->id;
+        $antrian->save();
+        return true;
+    }
+
+    public function get_antrian(Request $request){
+        $date=\Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
+        $data = Antrian::join('pasien', 'pasien.nik', '=', 'antrian.nik')
+        ->where('antrian.created_at','like','%'.$date.'%')
+        ->select('antrian.*','pasien.nama_pasien')
+        ->get();
+        for ($i = 0; $i < count($data); $i++) {
+            $data[$i]->action = '<a href="javascript:void(0);" class="action-icon btn-terima" data-id="' . $data[$i]->id . '"> <i class="mdi mdi-check-bold"></i></a>';
+        }
+        return json_encode($data);
+    }
+
+    public function reset_antrian(Request $request){
+        $reset=Antrian::truncate();
+        return true;
+    }
+    public function remove_antrian(Request $request ){
+        $remove =  Antrian::where('id',$request->id)->delete();
+        return true;
     }
 
 

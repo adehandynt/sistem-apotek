@@ -156,6 +156,7 @@ class StockController extends Controller
 
     public function add_stock(Request $request)
     {
+      
         if ($request->input('exp') == null) {
             return false;
         }
@@ -172,9 +173,9 @@ class StockController extends Controller
         $pembelian->penerima = Auth::user()->nip;
         $pembelian->save();
  
-        $idx=0;
+        // $idx=0;
         foreach($data as $val){
-            
+            $idx= array_search($val->id_list_order,$request->id_list_order);
             $id_stok = IdGenerator::generate(['table' => 'stok','field'=>'stock_id', 'length' => 9, 'prefix' =>'STK-']);
             $sisa = HistoryBarang::select('sisa')->orderby('created_at','desc')->where('kode_barang','=',$val->kode_barang)->get()->first();
             $stok = new Stok;
@@ -202,13 +203,13 @@ class StockController extends Controller
             $history->kode_barang=$val->kode_barang;
             $history->tgl_masuk=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
             $history->jml_masuk=$request->jml_diterima[$idx];
-            $history->sisa+=$request->jml_diterima[$idx];
+            $history->sisa=($sisa==null?0:$sisa->sisa)+$request->jml_diterima[$idx];
             $history->jenis_history='barang_masuk';
             $history->id_referensi=$request->id_list_order[$idx];
             $history->pic=Auth::user()->nip;
             $history->save();
             
-            $idx++;
+            // $idx++;
         }
 
         $pembelian = Pembelian::where('id_order', '=', $request->input('order_id'))->firstOrFail();

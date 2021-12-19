@@ -378,6 +378,38 @@
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 errorAlertServer('Response Not Found, Please Check Your Data');
             });
+
+        });
+
+        $('#pasien-datatables tbody').on('click', '.btn-antrian', function() {
+            var id = $(this).data("id");
+            $.ajax({
+                url: '{{ url("add-antrian-pasien") }}',
+                type: 'post',
+                dataType: 'json',
+                data: ({
+                    _token: "{{ csrf_token() }}",
+                    id: id
+                }),
+                success: function(e) {
+                    if (e) {
+                        Swal.fire({
+                            title: "Sukses",
+                            text: "Antrian Berhasil Diinput!",
+                            icon: "success"
+                        });
+                    }else{
+                        Swal.fire({
+                            title: "Gagal",
+                            text: "Gagal Menambahkan Antrian!",
+                            icon: "error"
+                        });
+                    }
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                errorAlertServer('Response Not Found, Please Check Your Data');
+            });
+
         });
 
 

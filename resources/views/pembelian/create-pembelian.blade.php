@@ -114,11 +114,11 @@
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control diskon" name="diskon[]" step="0.01" value='0' min='0' max='100' required
+                                                    <input type="number" class="form-control diskon" name="diskon[]" step="any" value='0' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control ppn" name="ppn[]" step="0.01" value='10' min='0' max='100' required
+                                                    <input type="number" class="form-control ppn" name="ppn[]" step="any" value='10' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
@@ -181,6 +181,14 @@
 @endsection
 @section('script')
     <script>
+        $(document).ready(function() {
+                $(window).keydown(function(event){
+                    if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                    }
+                });
+        });
 
         $('#btn-barang').click(function(e) {
             $('#table-pesanan tbody').append(`<tr>
@@ -203,11 +211,11 @@
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control diskon" name="diskon[]" step="0.01" value='0' min='0' max='100' required
+                                                    <input type="number" class="form-control diskon" name="diskon[]" step="any" value='0' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control ppn" name="ppn[]" step="0.01" value='10' min='0' max='100' required
+                                                    <input type="number" class="form-control ppn" name="ppn[]" step="any" value='10' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>

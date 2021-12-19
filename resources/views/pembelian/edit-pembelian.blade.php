@@ -200,6 +200,14 @@
 </script>
 @endif
     <script>
+        $(document).ready(function() {
+                $(window).keydown(function(event){
+                    if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                    }
+                });
+        });
         $('#btn-barang').click(function(e) {
             $('#table-pesanan tbody').append(`<tr>
                 <input type="hidden" class="form-control id_list_order" name="id_list_order[]" value=""/>
