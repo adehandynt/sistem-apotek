@@ -42,8 +42,8 @@
                                                 <th>Nama Barang</th>
                                                 <th>Tanggal Masuk</th>
                                                 <th>Tanggal Expired</th>
-                                                {{-- <th>Akumulasi Jumlah</th>
-                                                <th>Sisa Barang</th> --}}
+                                                {{-- <th>Akumulasi Jumlah</th> --}}
+                                                <th>Sisa Barang</th>
                                                 <th style="width: 85px;">Action</th>
                                             </tr>
                                         </thead>
@@ -383,9 +383,9 @@
                 // {
                 //     data: "jml_akumulasi"
                 // },
-                // {
-                //     data: "sisa"
-                // },
+                {
+                    data: "sisa"
+                },
                 {
                     data: "action"
                 }
