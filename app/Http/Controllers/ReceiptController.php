@@ -136,7 +136,7 @@ class ReceiptController extends Controller
                 }
             }
 
-            if ($request->input('nama_racik') != null) {
+            if ($request->input('nama_racik')[0] != null) {
                 foreach ($request->input('nama_racik') as $idx => $val) {
                     $id_item = IdGenerator::generate(['table' => 'item_penjualan', 'field' => 'id_item', 'length' => 9, 'prefix' => 'ITM']);
                     $item = new ItemPenjualan;
@@ -179,12 +179,13 @@ class ReceiptController extends Controller
                     $history->sisa=$sisa - $request->input('jml_racik')[$idx];
                     $history->save();
 
-                    // $id_jasa_dokter = IdGenerator::generate(['table' => 'jasa_dokter','field'=>'id_jasa_dokter', 'length' => 15, 'prefix' =>'JSD-'. $year . '-']);
-                    // $jasa_dokter = new JasaDokter;
-                    // $jasa_dokter->id_jasa_dokter=;
-                    // $jasa_dokter->no_transaksi=;
-                    // $biaya=
-                    // $deskripsi="";
+                    $id_jasa_dokter = IdGenerator::generate(['table' => 'jasa_dokter','field'=>'id_jasa_dokter', 'length' => 15, 'prefix' =>'JSD-'. $year . '-']);
+                    $jasa_dokter = new JasaDokter;
+                    $jasa_dokter->id_jasa_dokter=$id_jasa_dokter;
+                    $jasa_dokter->no_transaksi=$id;
+                    $jasa_dokter->biaya=$request->input('bill_grand_dokter');
+                    $jasa_dokter->deskripsi="-";
+                    $jasa_dokter->save();
                 }
             }
         }

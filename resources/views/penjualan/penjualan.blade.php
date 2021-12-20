@@ -195,31 +195,31 @@
                                                     <tbody>
                                                         <tr>
                                                             <td><input type="text" class="form-control racik"
-                                                                    name="racik[]" />
+                                                                    name="racik[]" style="width: 150px;" />
                                                             </td>
                                                             <td>
                                                                 <input type="number" class="form-control harga_racik"
-                                                                    name="harga_racik[]" />
+                                                                    name="harga_racik[]" style="width: 150px;"/>
                                                             </td>
                                                             <td>
                                                                 <input type="number" min="1" value="0" class="margin_racik form-control"
-                                                                        placeholder="Qty" name="margin_racik[]">
+                                                                        placeholder="Qty" name="margin_racik[]" style="width: 150px;">
                                                                     </td>
                                                             <td>
                                                                 <input type="text" class="form-control dosis_racik"
-                                                                    name="dosis_racik[]" />
+                                                                    name="dosis_racik[]" style="width: 150px;" />
                                                             </td>
                                                             <td>
                                                                 <input type="number" class="form-control jml_racik"
-                                                                    value='0' name="jml_racik[]" />
+                                                                    value='0' name="jml_racik[]" style="width: 150px;"/>
                                                             </td>
                                                             <td>
                                                                 <input type="number" min="1" value="0" class="tuslah_racik form-control"
-                                                                    placeholder="Qty" name="tuslah_racik[]" style="width: 90px;">
+                                                                    placeholder="Qty" name="tuslah_racik[]" style="width: 150px;">
                                                             </td>
                                                             <td>
                                                                 <input type="number" class="form-control total_racik"  value="0"
-                                                                    name="total_racik[]" readonly />
+                                                                    name="total_racik[]" style="width: 150px;" readonly />
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -377,7 +377,9 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Dokter :</td>
-                                                    <td>Rp <span id="bill-dokter">0</span></td>
+                                                    <td><input type="hidden" class="form-control" value="0" id="bill-grand-dokter"
+                                                        name="bill_grand_dokter" placeholder="Grand Total" min="0">
+                                                        Rp <span id="bill-dokter">0</span></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Sub Total :</td>
@@ -1213,7 +1215,7 @@
 
         $('#table-racik tbody').on('change', '.jml_racik,.tuslah_racik', function() {
             let idx = $('.jml_racik').index(this);
-            let harga = (parseInt($('.harga_racik_beli').eq(idx).val())*(parseInt($(".margin_racik").val())/100)) + parseInt($('.harga_racik_beli').eq(idx).val())+parseInt($('.tuslah_racik').eq(idx).val());
+            let harga = (parseInt($('.harga_racik_beli').eq(idx).val())*(parseInt($(".margin_racik").eq(idx).val())/100)) + parseInt($('.harga_racik_beli').eq(idx).val())+parseInt($('.tuslah_racik').eq(idx).val());
             let jml = $('.jml_racik').eq(idx).val();
             let racik_fee = 250;
             // console.log(idx + "" + (parseInt(harga)) + "" + racik_fee + "" + jml);
@@ -1447,6 +1449,7 @@
                     );
                 });
                 $('#bill-dokter').text(doc.toLocaleString('id-ID'));
+                $('#bill-grand-dokter').val(doc);
             }
 
             if($('#total_dokter').val()!=null || $('#total_dokter').val()!=""){
@@ -1461,6 +1464,7 @@
             $('#bill-total2').text((Math.ceil(grandtotal/100)*100).toLocaleString('id-ID'));
             $('#bill-total').val(Math.ceil(grandtotal/100)*100);
             $('#bill-grand-total').val(Math.ceil(grandtotal/100)*100);
+            
             $('#bill-tuslah-total').val(tuslah);
         });
 
@@ -1558,25 +1562,25 @@
                                                                 <input type="text" class="form-control racik" name="racik[]" style="width: 150px;" value="`+e[i].nama_barang+`"/>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="number" class="form-control harga_racik" style="width: 110px;" name="harga_racik[]" value="`+(e[i].harga_eceran==0?e[i].harga_jual:e[i].harga_eceran)+`"/>
-                                                                    <input type="hidden" class="form-control harga_racik_beli" style="width: 110px;" name="harga_racik_beli[]" value="`+(e[i].harga_beli)+`"/>
+                                                                    <input type="number" class="form-control harga_racik" style="width: 150px;" name="harga_racik[]" value="`+(e[i].harga_eceran==0?e[i].harga_jual:e[i].harga_eceran)+`"/>
+                                                                    <input type="hidden" class="form-control harga_racik_beli" style="width: 150px;" name="harga_racik_beli[]" value="`+(e[i].harga_beli)+`"/>
                                                                 </td>
                                                                 <td>
                                                                 <input type="number" min="1" value="`+e[i].margin+`" class="margin_racik form-control"
-                                                                        placeholder="Qty" name="margin_racik[]" style="width: 110px;">
+                                                                        placeholder="Qty" name="margin_racik[]" style="width: 150px;">
                                                                     </td>
                                                                 <td>
-                                                                    <input type="text" class="form-control dosis_racik" style="width: 110px;" name="dosis_racik[]" value="`+e[i].dosis+`"/>
+                                                                    <input type="text" class="form-control dosis_racik" style="width: 150px;" name="dosis_racik[]" value="`+e[i].dosis+`"/>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="number" class="form-control jml_racik" style="width: 110px;" value='0' name="jml_racik[]"/>
+                                                                    <input type="number" class="form-control jml_racik" style="width: 150px;" value='0' name="jml_racik[]"/>
                                                                 </td>
                                                                 <td>
                                                                 <input type="number" min="1" value="0" class="tuslah_racik form-control"
-                                                                    placeholder="Qty" name="tuslah_racik[]" style="width: 90px;">
+                                                                    placeholder="Qty" name="tuslah_racik[]" style="width: 150px;">
                                                             </td>
                                                                 <td>
-                                                                   <input type="number" value="0" class="form-control total_racik" style="width: 110px;" name="total_racik[]" readonly/>
+                                                                   <input type="number" value="0" class="form-control total_racik" style="width: 150px;" name="total_racik[]" readonly/>
                                                                 </td>
                                                             </tr>`);
                         }

@@ -105,6 +105,7 @@ Route::post('/edit-barang', [ObatController::class, 'edit_obat'])->name('edit-ba
 Route::post('/update-barang', [ObatController::class, 'update_obat']);
 Route::post('/delete-barang', [ObatController::class, 'delete_obat']);
 Route::post('/detail-barang-item', [ObatController::class, 'detail_barang_item']);
+Route::get('/export-excel-barang',  [ObatController::class, 'export_excel_barang']);
 
 Route::get('/penjualan', [PenjualanController::class, 'v_penjualan']);
 Route::get('/data-penjualans', [PenjualanController::class, 'v_list_penjualan']);

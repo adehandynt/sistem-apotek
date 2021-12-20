@@ -255,7 +255,7 @@ class DokterController extends Controller
         ->where('resep.id_rekam_medis',$request->id)
         ->orderBy('harga.created_at','DESC')
         ->select('rekam_medis.id_rekam_medis','barang.nama_barang','harga.margin','harga.harga_beli','resep.*','harga.harga_eceran','harga.harga_jual',DB::raw('SUM(tindakan.biaya) as total_dokter'))
-        ->groupBy('rekam_medis.id_rekam_medis')
+        ->groupBy('rekam_medis.id_rekam_medis','resep.kode_barang')
         ->get();
 
         return json_encode($data);
