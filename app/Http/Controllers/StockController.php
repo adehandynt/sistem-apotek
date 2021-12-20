@@ -162,11 +162,11 @@ class StockController extends Controller
             ->select('stok.*','barang.*','list_order.*',DB::raw('COALESCE(barang_keluar.sisa, 0 ) AS sisa'),'barang_keluar.*')
             ->where('barang.kode_barang','=',$request->id)
             ->get();
-        //     $data =HistoryBarang::RightJoin('barang', 'history_barang.kode_barang', '=', 'barang.kode_barang')
-        // ->select('history_barang.*','barang.*')
-        // ->where('barang.kode_barang','=',$request->id)
-        // ->orderBy('history_barang.id','DESC')
-        // ->get();
+            $data =HistoryBarang::RightJoin('barang', 'history_barang.kode_barang', '=', 'barang.kode_barang')
+        ->select('history_barang.*','barang.*')
+        ->where('barang.kode_barang','=',$request->id)
+        ->orderBy('history_barang.id','DESC')
+        ->get();
         }
         
         return json_encode($data);
