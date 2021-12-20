@@ -99,7 +99,10 @@ class StockController extends Controller
         $data = Order::Join('list_order', 'orders.id_order', '=', 'list_order.id_order')
         ->leftJoin('barang', 'list_order.kode_barang', '=', 'barang.kode_barang')
         ->where('orders.id_order','=',$request->id)
-        ->whereNull('list_order.status_terima')
+        ->where(function ($query) {
+            $query->whereNull('list_order.status_terima')
+                ->orWhere('list_order.status_terima','=',"");
+        })
         ->select('barang.*','list_order.*')->get();
 
         $tanggal=\Carbon\Carbon::now()->add(730, 'day')->timezone('Asia/Jakarta')->format('Y-m-d');
