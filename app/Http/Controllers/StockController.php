@@ -79,12 +79,27 @@ class StockController extends Controller
     {
         $data = Order::Join('list_order', 'orders.id_order', '=', 'list_order.id_order')
         ->Join('barang', 'list_order.kode_barang', '=', 'barang.kode_barang')
-        ->Join('stok', 'stok.kode_barang', '=', 'barang.kode_barang')
-        ->leftJoin(DB::raw('(SELECT * FROM barang_keluar order by created_at desc limit 1) AS barang_keluar'),
-        'barang_keluar.stock_id', '=', 'stok.stock_id')
-        ->select('stok.*','barang.*','list_order.*',DB::raw('coalesce(barang_keluar.sisa,jml_akumulasi,jml_masuk) as sisa'))
+        ->join(DB::raw('(SELECT
+        t.*
+        FROM
+        ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM stok GROUP BY kode_barang ) r
+        INNER JOIN stok t ON t.kode_barang = r.kode_barang
+        AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS stok'),
+        'stok.kode_barang', '=', 'barang.kode_barang')
+        ->join(DB::raw('(SELECT
+        t.kode_barang,
+        min(t.sisa) as sisa
+        FROM
+        ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
+        INNER JOIN history_barang t ON t.kode_barang = r.kode_barang
+        AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS history_barang'),
+        'history_barang.kode_barang', '=', 'barang.kode_barang')
+        // ->leftJoin(DB::raw('(SELECT * FROM barang_keluar order by created_at desc limit 1) AS barang_keluar'),
+        // 'barang_keluar.stock_id', '=', 'stok.stock_id')
+        ->select('stok.*','barang.*','list_order.*',DB::raw('coalesce(history_barang.sisa,jml_akumulasi,jml_masuk) as
+        sisa'))
         ->groupBy('barang.kode_barang')
-        ->get(); 
+        ->get();
         
         //        return view('data-master/tipe', $res);
         for ($i = 0; $i < count($data); $i++) {
@@ -99,7 +114,10 @@ class StockController extends Controller
         $data = Order::Join('list_order', 'orders.id_order', '=', 'list_order.id_order')
         ->leftJoin('barang', 'list_order.kode_barang', '=', 'barang.kode_barang')
         ->where('orders.id_order','=',$request->id)
-        ->whereNull('list_order.status_terima')
+        ->where(function ($query) {
+            $query->whereNull('list_order.status_terima')
+                ->orWhere('list_order.status_terima','=',"");
+        })
         ->select('barang.*','list_order.*')->get();
 
         $tanggal=\Carbon\Carbon::now()->add(730, 'day')->timezone('Asia/Jakarta')->format('Y-m-d');

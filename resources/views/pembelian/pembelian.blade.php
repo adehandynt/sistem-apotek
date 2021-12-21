@@ -117,7 +117,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-12">
+                        <div class="col-sm-12 table-responsive mb-4">
                             <table class="table table-centered table-nowrap mb-0" id="detail-datatables">
                                 <thead class="table-light">
                                     <tr>

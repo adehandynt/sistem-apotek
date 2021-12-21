@@ -48,7 +48,7 @@
                                 <div class="mb-3">
                                     <label for="product-meta-keywords" class="form-label">Supplier</label>
                                     <select class="form-control" name="supplier" id="supplier" required>
-                                        <option>--Pilih Supplier--</option>
+                                        {{-- <option>--Pilih Supplier--</option> --}}
                                         @foreach ($supplier as $item)
                                         <option value="{{ $item->id_supplier}}">{{ $item->nama_supplier}}</option>
                                         @endforeach
@@ -95,13 +95,13 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td><input type="text" class="form-control nama_barang" name="nama_barang[]" required/>
+                                                <td><input type="text" class="form-control nama_barang" style="width:150px" name="nama_barang[]" required/>
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control jumlah" name="jumlah[]"  value='0' min='0' required/>
+                                                    <input type="number" class="form-control jumlah" name="jumlah[]" style="width:150px" value='0' min='0' required/>
                                                 </td>
                                                 <td>
-                                                    <select class="form-control satuan"
+                                                    <select class="form-control satuan" style="width:150px"
                                                         name="satuan[]" required>
                                                         <option>--satuan--</option>
                                                         @foreach ($satuan as $item)
@@ -110,19 +110,19 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control harga" name="harga[]" value='0' min='0' required
+                                                    <input type="number" class="form-control harga" name="harga[]" style="width:150px" value='0' min='0' required
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control diskon" name="diskon[]" step="any" value='0' min='0' max='100' required
+                                                    <input type="number" class="form-control diskon" name="diskon[]" style="width:150px" step="any" value='0' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control ppn" name="ppn[]" step="any" value='10' min='0' max='100' required
+                                                    <input type="number" class="form-control ppn" name="ppn[]" step="any" style="width:150px" value='10' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control total" name="total[]"  value='0' min='0' required readonly
+                                                    <input type="number" class="form-control total" name="total[]" style="width:150px"  value='0' min='0' required readonly
                                                          />
                                                 </td>
               
@@ -191,14 +191,23 @@
         });
 
         $('#btn-barang').click(function(e) {
+            var numItems = $('.nama_barang').length;
+            var idx = 0;
+            if(numItems > 1){
+                idx=numItems-1;
+            }
+        
+            if($('.nama_barang').eq(idx).val()==null||$('.satuan').eq(idx).val()==null||$('.jumlah').eq(idx).val()==0){
+                alert("Isikan Terlebih Dahulu Form yang kosong !");
+            }else{
             $('#table-pesanan tbody').append(`<tr>
-                                                <td><input type="text" class="form-control nama_barang" name="nama_barang[]" required />
+                                                <td><input type="text" class="form-control nama_barang" style="width:150px" name="nama_barang[]" required />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control jumlah" name="jumlah[]" value='0' min='0' required />
+                                                    <input type="number" class="form-control jumlah" name="jumlah[]" style="width:150px" value='0' min='0' required />
                                                 </td>
                                                 <td>
-                                                    <select class="form-control satuan"
+                                                    <select class="form-control satuan" style="width:150px"
                                                         name="satuan[]" required>
                                                         <option>--satuan--</option>
                                                         @foreach ($satuan as $item)
@@ -207,19 +216,19 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control harga" name="harga[]" value='0' min='0' required
+                                                    <input type="number" class="form-control harga" name="harga[]" style="width:150px" value='0' min='0' required
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control diskon" name="diskon[]" step="any" value='0' min='0' max='100' required
+                                                    <input type="number" class="form-control diskon" name="diskon[]" style="width:150px" step="any" value='0' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control ppn" name="ppn[]" step="any" value='10' min='0' max='100' required
+                                                    <input type="number" class="form-control ppn" name="ppn[]" step="any" style="width:150px" value='10' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control total" name="total[]" value='0' min='0' required readonly    
+                                                    <input type="number" class="form-control total" name="total[]" value='0' style="width:150px" min='0' required readonly    
                                                          />
                                                 </td>
                                                 <td>
@@ -227,6 +236,7 @@
                                                             class="mdi mdi-delete"></i></a>
                                                 </td>
                                             </tr>`);
+            }
         });
 
         $('#table-pesanan tbody').on('change', '.harga, .jumlah, .diskon', function() {

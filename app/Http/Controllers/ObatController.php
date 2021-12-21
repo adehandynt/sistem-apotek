@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportBarang;
 use Illuminate\Http\Request;
 use App\Models\Obat;
 use App\Models\Satuan;
@@ -15,6 +16,7 @@ use Validator;
 use Hash;
 use Session;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ObatController extends Controller
 {
@@ -213,5 +215,9 @@ class ObatController extends Controller
             Session::flash('errors', ['' => 'Hapus gagal! Silahkan ulangi kembali']);
             return false;
         }
+    }
+
+    function export_excel_barang(Request $request){
+        return Excel::download(new ExportBarang, 'List Data Master Barang.xlsx');
     }
 }

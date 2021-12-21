@@ -183,12 +183,13 @@ class ReceiptController extends Controller
                     $history->sisa=$sisa - $request->input('jml_racik')[$idx];
                     $history->save();
 
-                    // $id_jasa_dokter = IdGenerator::generate(['table' => 'jasa_dokter','field'=>'id_jasa_dokter', 'length' => 15, 'prefix' =>'JSD-'. $year . '-']);
-                    // $jasa_dokter = new JasaDokter;
-                    // $jasa_dokter->id_jasa_dokter=;
-                    // $jasa_dokter->no_transaksi=;
-                    // $biaya=
-                    // $deskripsi="";
+                    $id_jasa_dokter = IdGenerator::generate(['table' => 'jasa_dokter','field'=>'id_jasa_dokter', 'length' => 15, 'prefix' =>'JSD-'. $year . '-']);
+                    $jasa_dokter = new JasaDokter;
+                    $jasa_dokter->id_jasa_dokter=$id_jasa_dokter;
+                    $jasa_dokter->no_transaksi=$id;
+                    $jasa_dokter->biaya=$request->input('bill_grand_dokter');
+                    $jasa_dokter->deskripsi="-";
+                    $jasa_dokter->save();
                 }
             }
         }

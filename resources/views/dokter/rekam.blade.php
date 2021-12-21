@@ -589,14 +589,15 @@
                     $('#container_obat').append(`<select class="form-control kode_barang mb-2 mt-2" name="kode_barang[]" data-toggle="select2" data-width="100%">${x}
                                 </select>
                             <textarea class="form-control dosis mt-2 mb-2" placeholder="Dosis" name="dosis[]"></textarea>`);
+                            $('.kode_barang').select2({
+                dropdownParent: $('#custom-modal')
+            });
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
                  swal.fire("Response Gagal !");
             });
                             
-            $('.kode_barang').select2({
-                dropdownParent: $('#custom-modal')
-            });
+           
         });
 
         $('.btn-close-detail').click(function(e) {

@@ -122,8 +122,8 @@
                                 <div class="row justify-content-between mb-2">
                                     <div class="col-sm-12">
                                         <div class="text-sm-end">
-                                            <button type="button"
-                                                class="btn btn-secondary waves-effect waves-light mb-2">Export</button>
+                                            <a href="{{ url('/export-excel-barang')}}" target="_blank"
+                                                class="btn btn-secondary waves-effect waves-light mb-2">Export</a>
                                         </div>
                                     </div><!-- end col-->
                                 </div>

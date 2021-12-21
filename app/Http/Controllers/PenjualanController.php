@@ -32,6 +32,7 @@ class PenjualanController extends Controller
     {
         $res['jasa']=ListJasa::orderby('created_at', 'DESC')->get();
         $res['rekam']=RekamMedis::Join('resep', 'rekam_medis.id_rekam_medis', '=', 'resep.id_rekam_medis')
+        ->groupBy('rekam_medis.id_rekam_medis')
         ->where('resep.status_resep',0)
         ->select('rekam_medis.id_rekam_medis','resep.*')
         ->get();
