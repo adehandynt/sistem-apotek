@@ -74,11 +74,12 @@
                                         id="table-pesanan">
                                         <thead class="table-light">
                                             <tr>
-                                                <th>Nama Barang</th>
+                                                <th>Kode Barang</th>
                                                 <th>Jumlah</th>
                                                 <th>Satuan Beli</th>
                                                 <th>Harga (@satuan)</th>
                                                 <th>Diskon</th>
+                                                <th>Ppn</th>
                                                 <th>Total</th>
                                                 <th style="width: 50px;"></th>
                                             </tr>
@@ -88,10 +89,10 @@
                                             <tr>
                                                 <td>
                                                     <input type="hidden" class="form-control id_list_order" name="id_list_order[]" value="{{$item->id_list_order}}" required/>
-                                                    <input type="text" class="form-control nama_barang" name="nama_barang[]" value="{{$item->kode_barang}}" required/>
+                                                    <input type="text" class="form-control nama_barang" name="nama_barang[]"  style="width:150px" value="{{$item->kode_barang}}" required/>
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control jumlah" name="jumlah[]"  value='{{$item->jumlah}}' min='0' required/>
+                                                    <input type="number" class="form-control jumlah" name="jumlah[]"   style="width:150px" value='{{$item->jumlah}}' min='0' required/>
                                                 </td>
                                                 <td>
                                                     <select class="form-control satuan"
@@ -103,15 +104,19 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control harga" name="harga[]" value='{{$item->harga_beli}}' min='0' required
+                                                    <input type="number" class="form-control harga" name="harga[]"  style="width:150px" value='{{$item->harga_beli}}' min='0' required
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control diskon" name="diskon[]" value='{{$item->diskon}}' min='0' max='100' required
+                                                    <input type="number" class="form-control diskon" name="diskon[]"  style="width:150px" value='{{$item->diskon}}' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control total" name="total[]"  value='{{$item->total}}' min='0' required readonly
+                                                    <input type="number" class="form-control ppn" name="ppn[]" step="any" style="width:150px" value='10' min='0' max='100' required
+                                                         />
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control total" name="total[]" style="width:150px"  value='{{$item->total}}' min='0' required readonly
                                                          />
                                                 </td>
               
@@ -211,13 +216,20 @@
         $('#btn-barang').click(function(e) {
             $('#table-pesanan tbody').append(`<tr>
                 <input type="hidden" class="form-control id_list_order" name="id_list_order[]" value=""/>
-                                                <td><input type="text" class="form-control nama_barang" name="nama_barang[]" required />
+                                                
+                                                <td>
+                                                    <select class="form-control nama_barang mb-2" name="nama_barang[]" data-toggle="select2" data-width="100%"  style="width:150px" required>
+                                                    <option value="">-Pilih-</option>
+                                                    @foreach ($obat as $item)
+                                                <option value={{$item->kode_barang}}>{{$item->kode_barang.' - '.$item->nama_barang}}</option>
+                                                @endforeach
+                                                </select>
+                                                    </td>
+                                                <td>
+                                                    <input type="number" class="form-control jumlah" style="width:150px" name="jumlah[]" value='0' min='0' required />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control jumlah" name="jumlah[]" value='0' min='0' required />
-                                                </td>
-                                                <td>
-                                                    <select class="form-control satuan"
+                                                    <select class="form-control satuan" style="width:150px"
                                                         name="satuan[]" required>
                                                         <option>--satuan--</option>
                                                         @foreach ($satuan as $item)
@@ -226,15 +238,19 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control harga" name="harga[]" value='0' min='0' required
+                                                    <input type="number" class="form-control harga" name="harga[]" style="width:150px" value='0' min='0' required
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control diskon" name="diskon[]" value='0' min='0' max='100' required
+                                                    <input type="number" class="form-control diskon" name="diskon[]" style="width:150px" value='0' min='0' max='100' required
                                                          />
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control total" name="total[]" value='0' min='0' required readonly    
+                                                    <input type="number" class="form-control ppn" name="ppn[]" step="any" style="width:150px" value='10' min='0' max='100' required
+                                                         />
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control total" name="total[]" style="width:150px" value='0' min='0' required readonly    
                                                          />
                                                 </td>
                                                 <td>
@@ -242,16 +258,17 @@
                                                             class="mdi mdi-delete"></i></a>
                                                 </td>
                                             </tr>`);
+                                            $('.nama_barang').select2();
         });
-
+        $('.nama_barang').select2();
         $('#table-pesanan tbody').on('change', '.harga', function() {
             let idx = $('.harga').index(this);
             if(parseInt($('.diskon').eq(idx).val())==0){
-                $('.total').eq(idx).val(parseInt($('.harga').eq(idx).val()) * parseInt($('.jumlah').eq(idx)
-                .val()));
+                let total = (parseInt($('.harga').eq(idx).val()) * parseInt($('.jumlah').eq(idx).val()));
+                $('.total').eq(idx).val(total + (total*(parseFloat($('.ppn').eq(idx).val())/100)));
             }else{
-                $('.total').eq(idx).val((parseInt($('.harga').eq(idx).val())-(parseInt($('.harga').eq(idx).val())*(parseInt($('.diskon').eq(idx).val())/100))) * parseInt($('.jumlah').eq(idx)
-                .val()));
+                let total = (parseInt($('.harga').eq(idx).val())-(parseInt($('.harga').eq(idx).val())*(parseFloat($('.diskon').eq(idx).val())/100))) * parseInt($('.jumlah').eq(idx).val())
+                $('.total').eq(idx).val(total + (total*(parseFloat($('.ppn').eq(idx).val())/100)));
             }
             
         });
@@ -259,11 +276,11 @@
         $('#table-pesanan tbody').on('change', '.jumlah', function() {
             let idx = $('.jumlah').index(this);
             if(parseInt($('.diskon').eq(idx).val())==0){
-                $('.total').eq(idx).val(parseInt($('.harga').eq(idx).val()) * parseInt($('.jumlah').eq(idx)
-                .val()));
+                let total = (parseInt($('.harga').eq(idx).val()) * parseInt($('.jumlah').eq(idx).val()));
+                $('.total').eq(idx).val(total + (total*(parseFloat($('.ppn').eq(idx).val())/100)));
             }else{
-                $('.total').eq(idx).val((parseInt($('.harga').eq(idx).val())-(parseInt($('.harga').eq(idx).val())*(parseInt($('.diskon').eq(idx).val())/100))) * parseInt($('.jumlah').eq(idx)
-                .val()));
+                let total = (parseInt($('.harga').eq(idx).val())-(parseInt($('.harga').eq(idx).val())*(parseFloat($('.diskon').eq(idx).val())/100))) * parseInt($('.jumlah').eq(idx).val())
+                $('.total').eq(idx).val(total + (total*(parseFloat($('.ppn').eq(idx).val())/100)));
             }
             
         });
@@ -272,11 +289,23 @@
         $('#table-pesanan tbody').on('change', '.diskon', function() {
             let idx = $('.diskon').index(this);
             if(parseInt($('.diskon').eq(idx).val())==0){
-                $('.total').eq(idx).val(parseInt($('.harga').eq(idx).val()) * parseInt($('.jumlah').eq(idx)
-                .val()));
+                let total = (parseInt($('.harga').eq(idx).val()) * parseInt($('.jumlah').eq(idx).val()));
+                $('.total').eq(idx).val(total + (total*(parseFloat($('.ppn').eq(idx).val())/100)));
             }else{
-                $('.total').eq(idx).val((parseInt($('.harga').eq(idx).val())-(parseInt($('.harga').eq(idx).val())*(parseInt($('.diskon').eq(idx).val())/100))) * parseInt($('.jumlah').eq(idx)
-                .val()));
+                let total = (parseInt($('.harga').eq(idx).val())-(parseInt($('.harga').eq(idx).val())*(parseFloat($('.diskon').eq(idx).val())/100))) * parseInt($('.jumlah').eq(idx).val())
+                $('.total').eq(idx).val(total + (total*(parseFloat($('.ppn').eq(idx).val())/100)));
+            }
+            
+        });
+
+        $('#table-pesanan tbody').on('change', '.ppn', function() {
+            let idx = $('.ppn').index(this);
+            if(parseInt($('.diskon').eq(idx).val())==0){
+                let total = (parseInt($('.harga').eq(idx).val()) * parseInt($('.jumlah').eq(idx).val()));
+                $('.total').eq(idx).val(total + (total*(parseFloat($('.ppn').eq(idx).val())/100)));
+            }else{
+                let total = (parseInt($('.harga').eq(idx).val())-(parseInt($('.harga').eq(idx).val())*(parseFloat($('.diskon').eq(idx).val())/100))) * parseInt($('.jumlah').eq(idx).val())
+                $('.total').eq(idx).val(total + (total*(parseFloat($('.ppn').eq(idx).val())/100)));
             }
             
         });

@@ -286,6 +286,7 @@ class PembelianController extends Controller
             ->get();
         $res['satuan'] = Satuan::orderby('created_at', 'DESC')
             ->get();
+            $res['obat']= Obat::where('kode_barang','!=',null)->get();
         return view('pembelian/edit-pembelian', $res);
     }
 
@@ -311,6 +312,7 @@ class PembelianController extends Controller
             $item->kode_satuan = $request->satuan[$idx];
             $item->harga_beli = $request->harga[$idx];
             $item->diskon = $request->diskon[$idx];
+            //dd($request);
             $item->total = (($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx])+ (($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx]) *($request->ppn[$idx] / 100);
             $item->jumlah = $request->jumlah[$idx];
             $item->ppn = $request->ppn[$idx];

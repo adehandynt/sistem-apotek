@@ -43,6 +43,13 @@ numInputs.forEach(function(input) {
       e.target.value = 0
     }
   })
-})
+});
+var timer;
+//..
+var startTimer = function() {
+  clearTimeout(timer);
+  timer = setTimeout(window.location.href = "{{ route('logout')}}", 6000);
+}
+
    </script>
    @yield('script');
