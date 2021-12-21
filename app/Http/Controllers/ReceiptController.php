@@ -156,8 +156,9 @@ class ReceiptController extends Controller
                         ->orderBy('history_barang.sisa', 'asc')
                         ->take(1)
                         ->get();
-    
-                    $sisa = 100;
+                        
+                    $sisa = $data[0]->sisa==0||$data[0]->sisa==null? $data[0]->jml_akumulasi:$data[0]->sisa;
+                    // $sisa = 100;
                     $id_keluar = IdGenerator::generate(['table' => 'barang_keluar', 'field' => 'id_keluar', 'length' => 9, 'prefix' => 'KLR-']);
                   
                     $keluar = new BarangKeluar;
