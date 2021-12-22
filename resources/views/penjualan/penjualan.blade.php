@@ -777,8 +777,8 @@
             if ($(this).val() == "1") {
                 total = ($('.harga_eceran').eq(idx).val() * $('.jml_produk').eq(idx).val());
             } else {
-                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
-                 total = (harga_jual * $('.jml_produk').eq(idx).val());
+                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val());
+                 total = (harga_jual * $('.jml_produk').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
                 //total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
             }
              console.log(total);
@@ -806,8 +806,8 @@
             let idx = $('.jml_produk').index(this);
             if ($('.satuan_produk').eq(idx).val() != '1') {
                 // let total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
-                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
-                let total = (harga_jual * $('.jml_produk').eq(idx).val());
+                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val());
+                let total = (harga_jual * $('.jml_produk').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
                 console.log(idx);
                 let sub_total = $('#sub_total').val();
                 let diskon = parseFloat($('.diskon').eq(idx).val()) / 100;
@@ -830,7 +830,7 @@
                 // $('#grand_total').val(sum);
                 // $('#disp_grand_total').text(sum.toLocaleString('id-ID'));
             } else {
-                let total = ($('.harga_eceran').eq(idx).val() * $('.jml_produk').eq(idx).val());
+                let total = ($('.harga_eceran').eq(idx).val() * $('.jml_produk').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
                 let sub_total = $('#sub_total').val();
                 let diskon = parseFloat($('.diskon').eq(idx).val()) / 100;
                 let diskon_total = $('#diskon').val();
@@ -858,8 +858,8 @@
             let idx = $('.margin_produk').index(this);
             
             if ($('.satuan_produk').eq(idx).val() != '1') {
-                let harga_jual = ($('.harga_beli').eq(idx).val() * ($(this).val()/100))+parseInt($('.harga_beli').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
-                let total = (harga_jual * $('.jml_produk').eq(idx).val());
+                let harga_jual = ($('.harga_beli').eq(idx).val() * ($(this).val()/100))+parseInt($('.harga_beli').eq(idx).val());
+                let total = (harga_jual * $('.jml_produk').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
            
                 let sub_total = $('#sub_total').val();
                 let diskon = parseFloat($('.diskon').eq(idx).val()) / 100;
@@ -882,7 +882,7 @@
                 // $('#grand_total').val(sum);
                 // $('#disp_grand_total').text(sum.toLocaleString('id-ID'));
             } else {
-                let total = ($('.harga_eceran').eq(idx).val() * $('.jml_produk').eq(idx).val());
+                let total = ($('.harga_eceran').eq(idx).val() * $('.jml_produk').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
                 let sub_total = $('#sub_total').val();
                 let diskon = parseFloat($('.diskon').eq(idx).val()) / 100;
                 let diskon_total = $('#diskon').val();
@@ -910,8 +910,8 @@
             let idx = $('.tuslah_produk').index(this);
             if ($('.satuan_produk').eq(idx).val() != '1') {
                 // let total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
-                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
-                let total = (harga_jual * $('.jml_produk').eq(idx).val());
+                let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val());
+                let total = (harga_jual * $('.jml_produk').eq(idx).val())+parseInt($('.tuslah_produk').eq(idx).val());
                 console.log(idx);
                 let sub_total = $('#sub_total').val();
                 let diskon = parseFloat($('.diskon').eq(idx).val()) / 100;
@@ -1215,11 +1215,11 @@
 
         $('#table-racik tbody').on('change', '.jml_racik,.tuslah_racik', function() {
             let idx = $('.jml_racik').index(this);
-            let harga = (parseInt($('.harga_racik_beli').eq(idx).val())*(parseInt($(".margin_racik").eq(idx).val())/100)) + parseInt($('.harga_racik_beli').eq(idx).val())+parseInt($('.tuslah_racik').eq(idx).val());
+            let harga = (parseInt($('.harga_racik_beli').eq(idx).val())*(parseInt($(".margin_racik").eq(idx).val())/100)) + parseInt($('.harga_racik_beli').eq(idx).val());
             let jml = $('.jml_racik').eq(idx).val();
             let racik_fee = 250;
             // console.log(idx + "" + (parseInt(harga)) + "" + racik_fee + "" + jml);
-            $('.total_racik').eq(idx).val((parseFloat(harga)) * parseFloat(jml));
+            $('.total_racik').eq(idx).val((parseFloat(harga)) * parseFloat(jml)+parseInt($('.tuslah_racik').eq(idx).val()));
             var sum = 0;
             var sum_biaya=0;
             $('.harga_total').each(function() {
@@ -1246,11 +1246,11 @@
 
         $('#table-racik tbody').on('change', '.margin_racik', function() {
             let idx = $('.margin_racik').index(this);
-            let harga = (parseInt($('.harga_racik_beli').eq(idx).val())*(parseInt($(this).val())/100)) + parseInt($('.harga_racik_beli').eq(idx).val())+parseInt($('.tuslah_racik').eq(idx).val());
+            let harga = (parseInt($('.harga_racik_beli').eq(idx).val())*(parseInt($(this).val())/100)) + parseInt($('.harga_racik_beli').eq(idx).val());
             let jml = $('.jml_racik').eq(idx).val();
             let racik_fee = 250;
             // console.log(idx + "" + (parseInt(harga)) + "" + racik_fee + "" + jml);
-            $('.total_racik').eq(idx).val((parseFloat(harga)) * parseFloat(jml));
+            $('.total_racik').eq(idx).val((parseFloat(harga)) * parseFloat(jml)+parseInt($('.tuslah_racik').eq(idx).val()));
             var sum = 0;
             var sum_biaya=0;
             $('.harga_total').each(function() {

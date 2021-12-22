@@ -159,6 +159,7 @@
                                             <th>Jumlah Keluar</th>
                                             <th>Tanggal Keluar</th>
                                             <th>Sisa</th>
+                                            {{-- <th>No Referensi</th> --}}
                                             <th>PIC</th>
                                         </tr>
                                     </thead>
@@ -701,6 +702,9 @@
                 {
                     data: "sisa"
                 },
+                // {
+                //     data: "id_order"
+                // },
                 {
                     data: "pic"
                 }

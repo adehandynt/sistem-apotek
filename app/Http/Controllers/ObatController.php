@@ -14,6 +14,7 @@ use App\Models\Margin;
 use App\Models\ListItem;
 use Validator;
 use Hash;
+use DB;
 use Session;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -30,7 +31,16 @@ class ObatController extends Controller
     }
     public function v_list_obat()
     {
-        $data = Obat::leftJoin('stok', 'barang.kode_barang', '=', 'stok.kode_barang')
+        $data = Obat::leftJoin(DB::raw('(SELECT
+        t.* 
+        FROM
+        ( SELECT *, MAX( created_at ) AS MaxTime FROM stok GROUP BY kode_barang ) r
+        INNER JOIN stok t ON t.kode_barang = r.kode_barang 
+        AND t.created_at = r.MaxTime 
+        GROUP BY
+        t.kode_barang) AS stok'),
+           'stok.kode_barang', '=', 'barang.kode_barang')
+        // leftJoin('stok', 'barang.kode_barang', '=', 'stok.kode_barang')
             ->leftJoin('set_harga', 'barang.kode_barang', '=', 'set_harga.kode_barang')
             ->leftJoin('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
             ->Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')

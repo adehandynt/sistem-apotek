@@ -149,6 +149,8 @@ class StockController extends Controller
         ->where('barang_keluar.created_at', 'like', $request->date.'%')
         ->get();
         $data =HistoryBarang::RightJoin('barang', 'history_barang.kode_barang', '=', 'barang.kode_barang')
+        // ->Join('orders', 'list_order.id_order', '=', 'orders.id_order')
+        // ->RightJoin('list_order', 'orders.id_order', '=', 'list_order.id_order')
         ->select('history_barang.*','barang.*')
         ->where('barang.kode_barang','=',$request->id)
         ->where('history_barang.created_at', 'like', $request->date.'%')
@@ -163,6 +165,8 @@ class StockController extends Controller
             ->where('barang.kode_barang','=',$request->id)
             ->get();
             $data =HistoryBarang::RightJoin('barang', 'history_barang.kode_barang', '=', 'barang.kode_barang')
+        //     ->Join('orders', 'list_order.id_order', '=', 'orders.id_order')
+        // ->RightJoin('list_order', 'orders.id_order', '=', 'list_order.id_order')
         ->select('history_barang.*','barang.*')
         ->where('barang.kode_barang','=',$request->id)
         ->orderBy('history_barang.id','DESC')

@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 use App\Models\Obat;
+use DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
@@ -21,7 +22,15 @@ class ExportBarang implements FromCollection, WithHeadings, WithEvents, WithColu
     
     public function query()
     {
-        return Obat::leftJoin('stok', 'barang.kode_barang', '=', 'stok.kode_barang')
+        return Obat::leftJoin(DB::raw('(SELECT
+        t.* 
+        FROM
+        ( SELECT *, MAX( created_at ) AS MaxTime FROM stok GROUP BY kode_barang ) r
+        INNER JOIN stok t ON t.kode_barang = r.kode_barang 
+        AND t.created_at = r.MaxTime 
+        GROUP BY
+        t.kode_barang) AS stok'),
+           'stok.kode_barang', '=', 'barang.kode_barang')
         ->leftJoin('set_harga', 'barang.kode_barang', '=', 'set_harga.kode_barang')
         ->leftJoin('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
         ->Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
@@ -32,12 +41,20 @@ class ExportBarang implements FromCollection, WithHeadings, WithEvents, WithColu
 
     public function collection()
     {
-        return Obat::leftJoin('stok', 'barang.kode_barang', '=', 'stok.kode_barang')
+        return Obat::leftJoin(DB::raw('(SELECT
+        t.* 
+        FROM
+        ( SELECT *, MAX( created_at ) AS MaxTime FROM history_barang GROUP BY kode_barang ) r
+        INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
+        AND t.created_at = r.MaxTime 
+        GROUP BY
+        t.kode_barang) AS history_barang'),
+           'history_barang.kode_barang', '=', 'barang.kode_barang')
         ->leftJoin('set_harga', 'barang.kode_barang', '=', 'set_harga.kode_barang')
         ->leftJoin('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
         ->Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
         ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
-        ->select('barang.*','harga.harga_beli','harga.margin','harga.harga_jual','harga.harga_eceran','satuan.satuan','tipe.nama_tipe')
+        ->select('barang.*','harga.harga_beli','harga.margin','harga.harga_jual','harga.harga_eceran','satuan.satuan','tipe.nama_tipe',DB::raw('COALESCE(history_barang.sisa,"-") AS sisa'))
         ->get();
     }
 
@@ -61,7 +78,8 @@ class ExportBarang implements FromCollection, WithHeadings, WithEvents, WithColu
             'Harga Jual',
             'Harga Ecer',
             'Satuan',
-            'Tipe Obat'
+            'Tipe Obat',
+            'Stok Sisa'
 
         ];
 
@@ -78,7 +96,7 @@ class ExportBarang implements FromCollection, WithHeadings, WithEvents, WithColu
 
             AfterSheet::class => function (AfterSheet $event) {
 
-                $event->sheet->getDelegate()->getStyle('A1:R1')
+                $event->sheet->getDelegate()->getStyle('A1:S1')
                     ->getFill()
                     ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                     ->getStartColor()
