@@ -1198,13 +1198,13 @@
         $('#table-produk tbody').on('click', '.btn-delete', function() {
             let idx = $('.btn-delete').index(this);
             $(this).closest("tr").remove();
-
+            generate_tagihan();
         });
 
         $('#table-produk-other tbody').on('click', '.btn-delete', function() {
             let idx = $('.btn-delete').index(this);
             $(this).closest("tr").remove();
-
+            generate_tagihan();
         });
 
         $('#table-layanan tbody').on('click', '.btn-delete-layanan', function() {
