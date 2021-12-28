@@ -58,15 +58,32 @@ class DashboardController extends Controller
         
         $date = \Carbon\Carbon::now()->add(120, 'day')->timezone('Asia/Jakarta')->format('Y-m-d');
         $datenow = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
+        // $kadaluwarsa = DB::select("SELECT
+        // count(t.kode_barang) as kadaluwarsa,
+        // t.tgl_exp
+        // FROM
+        // ( SELECT kode_barang, MAX( created_at ) AS MaxTime,created_at FROM stok GROUP BY kode_barang ) r
+        // INNER JOIN stok t ON t.kode_barang = r.kode_barang 
+        // AND t.created_at = r.MaxTime 
+        // where t.tgl_exp < '".$date."' and t.tgl_exp > '".$datenow."'" );
         $kadaluwarsa = DB::select("SELECT
         count(t.kode_barang) as kadaluwarsa,
         t.tgl_exp
         FROM
-        ( SELECT kode_barang, MAX( created_at ) AS MaxTime,created_at FROM stok GROUP BY kode_barang ) r
-        INNER JOIN stok t ON t.kode_barang = r.kode_barang 
-        AND t.created_at = r.MaxTime 
+        stok t
         where t.tgl_exp < '".$date."' and t.tgl_exp > '".$datenow."'" );
          $ret['kadaluwarsa']=$kadaluwarsa;
+
+         $expiredlist =  DB::select("SELECT
+         a.*,b.nama_barang
+            FROM
+            stok a
+            join barang b 
+            on a.kode_barang = b.kode_barang
+            where a.tgl_exp < '".$date."' and a.tgl_exp > '".$datenow."'
+            ORDER BY a.tgl_exp asc" );
+
+            $ret['expiredlist']=$expiredlist;
 
          $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
          $produk = Penjualan::select('transaksi.*',DB::raw('coalesce(bank,bpjs,"cash") as pembayaran'))
@@ -93,6 +110,7 @@ class DashboardController extends Controller
          ->get();
 
          $ret['terlaris']=$terlaris;
+
 
          $date= \Carbon\Carbon::now();
          $year=$date->format('Y');

@@ -75,6 +75,7 @@
                                         <thead class="table-light">
                                             <tr>
                                                 <th>Kode Barang</th>
+                                                <th>Detail</th>
                                                 <th>Jumlah</th>
                                                 <th>Satuan Beli</th>
                                                 <th>Harga (@satuan)</th>
@@ -89,7 +90,12 @@
                                             <tr>
                                                 <td>
                                                     <input type="hidden" class="form-control id_list_order" name="id_list_order[]" value="{{$item->id_list_order}}" required/>
-                                                    <input type="text" class="form-control nama_barang" name="nama_barang[]"  style="width:150px" value="{{$item->kode_barang}}" required/>
+                                                    <select type="text" class="form-control nama_barang" name="nama_barang[]"  style="width:150px" value="{{$item->kode_barang}}" required>
+                                                    <option>{{$item->kode_barang}}</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control nama" name="nama[]"  readonly  style="width:150px" value='{{$item->nama_barang}}' min='0' required/>
                                                 </td>
                                                 <td>
                                                     <input type="number" class="form-control jumlah" name="jumlah[]"   style="width:150px" value='{{$item->jumlah}}' min='0' required/>
@@ -119,7 +125,12 @@
                                                     <input type="number" class="form-control total" name="total[]" style="width:150px"  value='{{$item->total}}' min='0' required readonly
                                                          />
                                                 </td>
-              
+                                                <td>
+                                                    <a href="javascript:void(0);" class="btn-delete-item action-icon" data-id="{{ $item->id_list_order}}"> <i
+                                                            class="mdi mdi-delete"></i></a>
+                                                            <a style="display: none" href="javascript:void(0);" class="btn-delete-item action-icon"> <i
+                                                                class="mdi mdi-delete"></i></a>
+                                                </td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -134,7 +145,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-12 ">
-                                        <button class="btn btn-success" style="float: right; margin-left:10px">Simpan</button>
+                                        <button class="btn btn-success" style="float: right; margin-left:10px" id="btn-simpan">Simpan</button>
                                 <a class="btn btn-warning" href="{{url('/pembelian')}}" style="float: right;">Kembali</a>
                                     </div>
                                 </div>
@@ -225,6 +236,9 @@
                                                 @endforeach
                                                 </select>
                                                     </td>
+                                                    <td>
+                                                    <input type="text" class="form-control nama" name="nama[]"  readonly  style="width:150px" min='0' required/>
+                                                </td>
                                                 <td>
                                                     <input type="number" class="form-control jumlah" style="width:150px" name="jumlah[]" value='0' min='0' required />
                                                 </td>
@@ -260,7 +274,7 @@
                                             </tr>`);
                                             $('.nama_barang').select2();
         });
-        $('.nama_barang').select2();
+        //$('.nama_barang').select2();
         $('#table-pesanan tbody').on('change', '.harga', function() {
             let idx = $('.harga').index(this);
             if(parseInt($('.diskon').eq(idx).val())==0){
@@ -314,6 +328,68 @@
             let idx = $('.btn-delete').index(this);
             $(this).closest("tr").remove();
 
+        });
+
+        $('#table-pesanan tbody').on('click', '.btn-delete-item', function() {
+            let idx = $('.btn-delete-item').index(this);
+            let elements =  $(this).closest("tr");
+            var id = $(this).data("id");
+            swal.fire({
+                    title: "Hapus Item Pembelian?",
+                    text: "Data Tidak Dapat Dikembalikan Setelah Dihapus",
+                    icon: "warning",
+                    showCancelButton: !0,
+                    confirmButtonColor: "#28bb4b",
+                    cancelButtonColor: "#f34e4e",
+                    confirmButtonText: "Ya",
+                    cancelButtonText: "Batal"
+                })
+                .then(function(e) {
+                    e.value ?
+                    $.ajax({
+                            type: "POST",
+                            url: '/delete-item-pembelian',
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                id: id
+                            }
+                        }).done(function(msg) {
+                   elements.remove();
+                   $('#btn-simpan').click();
+                        })
+                        :
+                    swal.fire("Data anda aman !");
+
+                });
+ 
+
+        });
+
+        $('#table-pesanan tbody').on('change', '.nama_barang', function() {
+            let idx = $('.nama_barang').index(this);
+            if($(this).val()!=null||$(this).val()!=""){
+                $.ajax({
+                    url: '{{ url("detail-barang-item") }}',
+                    type: 'post',
+                    dataType: 'json',
+                    data: ({
+                        _token: "{{ csrf_token() }}",
+                        id: $(this).val()
+                    }),
+                    success: function(e) {
+                        $('.harga').eq(idx).val(e.harga_beli);
+                        $('.satuan').eq(idx).val(e.kode_satuan);
+                        $('.nama').eq(idx).val(e.nama_barang);
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    Swal.fire({
+                                title: "Gagal",
+                                text: "Cek Kembali Data Anda !",
+                                icon: "error"
+                            });
+                });
+            }
+            
         });
 
     </script>

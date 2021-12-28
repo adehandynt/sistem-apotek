@@ -28,9 +28,11 @@
                             <div class="card-body">
                                 <div class="row mb-2">
                                     <div class="col-sm-12">
-                                        <button type="button" class="btn btn-danger waves-effect waves-light"
+                                        {{-- <button type="button" class="btn btn-danger waves-effect waves-light"
                                             data-bs-toggle="modal" data-bs-target="#custom-modal"><i
-                                                class="mdi mdi-plus-circle me-1"></i> Stock Opname</button>
+                                                class="mdi mdi-plus-circle me-1"></i> Stock Opname</button> --}}
+                                                <button type="button" class="btn btn-danger waves-effect waves-light" id="stock-opname"><i
+                                                    class="mdi mdi-plus-circle me-1"></i> Stock Opname</button>
                                     </div>
                                 </div>
 
@@ -69,6 +71,7 @@
                     <div class="modal-body p-4">
                         <form id="form-opname">
                             {{ csrf_field() }}
+                            <div class="table-responsive mt-4">
                             <table class="table table-centered table-nowrap table-striped" id="order-datatables">
                                 <thead>
                                     <tr>
@@ -89,21 +92,23 @@
                                         <tr>
                                             <td><input type="hidden" class="kode_barang form-control" name="kode_barang[]" value="{{$item->kode_barang}}" readonly/>{{$item->kode_barang}}</td>
                                             <td>{{$item->nama_barang}}</td>
-                                            <td><input type="number" class="saldo_awal numeric_form form-control" name="saldo_awal[]" value="{{$item->sisa}}" readonly/></td>
-                                            <td><input type="number" class="jml_tercatat numeric_form form-control" name="jml_tercatat[]" value="{{$item->sisa}}" readonly/></td>
-                                            <td><input type="number" class="jml_tersedia numeric_form form-control" name="jml_tersedia[]" value="0" required/></td>
-                                            <td><input type="number" class="masuk numeric_form form-control" name="masuk[]" value="0" required/></td>
-                                            <td><input type="number" class="keluar numeric_form form-control" name="keluar[]" value="0" required/></td>
-                                            <td><input type="number" class="hilang numeric_form form-control" name="hilang[]" value="0" required/></td>
-                                            <td><input type="number" class="rusak numeric_form form-control" name="rusak[]" value="0" required/></td>
-                                            <td><input type="number" class="selisih form-control" name="selisih[]" value="0" readonly /></td>
+                                            <td><input type="number" class="saldo_awal numeric_form form-control" name="saldo_awal[]" style="width:150px" value="{{$item->sisa}}" readonly/></td>
+                                            <td><input type="number" class="jml_tercatat numeric_form form-control" name="jml_tercatat[]" style="width:150px" value="{{$item->sisa}}" readonly/></td>
+                                            <td><input type="number" class="jml_tersedia numeric_form form-control" name="jml_tersedia[]" style="width:150px" value="0" required/></td>
+                                            <td><input type="number" class="masuk numeric_form form-control" name="masuk[]" style="width:150px" value="0" required/></td>
+                                            <td><input type="number" class="keluar numeric_form form-control" name="keluar[]" style="width:150px" value="0" required/></td>
+                                            <td><input type="number" class="hilang numeric_form form-control" name="hilang[]" style="width:150px" value="0" required/></td>
+                                            <td><input type="number" class="rusak numeric_form form-control" name="rusak[]" style="width:150px" value="0" required/></td>
+                                            <td><input type="number" class="selisih form-control" name="selisih[]" value="0" style="width:150px" readonly /></td>
                                         </tr>
                                     @endforeach
 
                                 </tbody>
                             </table>
+                        </div>
+                    
                             <div class="text-end">
-                                <button type="submit" class="btn btn-success waves-effect waves-light">Buat Laporan Opname</button>
+                                <button type="submit" class="btn btn-success waves-effect waves-light" id="simpan_laporan_stok" >Buat Laporan Opname</button>
                                 <button type="button" class="btn btn-danger waves-effect waves-light"
                                     data-bs-dismiss="modal">Batal</button>
                             </div>
@@ -180,7 +185,83 @@
                 $('#order_id').prop('selectedIndex',0);
                 $('#form-opname')[0].reset();
         });
-        $('#order-datatables').DataTable();
+        $('#order-datatables').DataTable({
+            // lengthChange: true,
+             lengthMenu:[[10],["10"]],"searching": false
+            });
+
+            var tableList = $('#order-datatables').DataTable();
+            var info = tableList.page.info();
+       
+            $('#order-datatables').on('page.dt', function () {
+                var info = tableList.page.info();
+                // $('#simpan_laporan_stok').click();
+                // swal.fire("Data Stock Pada Halaman Sebelumnya telah disimpan");
+                // swal.fire({
+                //     title: "Simpan Data Stok Halaman "+(info.page) +"?",
+                //     text: "Simpan data untuk melanjutkan pada halaman selanjutnya",
+                //     icon: "warning",
+                //     showCancelButton: !0,
+                //     confirmButtonColor: "#28bb4b",
+                //     cancelButtonColor: "#f34e4e",
+                //     confirmButtonText: "Ya",
+                //     cancelButtonText: "Batal"
+                // })
+                // .then(function(e) {
+                //     e.value ?
+                //         $('#simpan_laporan_stok').click()
+
+                //         :
+                //         swal.fire("Data anda aman !");
+
+                // });
+            });
+
+            $('#stock-opname').click(function(){
+                swal.fire("Fitur Masih Dalam Tahap Pengembangan (Progress 90%) !");
+            })
+
+            $('#buat_laporan_stock').click(function () {
+                var formData = new FormData();
+                var data = $('#order-datatables').DataTable().$('input, select').serialize();
+                formData.append('list', data);
+                $.ajax({
+                    url: '{{ url('add-opname')}}',
+                    type: 'post',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: formData,
+                    contentType: false, //untuk upload image
+                    processData: false, //untuk upload image
+                    timeout: 300000, // sets timeout to 3 seconds
+                    dataType: 'json',
+                    success: function (e) {
+                        if (e) {
+                            Swal.fire({
+                                title: "Sukses",
+                                text: "Data Berhasil Diinput!",
+                                icon: "success"
+                            });
+                            setTimeout(location.reload(), 2000);
+                        } else {
+                            var text = "";
+                            $.each(e.customMessages, function (key, value) {
+                                text += `<br>` + value;
+                            });
+                            Swal.fire({
+                                title: "Gagal",
+                                text: text,
+                                icon: "error"
+                            });
+                        }
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    errorAlertServer('Response Not Found, Please Check Your Data');
+                });
+                return false;
+            });
+
         $("#order_id select").val("0").change();
         $('#default-datatable').DataTable();
         $.fn.dataTable.render.moment = function(from, to, locale) {
@@ -237,6 +318,7 @@
                     .appendTo('#example_wrapper .col-md-6:eq(0)');
             }
         });
+       
         $("#form-opname").submit(function(event) {
             event.preventDefault();
             var formData = new FormData($('#form-opname')[0]);

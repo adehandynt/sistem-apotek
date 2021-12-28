@@ -144,6 +144,7 @@ Route::post('/delete-pembelian', [PembelianController::class, 'delete_pembelian'
 Route::post('/acc-pembelian', [PembelianController::class, 'acc_pembelian']);
 Route::get('/export-excel', [PembelianController::class, 'export_excel']);
 Route::get('/cetak-pdf', [PembelianController::class, 'cetak_pdf']);
+Route::post('/delete-item-pembelian', [PembelianController::class, 'delete_item_pembelian']);
 
 Route::get('/data-retur', [PembelianController::class, 'v_list_retur']);
 Route::get('/retur-pembelian', [PembelianController::class, 'v_retur_pembelian'])->name('retur-pembelian');

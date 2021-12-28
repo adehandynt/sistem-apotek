@@ -278,7 +278,8 @@ class PembelianController extends Controller
                 ->where('id', '=', $id);
         })
             ->join('satuan', 'list_order.kode_satuan', '=', 'satuan.kode_satuan')
-            ->select('list_order.*', 'satuan.satuan')
+            ->join('barang', 'list_order.kode_barang', '=', 'barang.kode_barang')
+            ->select('list_order.*', 'satuan.satuan','barang.nama_barang')
             ->get();
         $res['order'] = $order;
         $res['data'] = $data;
@@ -468,5 +469,17 @@ class PembelianController extends Controller
         //return view('pembelian/export-retur-pdf', $res);
         $pdf = PDF::loadview('pembelian/export-retur-pdf', $res);
         return $pdf->download('retur-order-'.$date.'-pdf');
+    }
+
+    public function delete_item_pembelian(Request $request){
+        $item = ListItem::where('id_list_order',$request->id);
+        $simpan = $item->delete();
+        if ($simpan) {
+            Session::flash('success', 'Hapus berhasil! Silahkan periksa data terbaru');
+            return 'success';
+        } else {
+            Session::flash('errors', ['' => 'Hapus gagal! Silahkan ulangi kembali']);
+            return 'error';
+        }
     }
 }

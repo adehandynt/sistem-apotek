@@ -152,7 +152,7 @@
 
 
             <div class="row">
-                <div class="col-xl-6">
+                <div class="col-xl-12">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="header-title mb-3">History Penjualan</h4>
@@ -203,7 +203,46 @@
                             </div> <!-- end table-responsive -->
                         </div>
                     </div> <!-- end card-->
+                </div>
+                <div class="col-xl-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title mb-3">Barang Kadaluwarsa</h4>
+
+                            <div class="table-responsive">
+                                <table class="table table-centered table-nowrap table-hover mb-0" id="basic-datatables">
+                                    <thead>
+                                        <tr>
+                                            <th class="border-top-0">Kode Barang</th>
+                                            <th class="border-top-0">Nama Barang</th>
+                                            <th class="border-top-0">Tanggal Kadaluwarsa</th>
+                                            <th class="border-top-0">Nomor Order</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($expiredlist as $key => $val)
+                                        <tr>
+                                            <td>
+                                                <span class="ms-2">{{$val->kode_barang}}</span>
+                                            </td>
+                                            <td>
+                                                <span class="ms-2">{{$val->nama_barang}}</span>
+                                            </td>
+                                            <td>
+                                                <span class="ms-2">{{$val->tgl_exp}}</span>
+                                            </td>
+                                            <td>
+                                                <span class="ms-2">{{$val->id_order}}</span>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div> <!-- end table-responsive -->
+                        </div>
+                    </div> <!-- end card-->
                 </div> <!-- end col-->
+                 <!-- end col-->
                 <div class="col-xl-6">
                     <div class="card">
                         <div class="card-body">

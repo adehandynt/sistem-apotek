@@ -323,6 +323,7 @@ class StockController extends Controller
     }
 
     public function add_opname(Request $request){
+        dd($request->all());
         $year = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->year;
         $id = IdGenerator::generate(['table' => 'stock_opname','field'=>'id_opname', 'length' => 15, 'prefix' =>'OPN-'. $year . '-']);
         $date = \Carbon\Carbon::now()->timezone('Asia/Jakarta');
