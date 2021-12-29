@@ -76,7 +76,9 @@
                                     <div class="ribbon ribbon-warning float-end"><i class="mdi mdi-access-point me-1"></i> Perhatian</div>
                                     <h5 class="text-warning float-start mt-0">Instruksi</h5>
                                     <div class="ribbon-content">
-                                        <p class="mb-0">Isi Pada kolom berwarna kuning,<br><b>Klik Simpan apabila setiap satu halaman telah selesai di input</b></p>
+                                        <p class="mb-0">Isi Pada kolom berwarna kuning,<br><b>Klik Simpan apabila setiap satu halaman telah selesai di input</b>.<br>
+                                            Setiap barang yang telah diinput dan disimpan akan hilang dari daftar barang pada tabel dibawah ini.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
