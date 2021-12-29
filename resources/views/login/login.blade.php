@@ -59,13 +59,13 @@
                                 <div class="auth-logo">
                                     <a href="index.html" class="logo logo-dark text-center">
                                         <span class="logo-lg">
-                                            <img src="../assets/images/logo.png" alt="" height="90">
+                                            <img src="../assets/images/logo_apotek.jpg" alt="" height="90">
                                         </span>
                                     </a>
 
                                     <a href="index.html" class="logo logo-light text-center">
                                         <span class="logo-lg">
-                                            <img src="../assets/images/logo.png" alt="" height="90">
+                                            <img src="../assets/images/logo_apotek.jpg" alt="" height="90">
                                         </span>
                                     </a>
                                 </div>
