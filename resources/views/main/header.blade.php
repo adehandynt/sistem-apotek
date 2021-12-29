@@ -112,11 +112,11 @@
             <a href="{{url('/penjualan')}}" class="logo logo-dark text-center">
             @endif
                 <span class="logo-sm">
-                    <img src="../assets/images/logo.png" alt="" height="22">
+                    <img src="../assets/images/logo_apotek.jpg" alt="" height="22">
                     <!-- <span class="logo-lg-text-light">UBold</span> -->
                 </span>
                 <span class="logo-lg">
-                    <img src="../assets/images/logo.png" alt="" height="20">
+                    <img src="../assets/images/logo_apotek.jpg" alt="" height="20">
                     <!-- <span class="logo-lg-text-light">U</span> -->
                 </span>
             </a>
@@ -131,10 +131,10 @@
             <a href="{{url('/penjualan')}}" class="logo logo-light text-center">
             @endif
                 <span class="logo-sm">
-                    <img src="../assets/images/logo.png" alt="" height="22">
+                    <img src="../assets/images/logo_apotek.jpg" alt="" height="22">
                 </span>
                 <span class="logo-lg">
-                    <img src="../assets/images/logo.png" alt="" height="60">
+                    <img src="../assets/images/logo_apotek.jpg" alt="" height="60">
                 </span>
             </a>
         </div>

@@ -28,11 +28,11 @@
                             <div class="card-body">
                                 <div class="row mb-2">
                                     <div class="col-sm-12">
-                                        {{-- <button type="button" class="btn btn-danger waves-effect waves-light"
+                                        <button type="button" class="btn btn-danger waves-effect waves-light"
                                             data-bs-toggle="modal" data-bs-target="#custom-modal"><i
-                                                class="mdi mdi-plus-circle me-1"></i> Stock Opname</button> --}}
-                                                <button type="button" class="btn btn-danger waves-effect waves-light" id="stock-opname"><i
-                                                    class="mdi mdi-plus-circle me-1"></i> Stock Opname</button>
+                                                class="mdi mdi-plus-circle me-1"></i> Stock Opname</button>
+                                                {{-- <button type="button" class="btn btn-danger waves-effect waves-light" id="stock-opname"><i
+                                                    class="mdi mdi-plus-circle me-1"></i> Stock Opname</button> --}}
                                     </div>
                                 </div>
 
@@ -69,6 +69,19 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                     </div>
                     <div class="modal-body p-4">
+                        
+                        <div class="col-lg-6 float-right">
+                            <div class="card ribbon-box">
+                                <div class="card-body">
+                                    <div class="ribbon ribbon-warning float-end"><i class="mdi mdi-access-point me-1"></i> Perhatian</div>
+                                    <h5 class="text-warning float-start mt-0">Instruksi</h5>
+                                    <div class="ribbon-content">
+                                        <p class="mb-0">Isi Pada kolom berwarna kuning,<br><b>Klik Simpan apabila setiap satu halaman telah selesai di input</b></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
                         <form id="form-opname">
                             {{ csrf_field() }}
                             <div class="table-responsive mt-4">
@@ -78,13 +91,14 @@
                                         <th>Kode Barang</th>
                                         <th>Nama Barang</th>
                                         <th>Saldo Awal</th>
-                                        <th>Tercatat</th>
+                                        <th>Tercatat (Sistem)</th>
                                         <th>Jumlah Fisik</th>
                                         <th>Masuk</th>
                                         <th>Keluar</th>
                                         <th>Hilang</th>
                                         <th>Rusak</th>
                                         <th>Selisih</th>
+                                        <th>Saldo Akhir</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -92,14 +106,15 @@
                                         <tr>
                                             <td><input type="hidden" class="kode_barang form-control" name="kode_barang[]" value="{{$item->kode_barang}}" readonly/>{{$item->kode_barang}}</td>
                                             <td>{{$item->nama_barang}}</td>
-                                            <td><input type="number" class="saldo_awal numeric_form form-control" name="saldo_awal[]" style="width:150px" value="{{$item->sisa}}" readonly/></td>
-                                            <td><input type="number" class="jml_tercatat numeric_form form-control" name="jml_tercatat[]" style="width:150px" value="{{$item->sisa}}" readonly/></td>
-                                            <td><input type="number" class="jml_tersedia numeric_form form-control" name="jml_tersedia[]" style="width:150px" value="0" required/></td>
-                                            <td><input type="number" class="masuk numeric_form form-control" name="masuk[]" style="width:150px" value="0" required/></td>
-                                            <td><input type="number" class="keluar numeric_form form-control" name="keluar[]" style="width:150px" value="0" required/></td>
-                                            <td><input type="number" class="hilang numeric_form form-control" name="hilang[]" style="width:150px" value="0" required/></td>
-                                            <td><input type="number" class="rusak numeric_form form-control" name="rusak[]" style="width:150px" value="0" required/></td>
+                                            <td><input type="number" class="saldo_awal numeric_form form-control" name="saldo_awal[]" style="width:150px" value="{{$item->saldo_awal}}" readonly/></td>
+                                            <td><input type="number" class="jml_tercatat numeric_form form-control" name="jml_tercatat[]" style="width:150px" value="{{$item->sisa_tercatat}}" readonly/></td>
+                                            <td><input type="number" class="jml_tersedia numeric_form form-control" name="jml_tersedia[]" style="width:150px;background:rgb(218, 218, 112)" value="{{$item->sisa_tercatat}}" required/></td>
+                                            <td><input type="number" class="masuk numeric_form form-control" name="masuk[]" style="width:150px" value="{{$item->totalMasuk}}" required readonly/></td>
+                                            <td><input type="number" class="keluar numeric_form form-control" name="keluar[]" style="width:150px" value="{{$item->totalKeluar}}" required readonly/></td>
+                                            <td><input type="number" class="hilang numeric_form form-control" name="hilang[]" style="width:150px;background:rgb(218, 218, 112)" value="0" required/></td>
+                                            <td><input type="number" class="rusak numeric_form form-control" name="rusak[]" style="width:150px;background:rgb(218, 218, 112)" value="0" required/></td>
                                             <td><input type="number" class="selisih form-control" name="selisih[]" value="0" style="width:150px" readonly /></td>
+                                            <td><input type="number" class="saldo_akhir form-control" name="saldo_akhir[]" value="{{$item->saldo_awal+$item->totalMasuk-$item->totalKeluar}}" style="width:150px" readonly /></td>
                                         </tr>
                                     @endforeach
 
@@ -108,11 +123,12 @@
                         </div>
                     
                             <div class="text-end">
-                                <button type="submit" class="btn btn-success waves-effect waves-light" id="simpan_laporan_stok" >Buat Laporan Opname</button>
-                                <button type="button" class="btn btn-danger waves-effect waves-light"
-                                    data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-success waves-effect waves-light mt-2" id="simpan_laporan_stok" >Simpan Opname Halaman <span id="page_number">1</span></button>
+                                {{-- <button type="button" class="btn btn-danger waves-effect waves-light"
+                                    data-bs-dismiss="modal">Batal</button> --}}
                             </div>
                         </form>
+                    </div>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
@@ -126,6 +142,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                     </div>
                     <div class="modal-body p-4">
+                        <div class="table-responsive mt-4">
                         <form id="form-opname-detail">
                             {{ csrf_field() }}
                             <table class="table table-centered table-nowrap table-striped" id="detail-datatables">
@@ -133,7 +150,7 @@
                                     <tr>
                                         <th>Kode Barang</th>
                                         <th>Nama Barang</th>
-                                        <th>Tercatat</th>
+                                        <th>Tercatat (Sistem)</th>
                                         <th>Jumlah Fisik</th>
                                         <th>Masuk</th>
                                         <th>Keluar</th>
@@ -147,6 +164,7 @@
                                 </tbody>
                             </table>
                         </form>
+                    </div>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
@@ -187,7 +205,7 @@
         });
         $('#order-datatables').DataTable({
             // lengthChange: true,
-             lengthMenu:[[10],["10"]],"searching": false
+             lengthMenu:[[10],["10"]],"searching": false,"ordering": false,"order": [[ 1, "asc" ]]
             });
 
             var tableList = $('#order-datatables').DataTable();
@@ -195,6 +213,7 @@
        
             $('#order-datatables').on('page.dt', function () {
                 var info = tableList.page.info();
+                $('#page_number').text(info.page+1);
                 // $('#simpan_laporan_stok').click();
                 // swal.fire("Data Stock Pada Halaman Sebelumnya telah disimpan");
                 // swal.fire({
@@ -319,40 +338,59 @@
             }
         });
        
-        $("#form-opname").submit(function(event) {
+        $("#form-opname").submit(function (event) {
             event.preventDefault();
-            var formData = new FormData($('#form-opname')[0]);
-            $.ajax({
-                url: '{{ url('add-opname') }}',
-                type: 'post',
-                data: formData,
-                contentType: false, //untuk upload image
-                processData: false, //untuk upload image
-                timeout: 300000, // sets timeout to 3 seconds
-                dataType: 'json',
-                success: function(e) {
-                    if (e) {
-                        Swal.fire({
-                            title: "Sukses",
-                            text: "Data Berhasil Diinput!",
-                            icon: "success"
+            swal.fire({
+                    title: "Input Stok Opname Barang ",
+                    text: "Pastikan bahwa data telah diisi semua,\n Lanjutkan Proses ? ",
+                    icon: "warning",
+                    showCancelButton: !0,
+                    confirmButtonColor: "#28bb4b",
+                    cancelButtonColor: "#f34e4e",
+                    confirmButtonText: "Ya, Lanjutkan",
+                    cancelButtonText: "Batal, Periksa Kembali"
+                })
+                .then(function (e) {
+                    if (e.value) {
+                        var formData = new FormData($('#form-opname')[0]);
+                        $.ajax({
+                            url: '{{ url('add-opname')}}',
+                            type: 'post',
+                            data: formData,
+                            contentType: false, //untuk upload image
+                            processData: false, //untuk upload image
+                            timeout: 300000, // sets timeout to 3 seconds
+                            dataType: 'json',
+                            success: function (e) {
+                                if (e) {
+                                    Swal.fire({
+                                        title: "Sukses",
+                                        text: "Data Berhasil Diinput!",
+                                        icon: "success"
+                                    });
+                                    setTimeout(location.reload(), 2000);
+                                } else {
+                                    var text = "";
+                                    $.each(e.customMessages, function (key, value) {
+                                        text += `<br>` + value;
+                                    });
+                                    Swal.fire({
+                                        title: "Gagal",
+                                        text: text,
+                                        icon: "error"
+                                    });
+                                }
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            errorAlertServer('Response Not Found, Please Check Your Data');
                         });
-                        setTimeout(location.reload(), 2000);
+
                     } else {
-                        var text = "";
-                        $.each(e.customMessages, function(key, value) {
-                            text += `<br>` + value;
-                        });
-                        Swal.fire({
-                            title: "Gagal",
-                            text: text,
-                            icon: "error"
-                        });
+                        swal.fire("Input Dibatalkan, Silahkan Periksa Kembali Data Anda !");
                     }
-                }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                errorAlertServer('Response Not Found, Please Check Your Data');
-            });
+
+                });
+
         });
 
         $('#basic-datatables tbody').on('click', '.btn-delete', function() {
@@ -431,18 +469,20 @@
                 success: function(e) {
                     $('#id_hide').val(id);
                     $("#detail-datatables tbody tr").remove();
+                    $("#titleDetailOpname").text('Stock Opname Detail');
                     let judul = $("#titleDetailOpname").text();
                     $("#titleDetailOpname").text(judul+' ('+new Date(e[0].tgl_opname).toLocaleDateString('id-ID',{ year: 'numeric', month: 'long', day: '2-digit' })+') ');
                     $.each(e, function(key, value) {
                         $('#detail-datatables tbody').append(`<tr>
                                             <td><input type="hidden" class="kode_barang form-control" name="kode_barang[]" value="${value.kode_barang}" readonly/>{{$item->kode_barang}}</td>
                                             <td>${value.nama_barang}</td>
-                                            <td><input type="number" class="jml_tercatat numeric_form form-control" name="jml_tercatat[]" value="${value.jml_tercatat}" readonly/></td>
-                                            <td><input type="number" class="jml_tersedia numeric_form form-control" name="jml_tersedia[]" value="${value.jml_fisik}" readonly/></td>
-                                            <td><input type="number" class="masuk numeric_form form-control" name="masuk[]" value="0" required/></td>
-                                            <td><input type="number" class="keluar numeric_form form-control" name="keluar[]" value="0" required/></td>
-                                            <td><input type="number" class="hilang numeric_form form-control" name="hilang[]" value="${value.hilang}" readonly/></td>
-                                            <td><input type="number" class="rusak numeric_form form-control" name="rusak[]" value="${value.rusak}" readonly/></td>
+                                            <td><input type="number" class="jml_tercatat numeric_form form-control" name="jml_tercatat[]" style="width:150px" value="${value.jml_tercatat}" readonly/></td>
+                                            <td><input type="number" class="jml_tersedia numeric_form form-control" name="jml_tersedia[]" style="width:150px"value="${value.jml_fisik}" readonly/></td>
+                                            <td><input type="number" class="masuk numeric_form form-control" name="masuk[]" style="width:150px" value="${value.totalMasuk}" required/></td>
+                                            <td><input type="number" class="keluar numeric_form form-control" name="keluar[]" style="width:150px" value="${value.totalKeluar}" required/></td>
+                                            <td><input type="number" class="hilang numeric_form form-control" name="hilang[]" style="width:150px" value="${value.hilang}" readonly/></td>
+                                            <td><input type="number" class="rusak numeric_form form-control" name="rusak[]" style="width:150px" value="${value.rusak}" readonly/></td>
+                                            <td><input type="number" class="saldo_akhir form-control" name="saldo_akhir[]" value="${value.saldo_akhir}" style="width:150px" readonly /></td>
                                             <td>Rp ${value.balance}</td>
                                         </tr>`);
                     });
@@ -464,6 +504,7 @@
             let hilang= parseInt($('.hilang').eq(idx).val());
             let rusak= parseInt($('.rusak').eq(idx).val());
             $('.selisih').eq(idx).val((jml_tersedia)-jml_tercatat);
+            $('.saldo_akhir').eq(idx).val(jml_tersedia);
 
         });
 

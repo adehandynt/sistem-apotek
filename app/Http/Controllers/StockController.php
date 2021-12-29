@@ -40,18 +40,110 @@ class StockController extends Controller
 
     public function v_stock_opname()
     {
+        $tanggal=\Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
+        $tanggal = substr($tanggal,0,7);
         $res['data'] = StockOpname::get();
         $res['satuan'] = Satuan::get();
         $res['tipe'] = Tipe::get();
         $res['list_produk'] = Obat::join(DB::raw('(SELECT
         t.kode_barang,
-        min(t.sisa) as sisa
-           FROM
-        ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
+        min( t.sisa ) AS sisa 
+    FROM
+        ( SELECT kode_barang, jenis_history, min( created_at ) AS MinTime, created_at FROM history_barang WHERE
+        jenis_history = "barang_masuk"  GROUP BY kode_barang ) r
         INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
-        AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS history_barang'),
+        AND t.created_at = r.MinTime 
+    GROUP BY
+        t.kode_barang) AS history_barang'),
        'history_barang.kode_barang', '=', 'barang.kode_barang')
-        ->select('barang.*','history_barang.sisa')
+       ->join(DB::raw('(SELECT
+       t.kode_barang,
+       min( t.sisa ) AS sisa_tercatat
+   FROM
+       ( SELECT kode_barang, jenis_history, max( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
+       INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
+       AND t.created_at = r.MaxTime 
+   GROUP BY
+       t.kode_barang) AS history_barang_catat'),
+      'history_barang_catat.kode_barang', '=', 'barang.kode_barang')
+       ->leftjoin(DB::raw('(SELECT
+        t.*
+           FROM
+        ( SELECT *, MAX( created_at ) AS MaxTime FROM list_opname GROUP BY kode_barang ) r
+        INNER JOIN list_opname t ON t.kode_barang = r.kode_barang 
+        AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS list_opname'),
+      'list_opname.kode_barang', '=', 'barang.kode_barang')
+      ->leftjoin(DB::raw('(SELECT
+      t.kode_barang,
+      t.totalKeluar 
+  FROM
+      ( SELECT kode_barang, max( created_at ) AS MaxTime, created_at FROM list_opname GROUP BY kode_barang ) r
+      INNER JOIN (
+      SELECT
+          list_opname.*,
+          sum( jml_keluar ) AS totalKeluar ,
+           history_barang.tgl_keluar 
+      FROM
+          history_barang
+          JOIN (
+          SELECT
+              x.* 
+          FROM
+              ( SELECT *, MAX( created_at ) AS MaxTime FROM list_opname GROUP BY kode_barang ) y
+              INNER JOIN list_opname x ON x.kode_barang = y.kode_barang 
+              AND x.created_at = y.MaxTime 
+          GROUP BY
+              x.kode_barang 
+          ) list_opname ON history_barang.kode_barang = list_opname.kode_barang 
+      WHERE
+           history_barang.tgl_keluar >= list_opname.created_at  
+      ) t ON t.kode_barang = r.kode_barang 
+      AND t.created_at = r.MaxTime 
+  GROUP BY
+      t.kode_barang) AS history_barang_keluar'),
+     'history_barang_keluar.kode_barang', '=', 'barang.kode_barang')
+     ->leftjoin(DB::raw('(SELECT
+      t.kode_barang,
+      t.totalMasuk 
+  FROM
+      ( SELECT kode_barang, max( created_at ) AS MaxTime, created_at FROM list_opname GROUP BY kode_barang ) r
+      INNER JOIN (
+      SELECT
+          list_opname.*,
+          sum( jml_masuk ) AS totalMasuk ,
+           history_barang.tgl_masuk
+      FROM
+          history_barang
+          JOIN (
+          SELECT
+              x.* 
+          FROM
+              ( SELECT *, MAX( created_at ) AS MaxTime FROM list_opname GROUP BY kode_barang ) y
+              INNER JOIN list_opname x ON x.kode_barang = y.kode_barang 
+              AND x.created_at = y.MaxTime 
+          GROUP BY
+              x.kode_barang 
+          ) list_opname ON history_barang.kode_barang = list_opname.kode_barang 
+      WHERE
+           history_barang.tgl_masuk >= list_opname.created_at  
+      ) t ON t.kode_barang = r.kode_barang 
+      AND t.created_at = r.MaxTime 
+  GROUP BY
+      t.kode_barang) AS history_barang_masuk'),
+     'history_barang_masuk.kode_barang', '=', 'barang.kode_barang')
+     ->leftjoin(DB::raw('(SELECT
+     *,
+     sum(jml_masuk) as jml_masuk_default,
+     sum(jml_keluar) as jml_keluar_default
+        FROM history_barang group by kode_barang) AS history_barang_default'),
+   'history_barang_default.kode_barang', '=', 'barang.kode_barang')
+        ->select('list_opname.*','barang.*','history_barang_catat.sisa_tercatat','history_barang.sisa',
+        DB::raw('coalesce(list_opname.saldo_akhir,0) as saldo_awal'),
+        DB::raw('coalesce(history_barang_masuk.totalMasuk,history_barang_default.jml_masuk_default,0) as totalMasuk'),
+        DB::raw('coalesce(history_barang_keluar.totalKeluar,history_barang_default.jml_keluar_default,0) as totalKeluar'))
+        ->whereNull('list_opname.id_list_opname')
+        ->orWhere('list_opname.created_at','NOT LIKE',$tanggal."%")
+        ->orderBy('barang.nama_barang','asc')
         ->get();
         return view('stock/stock-opname',$res);
     }
@@ -323,7 +415,7 @@ class StockController extends Controller
     }
 
     public function add_opname(Request $request){
-        dd($request->all());
+        //dd($request->all());
         $year = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->year;
         $id = IdGenerator::generate(['table' => 'stock_opname','field'=>'id_opname', 'length' => 15, 'prefix' =>'OPN-'. $year . '-']);
         $date = \Carbon\Carbon::now()->timezone('Asia/Jakarta');
@@ -351,9 +443,12 @@ class StockController extends Controller
             $list->kode_barang=$request->kode_barang[$idx];
             $list->jml_tercatat=$request->jml_tercatat[$idx];
             $list->jml_fisik=$request->jml_tersedia[$idx];
+            $list->masuk=$request->masuk[$idx];
+            $list->keluar=$request->keluar[$idx];
             $list->hilang=$request->hilang[$idx];
             $list->rusak=$request->rusak[$idx];
             $list->selisih=$request->selisih[$idx];
+            $list->saldo_akhir=$request->saldo_akhir[$idx];
             $list->balance=($barang!=null?$barang->harga_jual:0)*($request->rusak[$idx]+$request->hilang[$idx]);
             $list->save();
             if($request->hilang[$idx]!=0){
