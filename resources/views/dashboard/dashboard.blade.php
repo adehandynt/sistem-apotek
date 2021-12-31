@@ -134,7 +134,7 @@
                                     <h2 class="fw-normal mb-3">
                                         <small class="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
                                         @if($rata==0)
-                                        <span alt="0">Rp 0</span>
+                                        {{-- <span alt="0">Rp 0</span> --}}
                                         @endif
                                       
                                         <span alt="0">Rp {{number_format($rata,2)}}</span>
@@ -210,7 +210,7 @@
                             <h4 class="header-title mb-3">Barang Kadaluwarsa</h4>
 
                             <div class="table-responsive">
-                                <table class="table table-centered table-nowrap table-hover mb-0" id="basic-datatables">
+                                <table class="table table-centered table-nowrap table-hover mb-0" id="kadaluwarsa-datatables">
                                     <thead>
                                         <tr>
                                             <th class="border-top-0">Kode Barang</th>
@@ -319,6 +319,7 @@
 
 <script>
 $('#basic-datatables').DataTable();
+$('#kadaluwarsa-datatables').DataTable();
 $('#terlaris-datatables').DataTable();
 $(document).ready(function() {
     drawGraph("");

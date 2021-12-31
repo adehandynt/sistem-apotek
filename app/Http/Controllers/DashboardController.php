@@ -112,14 +112,19 @@ class DashboardController extends Controller
          $ret['terlaris']=$terlaris;
 
 
-         $date= \Carbon\Carbon::now();
+         $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
          $year=$date->format('Y');
+         $lastYear=$date->format('Y');
          $lastMonth=$date->subMonth()->format('m');
-         $date= \Carbon\Carbon::now();
+        
+         $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
          $thisMonth=$date->format('m');
+         if($thisMonth=='01'){
+            $lastYear=$date->subYears()->format('Y');
+        }
 
          $pendapatan_lalu = Penjualan::select(DB::raw('MONTHNAME(transaksi.tgl_transaksi) as date'),DB::raw('coalesce(SUM(transaksi.total),0) as total'))
-         ->where('tgl_transaksi','like',$year.'-'.$lastMonth.'%')
+         ->where('tgl_transaksi','like',$lastYear.'-'.$lastMonth.'%')
          ->groupBy('date')
          ->get();
 
@@ -127,7 +132,6 @@ class DashboardController extends Controller
          ->where('tgl_transaksi','like',$year.'-'.$thisMonth.'%')
          ->groupBy('date')
          ->get();
-
          $dateBefore = \Carbon\Carbon::now()->subDays(30, 'day')->timezone('Asia/Jakarta')->format('Y-m-d');
          $date= \Carbon\Carbon::now();
         //  $rata = Penjualan::where('tgl_transaksi','>', $dateBefore)
@@ -165,23 +169,24 @@ class DashboardController extends Controller
                 
             $arr_label = [];
             $val_data = [];
+            $arr_val=[];
             foreach($terjual as $key =>$val){
                 $name = $val->date;
-                $arr_val=[];
+               
 
                     array_push($arr_label,$val->date);
                     array_push($arr_val,$val->total);
                
+                }
                 $val_data[]=[
-                  'name' => $name,
+                  'name' => 'Pendapatan',
                   'type'=>'line',
                   'data' => $arr_val
                 ];
-            }
 
             $ret['labels']=array_values(array_unique($arr_label));
             $ret['series']=$val_data; 
-           // dd($terjual);
+            //dd($ret);
         return json_encode($ret);
     }
 }

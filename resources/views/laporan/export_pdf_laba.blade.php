@@ -47,8 +47,8 @@
     </div>
     <hr>
     @php
-     $total_masuk = ($data[0]->penjualan_barang+$data[0]->piutang_obat+$data[0]->pendapatan_jasa_lain+$data[0]->pendapatan_jasa_dokter);   
-     $total_keluar = ($data[0]->pembelian_barang+$data[0]->pengembalian_barang+$data[0]->barang_hilang+$data[0]->obat_hilang);
+     $total_masuk = ($data[0]->penjualan_barang+$data[0]->penjualan_obat+$data[0]->piutang_obat+$data[0]->pendapatan_jasa_lain+$data[0]->pendapatan_jasa_dokter);   
+     $total_keluar = ($data[0]->pembelian_barang+$data[0]->pembelian_obat+$data[0]->pengembalian_barang+$data[0]->barang_hilang+$data[0]->obat_hilang);
     @endphp
     <h6 class="mt-0 mb-3 bg-light p-2">Rincian Pemasukan</h6>
     <table style="width: 100%">
