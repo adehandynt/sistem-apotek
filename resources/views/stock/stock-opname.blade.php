@@ -488,7 +488,7 @@
                                             <td><input type="number" class="rusak numeric_form form-control" name="rusak[]" style="width:150px" value="${value.rusak}" readonly/></td>
                                             <td><input type="number" class="selisih numeric_form form-control" name="rusak[]" style="width:150px" value="${value.selisih}" readonly/></td>
                                             <td><input type="number" class="saldo_akhir form-control" name="saldo_akhir[]" value="${value.saldo_akhir}" style="width:150px" readonly /></td>
-                                            <td>Rp ${value.balance}</td>
+                                            
                                         </tr>`);
                     });
                 }
