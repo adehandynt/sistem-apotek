@@ -152,6 +152,7 @@
                                     <tr>
                                         <th>Kode Barang</th>
                                         <th>Nama Barang</th>
+                                        <th>Saldo Awal</th>
                                         <th>Tercatat (Sistem)</th>
                                         <th>Jumlah Fisik</th>
                                         <th>Masuk</th>
@@ -159,6 +160,7 @@
                                         <th>Hilang</th>
                                         <th>Rusak</th>
                                         <th>Selisih</th>
+                                        <th>Saldo Akhir</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -480,10 +482,11 @@
                                             <td>${value.nama_barang}</td>
                                             <td><input type="number" class="jml_tercatat numeric_form form-control" name="jml_tercatat[]" style="width:150px" value="${value.jml_tercatat}" readonly/></td>
                                             <td><input type="number" class="jml_tersedia numeric_form form-control" name="jml_tersedia[]" style="width:150px"value="${value.jml_fisik}" readonly/></td>
-                                            <td><input type="number" class="masuk numeric_form form-control" name="masuk[]" style="width:150px" value="${value.totalMasuk}" required/></td>
-                                            <td><input type="number" class="keluar numeric_form form-control" name="keluar[]" style="width:150px" value="${value.totalKeluar}" required/></td>
+                                            <td><input type="number" class="masuk numeric_form form-control" name="masuk[]" style="width:150px" value="${value.masuk}" required readonly/></td>
+                                            <td><input type="number" class="keluar numeric_form form-control" name="keluar[]" style="width:150px" value="${value.keluar}" required readonly/></td>
                                             <td><input type="number" class="hilang numeric_form form-control" name="hilang[]" style="width:150px" value="${value.hilang}" readonly/></td>
                                             <td><input type="number" class="rusak numeric_form form-control" name="rusak[]" style="width:150px" value="${value.rusak}" readonly/></td>
+                                            <td><input type="number" class="selisih numeric_form form-control" name="rusak[]" style="width:150px" value="${value.selisih}" readonly/></td>
                                             <td><input type="number" class="saldo_akhir form-control" name="saldo_akhir[]" value="${value.saldo_akhir}" style="width:150px" readonly /></td>
                                             <td>Rp ${value.balance}</td>
                                         </tr>`);
