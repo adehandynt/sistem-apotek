@@ -24,6 +24,8 @@ use PDF;
 use Auth;
 use Session;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
+use App\Exports\ExportPenjualan;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LaporanController extends Controller
 {
@@ -434,6 +436,11 @@ class LaporanController extends Controller
         $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
         $pdf = PDF::loadview('laporan/export_pdf_laba', $res);
         return $pdf->download('laporan-laba-'.$date.'-pdf');
+    }
+
+    public function export(Request $request) 
+    {
+        return Excel::download(new ExportPenjualan('2021-12'), 'Data_user.xlsx');
     }
 
 }

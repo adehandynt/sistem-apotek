@@ -161,6 +161,7 @@
                                             <th>Sisa</th>
                                             {{-- <th>No Referensi</th> --}}
                                             <th>PIC</th>
+                                            <th>Deskripsi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -707,6 +708,9 @@
                 // },
                 {
                     data: "pic"
+                },
+                {
+                    data: "jenis_history"
                 }
             ],
             initComplete: function() {

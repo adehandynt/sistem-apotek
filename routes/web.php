@@ -130,6 +130,7 @@ Route::post('/update-stock', [StockController::class, 'update_stock']);
 Route::post('/delete-stock', [StockController::class, 'delete_stock']);
 Route::get('/get-stock-produk', [StockController::class, 'get_stock_produk']);
 Route::get('/get-grn', [StockController::class, 'get_grn']);
+Route::get('/set-as-stock', [StockController::class, 'setAsStock']);
 
 Route::get('/data-pembelian', [PembelianController::class, 'v_pembelian'])->name('data-pembelian');
 Route::get('/data-pembelian-restock', [PembelianController::class, 'v_pembelian_restock'])->name('data-pembelian-restock');
@@ -220,3 +221,5 @@ Route::get('/list-data-margin', [MarginController::class, 'list_margin_page']);
 Route::post('/add-margin', [MarginController::class, 'add_margin']);
 Route::post('/update-margin', [MarginController::class, 'update_margin']);
 Route::post('/edit-margin', [MarginController::class, 'edit_margin']);
+
+Route::get('/export',[LaporanController::class, 'export']);

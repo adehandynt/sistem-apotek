@@ -488,4 +488,44 @@ class StockController extends Controller
             return true;
         }
     }
+
+    public function setAsStock(Request $request){
+        $data = StockOpname::
+        join(DB::raw('(SELECT
+        t.*
+    FROM
+        ( SELECT *, max( created_at ) AS MaxTime FROM list_opname GROUP BY kode_barang ) r
+        INNER JOIN list_opname t ON t.kode_barang = r.kode_barang 
+        AND t.created_at = r.MaxTime 
+    GROUP BY
+        t.kode_barang) AS list_opname'),
+        'stock_opname.id_opname', '=', 'list_opname.id_opname')
+        // ->join('list_opname','stock_opname.id_opname','=','list_opname.id_opname')
+        ->join('barang','barang.kode_barang','=','list_opname.kode_barang')
+        ->get();
+        $year = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->year;
+        foreach ($data as $idx => $val) {
+            if($val->selisih!=0){
+                $id_history = IdGenerator::generate(['table' => 'history_barang','field'=>'id_history', 'length' => 15, 'prefix' =>'HIS-'. $year . '-']);
+                $history = new HistoryBarang;
+                    $history->id_history=$id_history;
+                    $history->kode_barang=$val->kode_barang;
+                    if($val->selisih<0){
+                    $history->tgl_keluar=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
+                    $history->jml_keluar=$val->jml_tercatat-$val->jml_fisik;
+                    }else{
+                    $history->tgl_masuk=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
+                    $history->jml_masuk=$val->saldo_akhir-($val->jml_tercatat);
+                    }
+                    $history->sisa=$val->saldo_akhir;
+                    $history->jenis_history='adjustment_stock';
+    
+                    $history->id_referensi=$val->id_opname;
+                    $history->pic=Auth::user()->nip;
+                    $history->save();
+                    //dd($history);
+            }
+        }
+        //return json_encode($data);
+    }
 }

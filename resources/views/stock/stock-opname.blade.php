@@ -476,9 +476,10 @@
                     $("#titleDetailOpname").text('Stock Opname Detail');
                     let judul = $("#titleDetailOpname").text();
                     $("#titleDetailOpname").text(judul+' ('+new Date(e[0].tgl_opname).toLocaleDateString('id-ID',{ year: 'numeric', month: 'long', day: '2-digit' })+') ');
+                 
                     $.each(e, function(key, value) {
                         $('#detail-datatables tbody').append(`<tr>
-                                            <td><input type="hidden" class="kode_barang form-control" name="kode_barang[]" value="${value.kode_barang}" readonly/>{{$item->kode_barang}}</td>
+                                            <td><input type="hidden" class="kode_barang form-control" name="kode_barang[]" value="${value.kode_barang}" readonly/>${value.kode_barang}</td>
                                             <td>${value.nama_barang}</td>
                                             <td><input type="number" class="jml_tercatat numeric_form form-control" name="jml_tercatat[]" style="width:150px" value="${value.jml_tercatat}" readonly/></td>
                                             <td><input type="number" class="jml_tersedia numeric_form form-control" name="jml_tersedia[]" style="width:150px"value="${value.jml_fisik}" readonly/></td>
