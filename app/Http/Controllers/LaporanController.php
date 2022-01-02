@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportPembelian;
+use App\Exports\ExportPembelianParams;
+use App\Exports\ExportPenjualanParams;
+use App\Exports\ExportLaba;
 use Illuminate\Http\Request;
 use App\Models\Penjualan;
 use App\Models\Obat;
@@ -78,7 +82,7 @@ class LaporanController extends Controller
             ->leftJoin('staf', 'orders.order_by', '=', 'staf.nip')
             ->select('orders.*','supplier.nama_supplier','staf.nama_staf')->get();
             for ($i = 0; $i < count($data); $i++) {
-                    $data[$i]->action = '<a href="cetak-pdf?id=' . encrypt($data[$i]->id) . '" class="action-icon" data-id="' . $data[$i]->id . '"> <i class="mdi mdi-printer-check"></i></a>';
+                    $data[$i]->action = '<a href="cetak-pdf?id=' . encrypt($data[$i]->id) . '" class="action-icon" data-id="' . $data[$i]->id . '"> <i class="mdi mdi-printer-check"></i></a><a href="export-excel-pembelian?id=' . encrypt($data[$i]->id) . '" class="action-icon" data-id="' . $data[$i]->id . '"> <i class="mdi mdi-file-excel"></i></i></a>';
             }
         }elseif($request->type=='penjualan'){
             $data=Penjualan::select('transaksi.*',DB::raw('DATE(transaksi.tgl_transaksi) as date'),DB::raw('SUM(transaksi.total) as total'))
@@ -86,7 +90,7 @@ class LaporanController extends Controller
             ->get();
             for ($i = 0; $i < count($data); $i++) {
                 $data[$i]->no=$i+1;
-                    $data[$i]->action = '<a href="cetak-pdf-penjualan?id=' . encrypt($data[$i]->date) . '" class="action-icon" data-id="' . $data[$i]->date . '"> <i class="mdi mdi-printer-check"></i></a>';
+                    $data[$i]->action = '<a href="cetak-pdf-penjualan?id=' . encrypt($data[$i]->date) . '" class="action-icon" data-id="' . $data[$i]->date . '"> <i class="mdi mdi-printer-check"></i></a><a href="export-excel-penjualan?id=' . encrypt($data[$i]->date) . '" class="action-icon" data-id="' . $data[$i]->date . '"> <i class="mdi mdi-file-excel"></i></i></a>';
             }
             
         }elseif($request->type=='narkotika'){
@@ -146,7 +150,7 @@ class LaporanController extends Controller
             ->get();
             for ($i = 0; $i < count($data); $i++) {
                 $data[$i]->no=$i+1;
-                    $data[$i]->action = '<a href="cetak-pdf-laba?id=' . encrypt($data[$i]->dates) . '" class="action-icon" data-id="' . $data[$i]->dates . '"> <i class="mdi mdi-printer-check"></i></a>';
+                    $data[$i]->action = '<a href="cetak-pdf-laba?id=' . encrypt($data[$i]->dates) . '" class="action-icon" data-id="' . $data[$i]->dates . '"> <i class="mdi mdi-printer-check"></i></a><a href="export-excel-labarugi?id=' . encrypt($data[$i]->dates) . '" class="action-icon" data-id="' . $data[$i]->dates . '"> <i class="mdi mdi-file-excel"></i></i></a>';
             }
             
         }
@@ -163,10 +167,10 @@ class LaporanController extends Controller
         if(isset($request->supplier)){
             $data->where('orders.id_supplier',$request->supplier);
         }
-        if(isset($request->tgl_awal)){
+        else if(isset($request->tgl_awal)){
             $data->where('orders.created_at','>=',$request->tgl_awal.'%');
         }
-        if(isset($request->tgl_akhir)){
+        else if(isset($request->tgl_akhir)){
             $data->where('orders.created_at','<=',$request->tgl_akhir.'%');
         }
         $result = $data->groupby('orders.id_order')->get();
@@ -438,9 +442,37 @@ class LaporanController extends Controller
         return $pdf->download('laporan-laba-'.$date.'-pdf');
     }
 
-    public function export(Request $request) 
+    public function export_excel_penjualan(Request $request) 
     {
-        return Excel::download(new ExportPenjualan('2021-12'), 'Data_user.xlsx');
+        $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
+        return Excel::download(new ExportPenjualan($request), 'Data_penjualan- '.$date.'.xlsx');
+    }
+
+    public function export_excel_penjualan_params(Request $request) 
+    {
+        $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
+        return Excel::download(new ExportPenjualanParams($request), 'Data_penjualan_params- '.$date.'.xlsx');
+    }
+    
+
+    public function export_excel_pembelian(Request $request) 
+    {
+        $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
+        return Excel::download(new ExportPembelian($request), 'Data_pembelian- '.$date.'.xlsx');
+    }
+
+    public function export_excel_pembelian_params(Request $request) 
+    {
+        $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
+        return Excel::download(new ExportPembelianParams($request), 'Data_pembelian_parameter- '.$date.'.xlsx');
+    }
+
+    public function export_excel_laba(Request $request) 
+    {
+        $exp_tgl=explode('-', substr(decrypt($request->input('id')),0,7));
+        $tanggal = \Carbon\Carbon::createFromDate($exp_tgl[0], $exp_tgl[1], 1)->format('F Y');
+        
+        return Excel::download(new ExportLaba($request), 'Data_laba_rugi- '.$tanggal.'.xlsx');
     }
 
 }

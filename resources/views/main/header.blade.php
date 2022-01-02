@@ -66,7 +66,12 @@
                 <a class="nav-link dropdown-toggle nav-user me-0 waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     <img src="https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png" alt="user-image" class="rounded-circle">
                     <span class="pro-user-name ms-1">
-                       {{auth()->user()->username}} <i class="mdi mdi-chevron-down"></i> 
+                       @php try{
+                           auth()->user()->username;
+                           }catch(Exception $e){
+                            header("Location: " . URL::to('/'), true, 302);
+                            exit();
+                               } @endphp <i class="mdi mdi-chevron-down"></i> 
                     </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end profile-dropdown ">

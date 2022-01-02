@@ -24,6 +24,7 @@
                             <div class="row mb-2">
                                 <div class="col-sm-4">
                                     <button type="button" id="btn-modal" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#custom-modal"><i class="mdi mdi-printer-check"></i> Parameter Print Penjualan</button>
+                                    <button type="button" id="btn-modal" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#custom-modal-2"><i class="mdi mdi-printer-check"></i> Parameter Excel Penjualan</button>
                                 </div>
                             </div>
     
@@ -101,6 +102,58 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+
+    <div class="modal fade" id="custom-modal-2" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h4 class="modal-title" id="myCenterModalLabel">Parameter Cetak Laporan</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="form-print" action="{{ url("export-excel-penjualan-params") }}" method="POST">
+                        {{ csrf_field() }}
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Bulan</label>
+                            <select class="form-control" id="bulan" name="bulan" data-width="100%">
+                                <option value="">-Pilih-</option>
+                                <option value="01">Januari</option>
+                                <option value="02">Februari</option>
+                                <option value="03">Maret</option>
+                                <option value="04">April</option>
+                                <option value="05">Mei</option>
+                                <option value="06">Juni</option>
+                                <option value="07">Juli</option>
+                                <option value="08">Agustus</option>
+                                <option value="09">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Tahun</label>
+                            <select class="form-control" id="tahun" name="tahun" data-toggle="select2" data-width="100%">
+                                <option value="">-Pilih-</option>
+                                @php
+                                     $year = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->year;
+                                    @endphp
+                                @endphp
+                                @for ($i=$year;$i>=2020;$i--)
+                                <option value={{$i}}>{{$i}}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success waves-effect waves-light">Print</button>
+                            <button type="button" class="btn btn-danger waves-effect waves-light" data-bs-dismiss="modal">Batal</button>
+                        </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 
     <!-- Footer Start -->
     <footer class="footer">

@@ -18,23 +18,29 @@ use Maatwebsite\Excel\Concerns\FromView; //Harus diimport untuk men-convert blad
 use Auth;
 use Illuminate\Http\Request;
  
-class ExportPenjualan implements FromView
+class ExportPenjualanparams implements FromView
 {
     function __construct($request) {
         $this->request = $request;
     }
     public function view(): View
     {
-        //export adalah file export.blade.php yang ada di folder views
-        return view('laporan\export_pdf_excel_penjualan', [
+        $data = Penjualan:: join('item_penjualan', 'transaksi.no_transaksi', '=', 'item_penjualan.no_transaksi')
+        ->join('barang','item_penjualan.kode_barang','=','barang.kode_barang')
+        ->leftJoin('staf', 'transaksi.nip', '=', 'staf.nip')
+        ->select('transaksi.*','barang.nama_barang','staf.nama_staf','item_penjualan.jumlah');
+
+        if(isset($this->request->bulan)){
+            $data->whereMonth('transaksi.tgl_transaksi','=',$this->request->bulan);
+        }
+        if(isset($this->request->tahun)){
+            $data->whereYear('transaksi.tgl_transaksi','=',$this->request->tahun);
+        }
+        $data=$data->get();
+        return view('laporan\export_excel_penjualan_params', [
             //data adalah value yang akan kita gunakan pada blade nanti
             //User::all() mengambil seluruh data user dan disimpan pada variabel data
-            'data' => Penjualan:: join('item_penjualan', 'transaksi.no_transaksi', '=', 'item_penjualan.no_transaksi')
-            ->join('barang','item_penjualan.kode_barang','=','barang.kode_barang')
-            ->leftJoin('staf', 'transaksi.nip', '=', 'staf.nip')
-            ->select('transaksi.*','barang.nama_barang','staf.nama_staf','item_penjualan.jumlah')
-            ->where('tgl_transaksi','like',decrypt($this->request->id).'%')
-            ->get()
+            'data' =>  $data
         ]);
     }
 }

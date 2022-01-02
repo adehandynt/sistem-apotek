@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Exports;
-use App\Models\Obat;
+use App\Models\ListItem;
+use App\Models\Pembelian;
 use DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -13,78 +14,36 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-
-class ExportPembelian implements FromCollection, WithHeadings, WithEvents, WithColumnFormatting
+use Illuminate\Contracts\View\View; //Harus diimport untuk men-convert blade menjadi file excel
+use Maatwebsite\Excel\Concerns\FromView; //Harus diimport untuk men-convert blade menjadi file excel
+use Auth;
+use Illuminate\Http\Request;
+ 
+class ExportPembelian implements FromView
 {
-    /**
-    * @return \Illuminate\Support\Collection
-    */
-    public function query()
-    {
-      
+    function __construct($request) {
+        $this->request = $request;
     }
-
-    public function collection()
+    public function view(): View
     {
-       
-    }
+        $id=decrypt($this->request->id);
+        //dd($this->request->id);
+        return view('laporan\export_excel_pembelian', [
+            'data' =>ListItem::whereIn('id_order', function ($query) use ($id) {
+                $query->select('id_order')
+                    ->from(with(new Pembelian)->getTable())
+                    ->where('id', '=', $id);
+            })
+                ->join('satuan', 'list_order.kode_satuan', '=', 'satuan.kode_satuan')
+                ->leftjoin('barang', 'list_order.kode_barang', '=', 'barang.kode_barang')
+                ->select('list_order.*', 'satuan.satuan','barang.nama_barang')
+                ->get(),
+                'order'=> Pembelian::join('staf', 'orders.order_by', '=', 'staf.nip')
+                ->join('supplier', 'orders.id_supplier', '=', 'supplier.id_supplier')
+                ->where('orders.id', '=', $id)
+                ->select('orders.*', 'supplier.nama_supplier', 'staf.nama_staf')
+                ->get()
 
-    public function headings(): array
-    {
-        return [
-            'No',
-            'Kode Barang',
-            'Nama Barang',
-            'Produsen',
-            'Kode Tipe',
-            'Kode Satuan',
-            'Jumlah @ satuan',
-            '-',
-            'Penyimpanan',
-            'Create Date',
-            'Update Date',
-            'Supplier',
-            'Harga Beli',
-            'Margin (%)',
-            'Harga Jual',
-            'Harga Ecer',
-            'Satuan',
-            'Tipe Obat',
-            'Stok Sisa'
-
-        ];
-
-    }
-
-    public function startCell(): string
-    {
-        return 'A2';
-    }
-
-    public function registerEvents(): array
-    {
-        return [
-
-            AfterSheet::class => function (AfterSheet $event) {
-
-                $event->sheet->getDelegate()->getStyle('A1:S1')
-                    ->getFill()
-                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                    ->getStartColor()
-                    ->setARGB('FFA500');
-              
-                 $event->sheet->getDelegate()->freezePane('A2');  
-            },
-
-        ];
-    }
-
-    
-    public function columnFormats(): array
-    {
-        return [
-            'A' => NumberFormat::FORMAT_NUMBER,
-            'B' => NumberFormat::FORMAT_NUMBER,
-        ];
+        ]);
     }
 }

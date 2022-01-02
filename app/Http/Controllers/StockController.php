@@ -436,7 +436,7 @@ class StockController extends Controller
             ->select('harga.harga_jual','tipe.jenis_barang')->first();
             $sisa=HistoryBarang::where('kode_barang',$request->kode_barang[$idx])
             ->orderBy('created_at','desc')->first();
-            $id_list = IdGenerator::generate(['table' => 'list_opname','field'=>'id_opname', 'length' => 15, 'prefix' =>'LOPN-'. $year . '-']);
+            $id_list = IdGenerator::generate(['table' => 'list_opname','field'=>'id_list_opname', 'length' => 15, 'prefix' =>'LOPN-'. $year . '-']);
             $list=new ListOpname;
             $list->id_list_opname=$id_list;
             $list->id_opname=$id;
@@ -502,7 +502,9 @@ class StockController extends Controller
         'stock_opname.id_opname', '=', 'list_opname.id_opname')
         // ->join('list_opname','stock_opname.id_opname','=','list_opname.id_opname')
         ->join('barang','barang.kode_barang','=','list_opname.kode_barang')
+        ->where('list_opname.id_list_opname','like','LOPN-2022-0006%')
         ->get();
+       // dd($data);
         $year = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->year;
         foreach ($data as $idx => $val) {
             if($val->selisih!=0){
@@ -524,6 +526,11 @@ class StockController extends Controller
                     $history->pic=Auth::user()->nip;
                     $history->save();
                     //dd($history);
+                   
+                    // $list = ListOpname::where('id_list_opname',$val->id_list_opname)->firstOrFail();
+                    // $list->status_sinkronasi = 1;
+                    // $list->save();
+                    
             }
         }
         //return json_encode($data);

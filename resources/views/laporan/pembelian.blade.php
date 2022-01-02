@@ -24,6 +24,7 @@
                             <div class="row mb-2">
                                 <div class="col-sm-4">
                                     <button type="button" id="btn-modal" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#custom-modal"><i class="mdi mdi-printer-check"></i> Parameter Print Pembelian</button>
+                                    <button type="button" id="btn-modal" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#custom-modal-2"><i class="mdi mdi-printer-check"></i> Parameter Excel Pembelian</button>
                                 </div>
                             </div>
     
@@ -89,6 +90,44 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+
+    <div class="modal fade" id="custom-modal-2" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h4 class="modal-title" id="myCenterModalLabel">Parameter Cetak Laporan</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="form-print-excel" action="{{ url("export-excel-pembelian-params") }}" method="POST">
+                        {{ csrf_field() }}
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Nama Supplier</label>
+                            <select class="form-control" id="supplier" name="supplier" data-toggle="select2" data-width="100%">
+                                <option value="">-Pilih-</option>
+                                @foreach ($supplier as $item)
+                                <option value={{$item->id_supplier}}>{{$item->id_supplier}} - {{$item->nama_supplier}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Tanggal Awal</label>
+                            <input type="date" class="form-control" id="tgl_awal" name="tgl_awal">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Tanggal Akhir</label>
+                            <input type="date" class="form-control" id="tgl_akhir" name="tgl_akhir">
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success waves-effect waves-light">Print</button>
+                            <button type="button" class="btn btn-danger waves-effect waves-light" data-bs-dismiss="modal">Batal</button>
+                        </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 
     <!-- Footer Start -->
     <footer class="footer">
@@ -159,43 +198,46 @@
                     .appendTo('#example_wrapper .col-md-6:eq(0)');
             }
         });
-        $("#form-print").submit(function(event) {
-            event.preventDefault();
-            var formData = new FormData($('#form-print')[0]);
-            $.ajax({
-                url: '{{ url("print-pembelian") }}',
-                type: 'post',
-                data: formData,
-                contentType: false, //untuk upload image
-                processData: false, //untuk upload image
-                timeout: 300000, // sets timeout to 3 seconds
-                dataType: 'json',
-                success: function(e) {
-                    if (e) {
-                        Swal.fire({
-                            title: "Sukses",
-                            text: "Data Berhasil Diinput!",
-                            icon: "success"
-                        });
-                        $('#basic-datatables').DataTable().ajax.reload();
-                        $('#custom-modal').modal('toggle');
-                        $('#form-print')[0].reset();
-                    } else {
-                        var text = "";
-                        $.each(e.customMessages, function(key, value) {
-                            text += `<br>` + value;
-                        });
-                        Swal.fire({
-                            title: "Gagal",
-                            text: text,
-                            icon: "error"
-                        });
-                    }
-                }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                errorAlertServer('Response Not Found, Please Check Your Data');
-            });
-        });
+        // $("#form-print").submit(function(event) {
+        //     event.preventDefault();
+        //     var formData = new FormData($('#form-print')[0]);
+        //     $.ajax({
+        //         url: '{{ url("print-pembelian") }}',
+        //         type: 'post',
+        //         data: formData,
+        //         contentType: false, //untuk upload image
+        //         processData: false, //untuk upload image
+        //         timeout: 300000, // sets timeout to 3 seconds
+        //         dataType: 'json',
+        //         xhrFields:{
+        //     responseType: 'blob'
+        // },
+        //         success: function(e) {
+        //             if (e) {
+        //                 Swal.fire({
+        //                     title: "Sukses",
+        //                     text: "Data Berhasil Diinput!",
+        //                     icon: "success"
+        //                 });
+        //                 $('#basic-datatables').DataTable().ajax.reload();
+        //                 $('#custom-modal').modal('toggle');
+        //                 $('#form-print')[0].reset();
+        //             } else {
+        //                 var text = "";
+        //                 $.each(e.customMessages, function(key, value) {
+        //                     text += `<br>` + value;
+        //                 });
+        //                 Swal.fire({
+        //                     title: "Gagal",
+        //                     text: text,
+        //                     icon: "error"
+        //                 });
+        //             }
+        //         }
+        //     }).fail(function(jqXHR, textStatus, errorThrown) {
+        //         errorAlertServer('Response Not Found, Please Check Your Data');
+        //     });
+        // });
 
         $("#form-print-edit").submit(function(event) {
             event.preventDefault();

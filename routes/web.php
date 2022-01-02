@@ -222,4 +222,8 @@ Route::post('/add-margin', [MarginController::class, 'add_margin']);
 Route::post('/update-margin', [MarginController::class, 'update_margin']);
 Route::post('/edit-margin', [MarginController::class, 'edit_margin']);
 
-Route::get('/export',[LaporanController::class, 'export']);
+Route::post('/export-excel-pembelian-params',[LaporanController::class, 'export_excel_pembelian_params']);
+Route::get('/export-excel-pembelian',[LaporanController::class, 'export_excel_pembelian']);
+Route::get('/export-excel-penjualan',[LaporanController::class, 'export_excel_penjualan']);
+Route::post('/export-excel-penjualan-params',[LaporanController::class, 'export_excel_penjualan_params']);
+Route::get('/export-excel-labarugi',[LaporanController::class, 'export_excel_laba']);
