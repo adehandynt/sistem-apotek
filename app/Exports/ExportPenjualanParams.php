@@ -37,7 +37,7 @@ class ExportPenjualanparams implements FromView
             $data->whereYear('transaksi.tgl_transaksi','=',$this->request->tahun);
         }
         $data=$data->get();
-        return view('laporan\export_excel_penjualan_params', [
+        return view('laporan/export_excel_penjualan_params', [
             //data adalah value yang akan kita gunakan pada blade nanti
             //User::all() mengambil seluruh data user dan disimpan pada variabel data
             'data' =>  $data

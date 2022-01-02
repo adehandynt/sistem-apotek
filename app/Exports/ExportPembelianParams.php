@@ -43,7 +43,7 @@ class ExportPembelianParams implements FromView
         }
         $result = $data->groupby('orders.id_order')->get();
 
-        return view('laporan\export_excel_pembelian_params', [
+        return view('laporan/export_excel_pembelian_params', [
             'data' =>$result
         ]);
     }

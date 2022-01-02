@@ -28,7 +28,7 @@ class ExportPembelian implements FromView
     {
         $id=decrypt($this->request->id);
         //dd($this->request->id);
-        return view('laporan\export_excel_pembelian', [
+        return view('laporan/export_excel_pembelian', [
             'data' =>ListItem::whereIn('id_order', function ($query) use ($id) {
                 $query->select('id_order')
                     ->from(with(new Pembelian)->getTable())

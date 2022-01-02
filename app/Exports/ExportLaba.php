@@ -136,7 +136,7 @@ class ExportLaba implements FromView
         $tanggal = \Carbon\Carbon::createFromDate($exp_tgl[0], $exp_tgl[1], 1)->format('F Y');
         
         //dd($this->request->id);
-        return view('laporan\export_excel_laba', [
+        return view('laporan/export_excel_laba', [
             'data' =>$data,
             'tanggal'=>$tanggal
 
