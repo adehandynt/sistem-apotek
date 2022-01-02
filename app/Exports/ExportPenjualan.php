@@ -26,7 +26,7 @@ class ExportPenjualan implements FromView
     public function view(): View
     {
         //export adalah file export.blade.php yang ada di folder views
-        return view('laporan\export_pdf_excel_penjualan', [
+        return view('laporan/export_pdf_excel_penjualan', [
             //data adalah value yang akan kita gunakan pada blade nanti
             //User::all() mengambil seluruh data user dan disimpan pada variabel data
             'data' => Penjualan:: join('item_penjualan', 'transaksi.no_transaksi', '=', 'item_penjualan.no_transaksi')
