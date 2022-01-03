@@ -1305,12 +1305,13 @@
                 racik +=parseFloat($(this).val()==="" || isNaN($(this).val())?0:$(this).val());
             
             });
-
-            if(racik>0){
+            //console.log($('.id_obat').eq(0).val()!=null);
+            if(racik>=0 && $('.id_obat').eq(0).val()!=null){
             $('.total_dokter').each(function() {
             
             sum += parseFloat($(this).val()==="" || isNaN($(this).val())?0:$(this).val());
             dokter +=parseFloat($(this).val()==="" || isNaN($(this).val())?0:$(this).val());
+           //console.log($('.total_racik').length>0);
          });
             }
 
@@ -1440,13 +1441,14 @@
                     $('#table-racik-bill tbody').append(
                         `<tr>
                             <td><input type="hidden" name="jasa_dokter[]" value="${parseFloat(dokter)+totalBiaya}"/></td>
-                            <td><input type="hidden" name="id_obat[]" value="${id_obat}"/></td>
+                            <td><input type="hidden" name="id_obat_racik[]" value="${id_obat}"/></td>
                             <td><input type="hidden" name="nama_racik[]" value="${name}"/>${name}</td>
                             <td><input type="hidden" name="jml_racik[]" value="${jml}"/>${jml}</td>
                             <td><input type="hidden" name="biaya_racik[]" value="${biaya}"/>@ Rp ${biaya}</td>
                             <td><input type="hidden" name="total_racik[]" value="${total}"/>Rp ${total}</td>
                             </tr>`
                     );
+                    console.log(parseFloat(dokter)+totalBiaya);
                 });
                 $('#bill-dokter').text(doc.toLocaleString('id-ID'));
                 $('#bill-grand-dokter').val(doc);
@@ -1461,9 +1463,9 @@
 
             $('#bill-diskon').text(granddiskon.toLocaleString('id-ID'));
             $('#bill-tuslah').text(tuslah.toLocaleString('id-ID'));
-            $('#bill-total2').text((Math.ceil(grandtotal/100)*100).toLocaleString('id-ID'));
-            $('#bill-total').val(Math.ceil(grandtotal/100)*100);
-            $('#bill-grand-total').val(Math.ceil(grandtotal/100)*100);
+            $('#bill-total2').text((Math.ceil(grandtotal/500)*500).toLocaleString('id-ID'));
+            $('#bill-total').val(Math.ceil(grandtotal/500)*500);
+            $('#bill-grand-total').val(Math.ceil(grandtotal/500)*500);
             
             $('#bill-tuslah-total').val(tuslah);
         });
@@ -1554,7 +1556,11 @@
                     
                     if( $('#id_rekam_hidden').val()!=id){
                         $('#id_rekam_hidden').val(id);
-                        $("#table-racik tr").eq(1).remove();
+                        //$("#table-racik tr").eq(1).remove();
+                        var table = document.getElementById("table-racik");
+                        while ( table.rows.length > 1) {
+                            table.deleteRow(1);
+                            }
                         $('.total_dokter').val(e[0].total_dokter);
                         $('#disp_total_dokter').text(e[0].total_dokter.toLocaleString('id-ID'));
                         for(let i=0;i<e.length;i++){

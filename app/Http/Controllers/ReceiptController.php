@@ -144,13 +144,13 @@ class ReceiptController extends Controller
                     $item = new ItemPenjualan;
                     $item->id_item = $id_item;
                     $item->no_transaksi = $id;
-                    $item->kode_barang = $request->input('id_obat')[$idx];
+                    $item->kode_barang = $request->input('id_obat_racik')[$idx];
                     $item->jumlah = $request->input('jml_racik')[$idx];
     
                     $item->save();
     
                     $data = Stok::leftJoin('history_barang', 'history_barang.kode_barang', '=', 'stok.kode_barang')
-                        ->where('stok.kode_barang', '=', $request->input('id_obat')[$idx])
+                        ->where('stok.kode_barang', '=', $request->input('id_obat_racik')[$idx])
                         ->select('stok.stock_id', 'stok.jml_akumulasi',DB::raw('COALESCE(COALESCE(history_barang.sisa, stok.jml_masuk ),0) AS sisa'))
                         ->orderBy('history_barang.created_at', 'desc')
                         ->orderBy('history_barang.sisa', 'asc')
@@ -174,7 +174,7 @@ class ReceiptController extends Controller
                     $id_history = IdGenerator::generate(['table' => 'history_barang','field'=>'id_history', 'length' => 15, 'prefix' =>'HIS-'. $year . '-']);
                     $history = new HistoryBarang;
                     $history->id_history=$id_history;
-                    $history->kode_barang=$request->input('id_obat')[$idx];
+                    $history->kode_barang=$request->input('id_obat_racik')[$idx];
                     $history->tgl_keluar=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
                     $history->jml_keluar=$request->input('jml_racik')[$idx];
                     $history->jenis_history='barang_keluar';
@@ -229,12 +229,12 @@ class ReceiptController extends Controller
             }
         }
 
-        if ($request->input('id_obat') != null) {
-         
+        if ($request->input('id_obat_racik') != null || $request->input('id_obat_racik') != "") {
+           $last_idx=max(array_keys($request->input('jasa_dokter')));
                 $items[] = [
                     'name' => 'Dokter',
                     'qty' => '1',
-                    'price' => $request->input('jasa_dokter')[0],
+                    'price' => $request->input('jasa_dokter')[$last_idx],
                 ];
             
         }
@@ -310,4 +310,4 @@ class ReceiptController extends Controller
             $item->save();
         }
     }
-}
+} 
