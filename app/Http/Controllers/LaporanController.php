@@ -399,12 +399,12 @@ class LaporanController extends Controller
         WHERE
         b.created_at LIKE '".$tanggal."%'
         ) AS pendapatan_jasa_dokter,
-        ( SELECT sum( a.total ) FROM orders a
+        ( SELECT sum( b.total ) FROM orders a
         JOIN list_order b ON b.id_order = a.id_order
         JOIN barang c ON b.kode_barang = c.kode_barang
         JOIN tipe d ON d.kode_tipe = c.kode_tipe
         WHERE a.tgl_order LIKE '".$tanggal."%' AND d.jenis_barang = 'barang_lain' ) AS pembelian_barang,
-        ( SELECT sum( a.total ) FROM orders a
+        ( SELECT sum( b.total ) FROM orders a
         JOIN list_order b ON b.id_order = a.id_order
         JOIN barang c ON b.kode_barang = c.kode_barang
         JOIN tipe d ON d.kode_tipe = c.kode_tipe
