@@ -1499,7 +1499,7 @@
 
         $('#uang_diterima').keyup(function(e) {
             if ($('#metode_pembayaran').val() == "cash") {
-                let total = parseFloat($('#bill-total').val());
+                let total = parseInt($('#bill-total').val());
                 let diterima = $('#uang_diterima').val();
                 $('#uang_diterima').val();
                 let kembali= diterima - total;
