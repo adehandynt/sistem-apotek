@@ -41,7 +41,7 @@
                                 <table class="table table-centered table-nowrap table-striped" id="rekam-datatables">
                                     <thead>
                                         <tr>
-                                            <th>NIK</th>
+                                            <th>Medical Rec ID</th>
                                             <th>Nama Pasien</th>
                                             <th>Tanggal Lahir</th>
                                             <th>Jenis Kelamin</th>
