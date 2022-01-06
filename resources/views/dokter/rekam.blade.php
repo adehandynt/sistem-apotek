@@ -84,7 +84,7 @@
                             <select class="form-control" id="nik" name="nik" data-toggle="select2" data-width="100%">
                                 <option value="">-Pilih-</option>
                                 @foreach ($pasien as $item)
-                                <option value={{$item->nik}}>{{$item->nik}} - {{$item->nama_pasien}}</option>
+                                <option value={{$item->medical_record_id}}>{{$item->medical_record_id}} - {{$item->nama_pasien}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -145,7 +145,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-light">
-                    <h4 class="modal-title" id="myCenterModalLabel">Daftar Rekam Medis</h4>
+                    <h4 class="modal-title" id="myCenterModalLabel">Daftar Riwayat Kunjungan</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                 </div>
                 <div class="modal-body p-4">
@@ -154,7 +154,7 @@
                         <table class="table table-centered table-nowrap table-striped" id="daftar-rekam-datatables">
                             <thead>
                                 <tr>
-                                    <th>No. Rekam Medis</th>
+                                    <th>No. Riwayat Kunjungan</th>
                                     <th>NIK</th>
                                     <th>Pasien</th>
                                     <th>Tanggal Rekam</th>
@@ -346,7 +346,7 @@
                 }
             },
             columns: [{
-                    data: "nik"
+                    data: "medical_record_id"
                 },
                 {
                     data: "nama_pasien"
@@ -408,6 +408,7 @@
                         $('#tindakan').val("");
                         $('#kode_barang').val("");
                         $('#penyakit').val("");
+                        setTimeout(function(){   location.reload(); }, 2000);    
                     } else {
                         var text = "";
                         $.each(e.customMessages, function(key, value) {

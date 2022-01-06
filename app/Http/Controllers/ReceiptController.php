@@ -26,6 +26,7 @@ class ReceiptController extends Controller
     {
         $id = IdGenerator::generate(['table' => 'transaksi', 'field' => 'no_transaksi', 'length' => 9, 'prefix' => 'TRX']);
         $id_jasa = IdGenerator::generate(['table' => 'jasa_lain', 'field' => 'id_jasa', 'length' => 9, 'prefix' => 'JSA']);
+        DB::transaction(function() use ($id,$id_jasa,$request) {
         $transaksi = new Transaksi;
         $transaksi->no_transaksi = $id;
         $transaksi->tgl_transaksi = \Carbon\Carbon::now()->timezone('Asia/Jakarta');
@@ -193,6 +194,7 @@ class ReceiptController extends Controller
                 }
             }
         }
+    });
 
         // Set params
         $staf=Staf::where('nip','=',Auth::user()->nip)->select('nama_staf')->get();

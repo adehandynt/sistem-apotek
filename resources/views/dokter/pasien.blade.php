@@ -138,6 +138,10 @@
                     <form id="form-pasien-edit">
                         {{ csrf_field() }}
                         <div class="mb-3">
+                            <label for="name" class="form-label">Medical Record ID</label>
+                            <input type="text" class="form-control" id="medical_record_id_edit" name="medical_record_id" placeholder="Medical Record" readonly required>
+                        </div>
+                        <div class="mb-3">
                             <label for="name" class="form-label">NIK</label>
                             <input type="number" class="form-control numeric_form" id="nik_edit" name="nik" placeholder="NIK Pasien" required>
                         </div>

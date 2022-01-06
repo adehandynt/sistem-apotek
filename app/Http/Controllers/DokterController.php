@@ -56,12 +56,14 @@ class DokterController extends Controller
         $data = Pasien::get();
         for ($i = 0; $i < count($data); $i++) {
             $data[$i]->action = '<a href="javascript:void(0);" class="action-icon btn-edit" data-id="' . $data[$i]->id . '" data-bs-toggle="modal" data-bs-target="#custom-modal-edit"> <i class="mdi mdi-square-edit-outline"></i></a>
-            <a href="javascript:void(0);" class="action-icon btn-antrian" data-id="' . $data[$i]->nik . '"> <i class="mdi mdi-human-queue"></i></a>';
+            <a href="javascript:void(0);" class="action-icon btn-antrian" data-id="' . $data[$i]->medical_record_id . '"> <i class="mdi mdi-human-queue"></i></a>';
         }
     return json_encode($data);
     }
 
     public function add_pasien(Request $request){
+        $year = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->year;
+        $id = IdGenerator::generate(['table' => 'pasien','field'=>'medical_record_id', 'length' => 15, 'prefix' =>'MEDR'.$year.'-']);
         $pasien=new Pasien;
         $pasien->nik=$request->nik;
         $pasien->nama_pasien=$request->nama_pasien;
@@ -72,6 +74,7 @@ class DokterController extends Controller
         $pasien->no_telp_pasien=$request->no_telp_pasien;
         $pasien->golongan_darah=$request->golongan_darah;
         $pasien->no_bpjs=$request->no_bpjs;
+        $pasien->medical_record_id=$id;
         if(!$pasien->save()){
             return false;
         }else{
@@ -88,7 +91,7 @@ class DokterController extends Controller
     }
 
     public function update_pasien(Request $request){
-        $pasien = Pasien::where('nik', $request->nik)
+        $pasien = Pasien::where('medical_record_id', $request->medical_record_id)
             ->firstOrFail();
             $pasien->nik=$request->nik;
             $pasien->nama_pasien=$request->nama_pasien;
@@ -149,9 +152,13 @@ class DokterController extends Controller
 
     public function v_medis()
     {
+        $date=\Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
         $res['satuan'] = Satuan::get();
         $res['tipe'] = Tipe::get();
-        $res['pasien'] = Pasien::get();
+        $res['pasien'] = Antrian::join('pasien', 'pasien.medical_record_id', '=', 'antrian.nik')
+        ->where('antrian.created_at','like','%'.$date.'%')
+        ->select('pasien.*')
+        ->get();
         $res['penyakit'] = Penyakit::get();
         $res['obat'] =  Obat::Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
         ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
@@ -174,9 +181,11 @@ class DokterController extends Controller
         $rekam->tgl_rekam=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
         $rekam->nip=Auth::user()->nip;
         $rekam->nik=$request->nik;
+        $rekam->medical_record_id=$request->nik;
         if(!$rekam->save()){
             return false;
         }else{
+            Antrian::where('nik',$request->nik)->delete();
             $id_list_penyakit = IdGenerator::generate(['table' => 'list_penyakit','field'=>'id_list_penyakit', 'length' => 15, 'prefix' =>'IPN-'. $year . '-']);
             foreach ($request->penyakit as $idx => $val) {
             $ListPenyakit=new ListPenyakit;
@@ -212,16 +221,16 @@ class DokterController extends Controller
     public function list_pasien_rekam(){
         $data = Pasien::get();
         for ($i = 0; $i < count($data); $i++) {
-            $data[$i]->action = '<a href="javascript:void(0);" class="action-icon btn-rekam" data-id="' . $data[$i]->nik . '" data-bs-toggle="modal" data-bs-target="#custom-modal-rekam"> <i class="mdi mdi-book-open-variant"></i></a>';
+            $data[$i]->action = '<a href="javascript:void(0);" class="action-icon btn-rekam" data-id="' . $data[$i]->medical_record_id . '" data-bs-toggle="modal" data-bs-target="#custom-modal-rekam"> <i class="mdi mdi-book-open-variant"></i></a>';
         }
     return json_encode($data);
     }
 
     public function list_rekam_medis(Request $request){
-        $data = RekamMedis::Join('pasien', 'rekam_medis.nik', '=', 'pasien.nik')
+        $data = RekamMedis::Join('pasien', 'rekam_medis.medical_record_id', '=', 'pasien.medical_record_id')
         ->Join('staf', 'rekam_medis.nip', '=', 'staf.nip')
-        ->where('pasien.nik',$request->id)
-        ->select('rekam_medis.*','staf.nama_staf','pasien.nik','pasien.nama_pasien')
+        ->where('pasien.medical_record_id',$request->id)
+        ->select('rekam_medis.*','staf.nama_staf','pasien.medical_record_id','pasien.nama_pasien')
         ->get();
         for ($i = 0; $i < count($data); $i++) {
             $data[$i]->action = '<a href="javascript:void(0);" class="action-icon btn-rekam-detail" data-id="' . $data[$i]->id_rekam_medis . '" data-bs-toggle="modal" data-bs-target="#custom-modal-detail"> <i class="mdi mdi-eye"></i></a>';
@@ -231,7 +240,7 @@ class DokterController extends Controller
 
     public function detail_rekam_medis(Request $request){
         $data = RekamMedis::where('rekam_medis.id_rekam_medis',$request->id)
-        ->Join('pasien', 'rekam_medis.nik', '=', 'pasien.nik')
+        ->Join('pasien', 'rekam_medis.medical_record_id', '=', 'pasien.medical_record_id')
         ->Join('list_tindakan', 'rekam_medis.id_rekam_medis', '=', 'list_tindakan.id_rekam_medis')
         ->Join('tindakan', 'list_tindakan.id_tindakan', '=', 'tindakan.id_tindakan')
         ->Join('list_penyakit', 'rekam_medis.id_rekam_medis', '=', 'list_penyakit.id_rekam_medis')
@@ -270,12 +279,13 @@ class DokterController extends Controller
 
     public function get_antrian(Request $request){
         $date=\Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
-        $data = Antrian::join('pasien', 'pasien.nik', '=', 'antrian.nik')
+        $data = Antrian::join('pasien', 'pasien.medical_record_id', '=', 'antrian.nik')
         ->where('antrian.created_at','like','%'.$date.'%')
         ->select('antrian.*','pasien.nama_pasien')
         ->get();
         for ($i = 0; $i < count($data); $i++) {
-            $data[$i]->action = '<a href="javascript:void(0);" class="action-icon btn-terima" data-id="' . $data[$i]->id . '"> <i class="mdi mdi-check-bold"></i></a>';
+            //$data[$i]->action = '<a href="javascript:void(0);" class="action-icon btn-terima" data-id="' . $data[$i]->id . '"> <i class="mdi mdi-check-bold"></i></a>';
+            $data[$i]->action = 'List Pasien Akan Menghilang Setelah Input Rekam Medis !';
         }
         return json_encode($data);
     }

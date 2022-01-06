@@ -1516,6 +1516,7 @@
 
         $("#form-bill").submit(function(event) {
             event.preventDefault();
+            $('#btn-print-bill').attr("disabled", true);
             var formData = new FormData($('#form-bill')[0]);
             $.ajax({
                 url: '{{ url("print-bill") }}',
@@ -1531,6 +1532,7 @@
                             text: "Transaksi Berhasil Diinput!",
                             icon: "success"
                         });
+                       // $('#btn-print-bill').attr("disabled", false);
                         setTimeout(function(){   location.reload(); }, 2000);                 
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -1539,6 +1541,7 @@
                             text: "Gagal Transaksi, Coba Lagi",
                             icon: "error"
                         });
+                        $('#btn-print-bill').attr("disabled", false);
             });
         });
 
