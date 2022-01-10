@@ -36,13 +36,16 @@ class ReceiptController extends Controller
         $transaksi->uang_kembalian = $request->input('uang_kembali')==null?0:$request->input('uang_kembali');
         $transaksi->metode_pembayaran = $request->input('metode_pembayaran');
         $transaksi->tuslah = $request->input('bill_tuslah_total');
+        $status = 'lunas';
         if(isset($request->no_kartu)){
             $transaksi->bank = $request->input('bank');
             $transaksi->no_kartu = $request->input('no_kartu');
         }
-        if(isset($request->no_bpjs)){
-            $transaksi->bpjs = $request->input('no_bpjs');
+        if(isset($request->no_bpjs) && $request->metode_pembayaran =='bpjs'){
+            $transaksi->bpjs = $request->input('no_bpjs');  
+            $status='piutang';
         }
+        $transaksi->status_transaksi=$status;
         $transaksi->save();
         
         $saved = $transaksi->save();
@@ -61,13 +64,22 @@ class ReceiptController extends Controller
 
                 $item->save();
 
-                $data = Stok::leftJoin('history_barang', 'history_barang.kode_barang', '=', 'stok.kode_barang')
+                $data = Stok::leftJoin(DB::raw('(SELECT
+                t.kode_barang,
+                min(t.sisa) as sisa
+                   FROM
+                ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
+                INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
+                AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS history_barang'),
+               'history_barang.kode_barang', '=', 'stok.kode_barang')
                     ->where('stok.kode_barang', '=', $request->input('kode_barang')[$idx])
-                    ->select('stok.stock_id', 'stok.jml_akumulasi', DB::raw('COALESCE(COALESCE(history_barang.sisa, stok.jml_masuk ),0) AS sisa'))
-                    ->orderBy('history_barang.created_at', 'desc')
-                    ->orderBy('history_barang.sisa', 'asc')
+                    ->select('stok.stock_id', 'stok.jml_akumulasi',DB::raw('COALESCE(COALESCE(history_barang.sisa, stok.jml_masuk ),0) AS sisa'))
+                    // ->orderBy('history_barang.created_at', 'desc')
+                    // ->orderBy('history_barang.sisa', 'asc')
                     ->take(1)
                     ->get();
+                    //dd($data);
+                   // return false;
 
 
 
@@ -112,13 +124,28 @@ class ReceiptController extends Controller
 
                     $list_alat=AlatJasa::where('id_list_jasa', '=', $request->input('nama_jasa')[$idx])->get();
                     foreach ($list_alat as $idx => $val) {
-                        $data = Stok::leftJoin('history_barang', 'history_barang.kode_barang', '=', 'stok.kode_barang')
-                        ->where('stok.kode_barang', '=',$val->kode_barang)
-                        ->select('stok.stock_id', 'stok.jml_akumulasi', DB::raw('COALESCE(COALESCE(history_barang.sisa, stok.jml_masuk ),0) AS sisa'))
-                        ->orderBy('history_barang.created_at', 'desc')
-                        ->orderBy('history_barang.sisa', 'asc')
-                        ->take(1)
-                        ->get();
+                        // $data = Stok::leftJoin('history_barang', 'history_barang.kode_barang', '=', 'stok.kode_barang')
+                        // ->where('stok.kode_barang', '=',$val->kode_barang)
+                        // ->select('stok.stock_id', 'stok.jml_akumulasi', DB::raw('COALESCE(COALESCE(history_barang.sisa, stok.jml_masuk ),0) AS sisa'))
+                        // ->orderBy('history_barang.created_at', 'desc')
+                        // ->orderBy('history_barang.sisa', 'asc')
+                        // ->take(1)
+                        // ->get();
+
+                        $data = Stok::leftJoin(DB::raw('(SELECT
+                t.kode_barang,
+                min(t.sisa) as sisa
+                   FROM
+                ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
+                INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
+                AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS history_barang'),
+               'history_barang.kode_barang', '=', 'stok.kode_barang')
+                    ->where('stok.kode_barang', '=',$val->kode_barang)
+                    ->select('stok.stock_id', 'stok.jml_akumulasi',DB::raw('COALESCE(COALESCE(history_barang.sisa, stok.jml_masuk ),0) AS sisa'))
+                    // ->orderBy('history_barang.created_at', 'desc')
+                    // ->orderBy('history_barang.sisa', 'asc')
+                    ->take(1)
+                    ->get();
 
                         $sisa = $data[0]->sisa==0||$data[0]->sisa==null? $data[0]->jml_akumulasi:$data[0]->sisa;
     
@@ -150,14 +177,21 @@ class ReceiptController extends Controller
     
                     $item->save();
     
-                    $data = Stok::leftJoin('history_barang', 'history_barang.kode_barang', '=', 'stok.kode_barang')
+                    $data = Stok::leftJoin(DB::raw('(SELECT
+                    t.kode_barang,
+                    min(t.sisa) as sisa
+                       FROM
+                    ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
+                    INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
+                    AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS history_barang'),
+                   'history_barang.kode_barang', '=', 'stok.kode_barang')
                         ->where('stok.kode_barang', '=', $request->input('id_obat_racik')[$idx])
                         ->select('stok.stock_id', 'stok.jml_akumulasi',DB::raw('COALESCE(COALESCE(history_barang.sisa, stok.jml_masuk ),0) AS sisa'))
-                        ->orderBy('history_barang.created_at', 'desc')
-                        ->orderBy('history_barang.sisa', 'asc')
+                        // ->orderBy('history_barang.created_at', 'desc')
+                        // ->orderBy('history_barang.sisa', 'asc')
                         ->take(1)
                         ->get();
-                        
+                      
                     $sisa = $data[0]->sisa==0||$data[0]->sisa==null? $data[0]->jml_akumulasi:$data[0]->sisa;
                     // $sisa = 100;
                     $id_keluar = IdGenerator::generate(['table' => 'barang_keluar', 'field' => 'id_keluar', 'length' => 9, 'prefix' => 'KLR-']);

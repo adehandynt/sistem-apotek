@@ -143,11 +143,11 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="product-meta-keywords" class="form-label">Jumlah Retur</label>
-                                    <input type="number" class="form-control" name="jml_retur" id="jml_retur" required>
+                                    <input type="number" class="form-control" name="jml_retur" id="jml_retur" value="0" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="product-meta-keywords" class="form-label">Deskripsi</label>
-                                    <textarea class="form-control" name="deskripsi" id="deskripsi" required></textarea>
+                                    <textarea class="form-control" name="deskripsi" id="deskripsi" required>-</textarea>
                                 </div>
 
                         </div>

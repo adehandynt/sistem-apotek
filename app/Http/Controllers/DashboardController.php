@@ -42,8 +42,23 @@ class DashboardController extends Controller
         $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
         $penjualan=Penjualan::select(DB::raw('sum(total) as penjualan'))
         ->where('tgl_transaksi','like', $date.'%')
+        ->where(function ($query) {
+            $query->where('status_transaksi','=','lunas')
+                ->orWhere('status_transaksi','=',null);
+        })
+
+        
         ->get();
         $ret['penjualan']=$penjualan;
+
+        $piutang = Penjualan::select('transaksi.*',DB::raw('coalesce(bank,bpjs,"cash") as pembayaran'))
+        ->where(function ($query) {
+            $query->where('status_transaksi','=','piutang');
+        })
+        ->get();
+
+        $ret['piutang']=$piutang;
+
 
         $terjual=Penjualan::join('item_penjualan', 'transaksi.no_transaksi', '=', 'item_penjualan.no_transaksi')
         ->select(DB::raw('count(item_penjualan.id) as terjual'))
@@ -125,11 +140,23 @@ class DashboardController extends Controller
 
          $pendapatan_lalu = Penjualan::select(DB::raw('MONTHNAME(transaksi.tgl_transaksi) as date'),DB::raw('coalesce(SUM(transaksi.total),0) as total'))
          ->where('tgl_transaksi','like',$lastYear.'-'.$lastMonth.'%')
+         ->where(function ($query) {
+            $query->where('status_transaksi','=','lunas')
+                ->orWhere('status_transaksi','=',null);
+        })
+
+         
          ->groupBy('date')
          ->get();
 
          $pendapatan_ini = Penjualan::select(DB::raw('MONTHNAME(transaksi.tgl_transaksi) as date'),DB::raw('coalesce(SUM(transaksi.total),0) as total'))
          ->where('tgl_transaksi','like',$year.'-'.$thisMonth.'%')
+         ->where(function ($query) {
+            $query->where('status_transaksi','=','lunas')
+                ->orWhere('status_transaksi','=',null);
+        })
+
+         
          ->groupBy('date')
          ->get();
          $dateBefore = \Carbon\Carbon::now()->subDays(30, 'day')->timezone('Asia/Jakarta')->format('Y-m-d');
@@ -163,6 +190,11 @@ class DashboardController extends Controller
     public function GraphData()
     {
         $terjual= Penjualan::select('transaksi.*',DB::raw('MONTHNAME(transaksi.tgl_transaksi) as date'),DB::raw('SUM(transaksi.total) as total'))
+        ->where(function ($query) {
+            $query->where('status_transaksi','=','lunas')
+                ->orWhere('status_transaksi','=',null);
+        })
+        
             ->groupBy('date')
             ->get()
             ->take(7);
@@ -188,5 +220,17 @@ class DashboardController extends Controller
             $ret['series']=$val_data; 
             //dd($ret);
         return json_encode($ret);
+    }
+
+    public function set_lunas(Request $request){
+        $transaksi = Penjualan::where('no_transaksi', $request->id)
+            ->firstOrFail();
+        $transaksi->status_transaksi='lunas';
+        $transaksi->save();
+        if($transaksi->save()){
+            return 'success';
+        }else{
+            return 'error';
+        }
     }
 }

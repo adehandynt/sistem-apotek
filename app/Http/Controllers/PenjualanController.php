@@ -86,12 +86,19 @@ class PenjualanController extends Controller
     {
         $data = Obat::where('barang.kode_barang',$request->kode)
         ->leftJoin('stok', 'barang.kode_barang', '=', 'stok.kode_barang')
-        ->leftJoin('history_barang', 'barang.kode_barang', '=', 'history_barang.kode_barang')
+        ->leftJoin(DB::raw('(SELECT
+                t.kode_barang,
+                min(t.sisa) as sisa
+                   FROM
+                ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
+                INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
+                AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS history_barang'),
+               'history_barang.kode_barang', '=', 'barang.kode_barang')
         ->Join('set_harga', 'barang.kode_barang', '=', 'set_harga.kode_barang')
         ->Join('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
         ->Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
         ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
-        ->select('barang.*','harga.diskon','harga.harga_jual','harga.harga_beli','harga.harga_eceran','harga.margin','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe',DB::raw('(select sisa from history_barang where kode_barang="'.$request->kode.'" order by id_history DESC limit 1) AS sisa'))
+        ->select('barang.*','harga.diskon','harga.harga_jual','harga.harga_beli','harga.harga_eceran','harga.margin','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe',DB::raw('COALESCE(COALESCE(history_barang.sisa, stok.jml_masuk ),0) AS sisa'))
         ->where('sisa','!=','0')
         ->where('jenis_barang','=','obat')
         ->get();
@@ -108,12 +115,19 @@ class PenjualanController extends Controller
     {
         $data = Obat::where('barang.kode_barang',$request->kode)
         ->leftJoin('stok', 'barang.kode_barang', '=', 'stok.kode_barang')
-        ->leftJoin('history_barang', 'barang.kode_barang', '=', 'history_barang.kode_barang')
+        ->leftJoin(DB::raw('(SELECT
+                t.kode_barang,
+                min(t.sisa) as sisa
+                   FROM
+                ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
+                INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
+                AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS history_barang'),
+               'history_barang.kode_barang', '=', 'barang.kode_barang')
         ->Join('set_harga', 'barang.kode_barang', '=', 'set_harga.kode_barang')
         ->Join('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
         ->Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
         ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
-        ->select('barang.*','harga.diskon','harga.harga_jual','harga.harga_beli','harga.harga_eceran','harga.margin','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe',DB::raw('(select sisa from history_barang where kode_barang="'.$request->kode.'" order by id_history DESC limit 1) AS sisa'))
+        ->select('barang.*','harga.diskon','harga.harga_jual','harga.harga_beli','harga.harga_eceran','harga.margin','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe',DB::raw('COALESCE(COALESCE(history_barang.sisa, stok.jml_masuk ),0) AS sisa'))
         ->where('sisa','!=','0')
         ->where('jenis_barang','!=','obat')
         ->get();
@@ -291,7 +305,7 @@ class PenjualanController extends Controller
                 $history->jenis_history='retur_jual';
                 $history->id_referensi=$id;
                 $history->pic=Auth::user()->nip;
-                $history->sisa = $sisa - $request->jml_retur;
+                $history->sisa = $sisa + $request->jml_retur;
                 $history->save();
             return true;
         }else{

@@ -209,7 +209,7 @@ Route::get('/cetak-pdf-konsinyasi', [LaporanController::class, 'print_konsinyasi
 Route::get('/cetak-pdf-bpjs', [LaporanController::class, 'print_bpjs']);
 Route::get('/cetak-pdf-laba', [LaporanController::class, 'print_laba']);
 Route::get('/graph-data', [DashboardController::class, 'GraphData']);
-
+Route::post('/set-lunas', [DashboardController::class, 'set_lunas']);
 Route::post('/add-jasa', [JasaController::class, 'add_jasa']);
 Route::get('/list-jasa', [JasaController::class, 'v_list_jasa']);
 Route::post('/edit-jasa', [JasaController::class, 'edit_jasa']);

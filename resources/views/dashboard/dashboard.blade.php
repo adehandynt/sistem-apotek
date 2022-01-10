@@ -152,7 +152,7 @@
 
 
             <div class="row">
-                <div class="col-xl-12">
+                <div class="col-xl-6">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="header-title mb-3">History Penjualan</h4>
@@ -196,6 +196,45 @@
                                             @else
                                             <td><span class="badge rounded-pill bg-warning">BPJS</span></td>
                                             @endif
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div> <!-- end table-responsive -->
+                        </div>
+                    </div> <!-- end card-->
+                </div>
+                <div class="col-xl-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title mb-3">Piutang Penjualan</h4>
+
+                            <div class="table-responsive">
+                                <table class="table table-centered table-nowrap table-hover mb-0" id="piutang-datatables">
+                                    <thead>
+                                        <tr>
+                                            <th class="border-top-0">No. Transaksi</th>
+                                            <th class="border-top-0">Tanggal</th>
+                                            <th class="border-top-0">Total</th>
+                                            <th class="border-top-0">Status</th>
+                                            <th class="border-top-0">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($piutang as $key => $val)
+                                        <tr>
+                                            <td>
+                                                <span class="ms-2">{{$val->no_transaksi}}</span>
+                                            </td>
+                                          
+                                            <td>{{$val->tgl_transaksi}}</td>
+                                            <td>Rp {{number_format($val->total,2)}}</td>
+                                            @if($val->status_transaksi != "piutang")
+                                            <td><span class="badge rounded-pill bg-success">LUNAS</span></td>
+                                            @else
+                                            <td><span class="badge rounded-pill bg-warning">BELUM LUNAS</span></td>
+                                            @endif
+                                            <td><button class="btn btn-xs btn-success btn-lunas" data-id="{{$val->no_transaksi}}" >Set Lunas</button></td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -319,6 +358,7 @@
 
 <script>
 $('#basic-datatables').DataTable();
+$('#piutang-datatables').DataTable();
 $('#kadaluwarsa-datatables').DataTable();
 $('#terlaris-datatables').DataTable();
 $(document).ready(function() {
@@ -395,5 +435,48 @@ function drawGraph(response){
             var chart = new ApexCharts(document.querySelector("#revenue-chart"), options);
             chart.render();
 }
+
+
+$('#piutang-datatables tbody').on('click', '.btn-lunas', function() {
+            var id = $(this).data("id");
+            swal.fire({
+                    title: "Anda Yakin?",
+                    text: "Data yang di set LUNAS ( "+id+" ) tidak dapat dikembalikan",
+                    icon: "warning",
+                    showCancelButton: !0,
+                    confirmButtonColor: "#28bb4b",
+                    cancelButtonColor: "#f34e4e",
+                    confirmButtonText: "Ya, Mengerti!",
+                    cancelButtonText: "Batal"
+                })
+                .then(function(e) {
+                    e.value ?
+                        $.ajax({
+                            type: "POST",
+                            url: '/set-lunas',
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                id: id
+                            }
+                        }).done(function(msg) {
+                            
+                            if (msg != 'error') {
+                                swal.fire("Transaksi Telah Lunas !", {
+                                    icon: "success",
+                                });
+                                location.reload();
+                            } else {
+                                swal.fire("Transaksi Gagal", {
+                                    icon: "error",
+                                });
+                            }
+                        })
+
+                        :
+                        swal.fire("Transaksi Dibatalkan !");
+
+                });
+
+        });
 </script>
 @endsection

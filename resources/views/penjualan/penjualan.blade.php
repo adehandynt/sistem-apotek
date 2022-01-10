@@ -618,6 +618,7 @@
                     kode: kode
                 }),
                 success: function(e) {
+                    console.log(e);
                     $('#kode_barang').val("");
                     let component = '';
 
@@ -633,6 +634,8 @@
                                                                         <small class="me-2"><b>Satuan:</b> ${e[0].satuan} </small>
                                                                         <small><b>Kategori:</b> ${e[0].nama_tipe}</small>
                                                                     </p>
+                                                                    <input type="hidden" min="1" class="stok_brg form-control"
+                                                                        placeholder="Qty" name="stok_brg[]" style="width: 90px;" value="${e[0].sisa}">
                                                                 </td>
                                                                 <td>
                                                                     <input type="hidden" min="1" class="harga_beli form-control"
@@ -686,6 +689,8 @@
                                                                         <small class="me-2"><b>Satuan:</b> ${e[0].satuan} </small>
                                                                         <small><b>Kategori:</b> ${e[0].nama_tipe}</small>
                                                                     </p>
+                                                                    <input type="hidden" min="1" class="stok_brg form-control"
+                                                                        placeholder="Qty" name="stok_brg[]" style="width: 90px;" value="${e[0].sisa}">
                                                                 </td>
                                                                 <td>
                                                                     <input type="hidden" min="1" class="harga_beli form-control"
@@ -804,6 +809,9 @@
 
         $('#table-produk tbody').on('change', '.jml_produk', function() {
             let idx = $('.jml_produk').index(this);
+           let stok= $('.stok_brg').eq(idx).val();
+           if($('.jml_produk').eq(idx).val()<=stok){
+               
             if ($('.satuan_produk').eq(idx).val() != '1') {
                 // let total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
                 let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val());
@@ -852,6 +860,11 @@
             }
             // console.log(1);
             generate_tagihan();
+        }else{
+            swal.fire("Stok Hanya Tersedia "+stok+" !");
+            $('.jml_produk').eq(idx).val(stok).change();
+            generate_tagihan();
+           }
         });
 
         $('#table-produk tbody').on('change', '.margin_produk', function() {
@@ -1045,6 +1058,9 @@
 
         $('#table-produk-other tbody').on('change', '.jml_produk', function() {
             let idx = $('.jml_produk').index(this);
+            let stok= $('.stok_brg').eq(idx).val();
+            if($('.jml_produk').eq(idx).val()<=stok){
+       
             if ($('.satuan_produk').eq(idx).val() != '1') {
                 let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val());
                 let total = (harga_jual * $('.jml_produk').eq(idx).val());
@@ -1093,6 +1109,11 @@
             }
             // console.log(1);
             generate_tagihan();
+        }else{
+            swal.fire("Stok Hanya Tersedia "+stok+" !");
+            $('.jml_produk').eq(idx).val(stok).change();
+            generate_tagihan();
+           }
         });
 
         $('#btn-layanan').click(function(e) {
