@@ -98,17 +98,18 @@
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Penyakit</label>
-                            <select class="form-control select2-multiple"  id="penyakit" name="penyakit[]" data-toggle="select2" data-width="100%" multiple="multiple" required data-placeholder="Choose ...">
-                                <option>-Pilih-</option>
+                            <select class="form-control select2-multiple"  id="penyakit" name="penyakit[]" data-toggle="select2" data-width="100%" multiple="multiple" required >
+                                <option value="">-Pilih-</option>
                                 @foreach ($penyakit as $item)
                                 <option value={{$item->id_penyakit}}>{{$item->nama_penyakit}}</option>
                                 @endforeach
                             </select>
+                          
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Tindakan</label>
-                            <select class="form-control select2-multiple"  id="tindakan" name="tindakan[]" data-toggle="select2" data-width="100%" multiple="multiple" required data-placeholder="Choose ...">
-                                <option>-Pilih-</option>
+                            <select class="form-control select2-multiple"  id="tindakan" name="tindakan[]" data-toggle="select2" data-width="100%" multiple="multiple" required>
+                                <option value="">-Pilih-</option>
                                 @foreach ($tindakan as $item)
                                 <option value={{$item->id_tindakan}}>{{$item->tindakan}}</option>
                                 @endforeach

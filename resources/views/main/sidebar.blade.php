@@ -183,6 +183,9 @@
                             <li>
                                 <a href="/data-tindakan">Data Tindakan</a>
                             </li>
+                            <li>
+                                <a href="/data-penyakit">Data Penyakit</a>
+                            </li>
                         </ul>
                     </div>
                 </li>@endif

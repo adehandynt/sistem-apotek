@@ -17,6 +17,7 @@ use App\Models\ListTindakan;
 use App\Models\Resep;
 use App\Models\Antrian;
 use App\Models\Tindakan;
+use App\Models\class_penyakit;
 use Validator;
 use Hash;
 use Session;
@@ -31,6 +32,13 @@ class DokterController extends Controller
         $res['tipe'] = Tipe::get();
         
         return view('dokter/data-obat',$res);
+    }
+
+    public function v_penyakit()
+    {
+        $res['class'] = class_penyakit::get();
+        
+        return view('dokter/penyakit',$res);
     }
 
     public function list_obat()
@@ -117,6 +125,14 @@ class DokterController extends Controller
     return json_encode($data);
     }
 
+    public function list_penyakit(){
+        $data = Penyakit::leftjoin('class_penyakit','class_penyakit.parent_class','=','penyakit.parent_class')->select('penyakit.*','class_penyakit.description_class')->get();
+        for ($i = 0; $i < count($data); $i++) {
+            $data[$i]->action = '<a href="javascript:void(0);" class="action-icon btn-edit" data-id="' . $data[$i]->id . '" data-bs-toggle="modal" data-bs-target="#custom-modal-edit"> <i class="mdi mdi-square-edit-outline"></i></a>';
+        }
+    return json_encode($data);
+    }
+
     public function add_tindakan(Request $request){
         $id = IdGenerator::generate(['table' => 'tindakan','field'=>'id_tindakan', 'length' => 8, 'prefix' =>'TND-']);
         $tindakan=new Tindakan;
@@ -144,6 +160,41 @@ class DokterController extends Controller
         $tindakan->tindakan=$request->tindakan;
         $tindakan->biaya=$request->biaya;
         if(!$tindakan->save()){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public function add_penyakit(Request $request){
+        $id = IdGenerator::generate(['table' => 'penyakit','field'=>'id_penyakit', 'length' => 8, 'prefix' =>'PNY-']);
+        $penyakit=new Penyakit;
+        $penyakit->id_penyakit=$id;
+        $penyakit->nama_penyakit=$request->penyakit;
+        $penyakit->sub_class=$request->sub_class;
+        $penyakit->parent_class=$request->parent_class;
+        if(!$penyakit->save()){
+            return false;
+        }else{
+            return true;
+        }
+
+    }
+
+    public function edit_penyakit(Request $request){
+        $penyakit = Penyakit::where('id', $request->id)
+            ->firstOrFail();
+
+        return json_encode($penyakit);
+    }
+
+    public function update_penyakit(Request $request){
+        $penyakit = Penyakit::where('id', $request->id)
+            ->firstOrFail();
+            $penyakit->nama_penyakit=$request->penyakit;
+            $penyakit->sub_class=$request->sub_class;
+            $penyakit->parent_class=$request->parent_class;
+        if(!$penyakit->save()){
             return false;
         }else{
             return true;

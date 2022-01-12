@@ -58,6 +58,7 @@ Route::get('/data-pasien', function () {
 Route::get('/data-tindakan', function () {
     return view('dokter/tindakan');
 });
+Route::get('/data-penyakit', [DokterController::class, 'v_penyakit']);
 Route::get('/data-jasa', [JasaController::class, 'v_jasa']);
 
 
@@ -162,10 +163,14 @@ Route::post('/add-pasien', [DokterController::class, 'add_pasien'])->name('add-p
 Route::post('/edit-pasien', [DokterController::class, 'edit_pasien'])->name('edit-pasien');
 Route::post('/update-pasien', [DokterController::class, 'update_pasien'])->name('update-pasien');
 Route::get('/list-tindakan', [DokterController::class, 'list_tindakan'])->name('list-tindakan');
+Route::get('/list-penyakit', [DokterController::class, 'list_penyakit']);
 Route::post('/delete-tindakan', [DokterController::class, 'delete_tindakan']);
 Route::post('/add-tindakan', [DokterController::class, 'add_tindakan'])->name('add-tindakan');
+Route::post('/add-penyakit', [DokterController::class, 'add_penyakit'])->name('add-penyakit');
 Route::post('/edit-tindakan', [DokterController::class, 'edit_tindakan'])->name('edit-tindakan');
 Route::post('/update-tindakan', [DokterController::class, 'update_tindakan'])->name('update-tindakan');
+Route::post('/edit-penyakit', [DokterController::class, 'edit_penyakit'])->name('edit-penyakit');
+Route::post('/update-penyakit', [DokterController::class, 'update_penyakit'])->name('update-penyakit');
 Route::get('/data-medis', [DokterController::class, 'v_medis'])->name('data-medis');
 Route::post('/add-rekam', [DokterController::class, 'add_rekam'])->name('add-rekam');
 Route::post('/list-rekam', [DokterController::class, 'list_rekam_medis'])->name('list-rekam');

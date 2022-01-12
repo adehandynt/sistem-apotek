@@ -207,6 +207,48 @@
                 <div class="col-xl-6">
                     <div class="card">
                         <div class="card-body">
+                            <h4 class="header-title mb-3">Produk Terlaris</h4>
+
+                            <div class="table-responsive">
+                                <table class="table table-centered table-nowrap table-hover mb-0" id="terlaris-datatables">
+                                    <thead>
+                                        <tr>
+                                            <th class="border-top-0">Produk</th>
+                                            <th class="border-top-0">Kategori</th>
+                                            <th class="border-top-0">Harga</th>
+                                            <th class="border-top-0">Sisa</th>
+                                            <th class="border-top-0">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($terlaris as $key => $val)
+                                        <tr>
+                                            <td>
+                                                <span class="ms-2">{{$val->nama_barang}}</span>
+                                            </td>
+                                            <td>
+                                                {{$val->nama_tipe}}
+                                            </td>
+                                            <td>Rp {{number_format($val->harga_jual,2)}}</td>
+                                            <td>{{$val->sisa}}</td>
+                                            @if($val->sisa <= 30 && $val->sisa >= 1)
+                                            <td><span class="badge bg-soft-warning text-warning">Hampir Habis</span></td>
+                                            @elseif($val->sisa==0)
+                                            <td><span class="badge bg-soft-danger text-danger">Habis</span></td>
+                                            @else 
+                                            <td><span class="badge bg-soft-success text-success">Tersedia</span></td>
+                                            @endif
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div> <!-- end table-responsive -->
+                        </div>
+                    </div> <!-- end card-->
+                </div>
+                <div class="col-xl-6">
+                    <div class="card">
+                        <div class="card-body">
                             <h4 class="header-title mb-3">Piutang Penjualan</h4>
 
                             <div class="table-responsive">
@@ -282,48 +324,7 @@
                     </div> <!-- end card-->
                 </div> <!-- end col-->
                  <!-- end col-->
-                <div class="col-xl-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="header-title mb-3">Produk Terlaris</h4>
-
-                            <div class="table-responsive">
-                                <table class="table table-centered table-nowrap table-hover mb-0" id="terlaris-datatables">
-                                    <thead>
-                                        <tr>
-                                            <th class="border-top-0">Produk</th>
-                                            <th class="border-top-0">Kategori</th>
-                                            <th class="border-top-0">Harga</th>
-                                            <th class="border-top-0">Sisa</th>
-                                            <th class="border-top-0">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($terlaris as $key => $val)
-                                        <tr>
-                                            <td>
-                                                <span class="ms-2">{{$val->nama_barang}}</span>
-                                            </td>
-                                            <td>
-                                                {{$val->nama_tipe}}
-                                            </td>
-                                            <td>Rp {{number_format($val->harga_jual,2)}}</td>
-                                            <td>{{$val->sisa}}</td>
-                                            @if($val->sisa <= 30 && $val->sisa >= 1)
-                                            <td><span class="badge bg-soft-warning text-warning">Hampir Habis</span></td>
-                                            @elseif($val->sisa==0)
-                                            <td><span class="badge bg-soft-danger text-danger">Habis</span></td>
-                                            @else 
-                                            <td><span class="badge bg-soft-success text-success">Tersedia</span></td>
-                                            @endif
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div> <!-- end table-responsive -->
-                        </div>
-                    </div> <!-- end card-->
-                </div> <!-- end col-->
+                <!-- end col-->
             </div>
             <!-- end row-->
             
