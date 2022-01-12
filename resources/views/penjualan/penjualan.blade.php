@@ -810,7 +810,7 @@
         $('#table-produk tbody').on('change', '.jml_produk', function() {
             let idx = $('.jml_produk').index(this);
            let stok= $('.stok_brg').eq(idx).val();
-           if($('.jml_produk').eq(idx).val()<=stok){
+           if((stok-$('.jml_produk').eq(idx).val())>=0){
                
             if ($('.satuan_produk').eq(idx).val() != '1') {
                 // let total = ($('.harga_jual').eq(idx).val() * $('.jml_produk').eq(idx).val());
@@ -1059,7 +1059,8 @@
         $('#table-produk-other tbody').on('change', '.jml_produk', function() {
             let idx = $('.jml_produk').index(this);
             let stok= $('.stok_brg').eq(idx).val();
-            if($('.jml_produk').eq(idx).val()<=stok){
+            
+            if((stok-$('.jml_produk').eq(idx).val())>=0){
        
             if ($('.satuan_produk').eq(idx).val() != '1') {
                 let harga_jual = ($('.harga_beli').eq(idx).val() * ($('.margin_produk').eq(idx).val()/100))+parseInt($('.harga_beli').eq(idx).val());
