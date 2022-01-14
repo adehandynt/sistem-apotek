@@ -102,6 +102,11 @@
                                             placeholder="Harga Jual" required readonly>
                                     </div>
                                     <div class="mb-3">
+                                        <label for="company" class="form-label">Diskon (%)</label>
+                                        <input type="number" class="form-control numeric_form" value="0" id="diskon" name="diskon"
+                                            placeholder="Diskon Harga" required>
+                                    </div>
+                                    <div class="mb-3">
                                         <label for="exampleInputEmail1" class="form-label">Penyimpanan</label>
                                         <input type="text" class="form-control" id="penyimpanan" name="penyimpanan"
                                             placeholder="Rak Penyimpanan" required>
@@ -140,6 +145,7 @@
                                                 <th>Harga Jual</th>
                                                 <th>Jumlah per Satuan</th>
                                                 <th>Harga Eceran</th>
+                                                <th>Diskon (%)</th>
                                                 <th>Penyimpanan</th>
                                                 <th style="width: 82px;">Action</th>
                                             </tr>
@@ -235,6 +241,9 @@
                 {
                     data: "harga_eceran",
                     render: $.fn.dataTable.render.number(',', '.', 2)
+                },
+                {
+                    data: "diskon"
                 },
                 {
                     data: "penyimpanan"
@@ -353,6 +362,7 @@
                     $('#penyimpanan').val(e.penyimpanan);
                     $('#konsinyasi').val(e.konsinyasi);
                     $('#harga_jual').val(e.harga_jual);
+                    $('#diskon').val(e.diskon);
                     $('#harga_beli').val(e.harga_beli);
                     $('#harga_eceran').val(e.harga_eceran);
                     $('#nama_tipe').val(e.nama_tipe);

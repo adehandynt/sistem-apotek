@@ -45,7 +45,7 @@ class ObatController extends Controller
             ->leftJoin('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
             ->Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
             ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
-            ->select('barang.*','harga.harga_jual','harga.harga_beli','harga.margin','harga.harga_eceran','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe')
+            ->select('barang.*','harga.diskon','harga.harga_jual','harga.harga_beli','harga.margin','harga.harga_eceran','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe')
             ->get();
         //        return view('data-master/tipe', $res);
         for($i=0;$i<count($data);$i++){
@@ -68,7 +68,8 @@ class ObatController extends Controller
             'harga_beli'              => 'required',
             'kode_barang'                 => 'required',
             'harga_jual'              => 'required',
-            'penyimpanan'              => 'required'
+            'penyimpanan'              => 'required',
+            'diskon'              => 'required'
         ];
 
         $messages = [
@@ -80,6 +81,7 @@ class ObatController extends Controller
             'kode_barang.required'               => 'Kode wajib diisi',
             'harga_jual.required'              => 'Harga wajib diisi',
             'penyimpanan.required'       => 'Penyimpanan wajib diisi',
+            'diskon.required'       => 'Diskon wajib diisi',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -108,7 +110,7 @@ class ObatController extends Controller
             'harga_beli' =>  $request->harga_beli,
             'harga_eceran' => $request->input('status_ecer')!=null ? ((((($request->harga_beli))+($request->harga_beli * ($request->margin/100))))/$request->jml_per_satuan):0,
             'tgl_harga' =>  \Carbon\Carbon::now(),
-            'diskon' => 0,
+            'diskon' => $request->diskon,
             'margin' => $request->margin,
             'kode_barang' =>  str_replace(" ","",$request->kode_barang)
         ]);
@@ -161,7 +163,7 @@ class ObatController extends Controller
         ->leftJoin('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
         ->Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
         ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
-        ->select('barang.*','harga.harga_jual','harga.harga_beli','harga.margin','harga.harga_eceran','satuan.satuan','tipe.nama_tipe')
+        ->select('barang.*','harga.diskon','harga.harga_jual','harga.harga_beli','harga.margin','harga.harga_eceran','satuan.satuan','tipe.nama_tipe')
         ->firstOrFail();
 
         return json_encode($data);
