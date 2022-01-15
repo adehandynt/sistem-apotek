@@ -96,10 +96,10 @@
                             </li>
                             {{-- <li>
                                 <a href="/penjualan">Penjualan</a>
-                            </li>
+                            </li>--}}
                             <li>
                                 <a href="/retur-penjualan">Retur Penjualan</a>
-                            </li> --}}
+                            </li> 
                         </ul>
                     </div>
                 </li>

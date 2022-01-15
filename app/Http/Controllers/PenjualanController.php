@@ -287,6 +287,7 @@ class PenjualanController extends Controller
         $item->kode_barang=$request->kode_barang;
         $item->jumlah=$request->jml_retur;
         $item->tgl_retur= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
+        $item->retur_nominal=$request->nominal_retur;
         $item->deskripsi=$request->deskripsi;
         if($item->save()){
             $year = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->year;

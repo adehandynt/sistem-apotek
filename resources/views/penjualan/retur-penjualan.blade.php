@@ -146,6 +146,10 @@
                                     <input type="number" class="form-control" name="jml_retur" id="jml_retur" value="0" required>
                                 </div>
                                 <div class="mb-3">
+                                    <label for="product-meta-keywords" class="form-label">* Retur Nominal (Isi Jika Barang Diganti Dengan Uang)</label>
+                                    <input type="number" class="form-control" name="nominal_retur" id="nominal_retur" value="0" required>
+                                </div>
+                                <div class="mb-3">
                                     <label for="product-meta-keywords" class="form-label">Deskripsi</label>
                                     <textarea class="form-control" name="deskripsi" id="deskripsi" required>-</textarea>
                                 </div>

@@ -421,6 +421,14 @@ class LaporanController extends Controller
         a.tgl_keluar LIKE '".$tanggal."%'
         AND a.jenis_history = 'retur_beli'
         ) AS pengembalian_barang,
+        (
+            SELECT
+            sum( a.retur_nominal ) AS pengembalian_jual
+            FROM
+            retur_penjualan a
+            WHERE
+            a.tgl_retur LIKE '".$tanggal."%'
+            ) AS pengembalian_barang_jual,
         ( SELECT sum( jml_keluar ) FROM history_barang WHERE tgl_keluar LIKE '".$tanggal."%'
         AND jenis_history = 'obat_hilang' ) AS barang_hilang,
         ( SELECT sum( jml_keluar ) * d.harga_jual FROM
