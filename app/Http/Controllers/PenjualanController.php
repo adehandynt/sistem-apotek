@@ -32,9 +32,11 @@ class PenjualanController extends Controller
     {
         $res['jasa']=ListJasa::orderby('created_at', 'DESC')->get();
         $res['rekam']=RekamMedis::Join('resep', 'rekam_medis.id_rekam_medis', '=', 'resep.id_rekam_medis')
+        ->Join('pasien', 'rekam_medis.medical_record_id', '=', 'pasien.medical_record_id')
         ->groupBy('rekam_medis.id_rekam_medis')
         ->where('resep.status_resep',0)
-        ->select('rekam_medis.id_rekam_medis','resep.*')
+        ->select('rekam_medis.id_rekam_medis','rekam_medis.tgl_rekam','resep.*','pasien.nama_pasien')
+        ->orderBy('rekam_medis.id_rekam_medis','desc')
         ->get();
         $res['staf']=Staf::where('nip','=',Auth::user()->nip)->select('nama_staf')->get();
         $res['obat']= Obat::Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')

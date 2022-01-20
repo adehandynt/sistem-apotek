@@ -71,10 +71,10 @@
               $grandtot+=$p->total;
             $disc+=$p->diskon;
             }
-            $no_transaksi_temp=$p->no_transaksi;
             @endphp
-			<tr>
-				<td>{{ $i++ }}</td>
+			<tr style="background-color:#ffffff">
+                @if($p->no_transaksi!=$no_transaksi_temp)
+				<td>{{$i}}</td>
 				<td>{{$p->no_transaksi}}</td>
 				<td>{{$p->tgl_transaksi}}</td>
                 <td>{{$p->nama_barang}}</td>
@@ -82,7 +82,23 @@
                 <td>{{$p->jumlah }}</td>
 				<td> Rp {{number_format($p->total,2)}}</td>
 				<td>{{$p->nama_staf}}</td>
+                @php
+                $i++;  
+                @endphp
+                @else
+				<td></td>
+				<td></td>
+				<td></td>
+                <td>{{$p->nama_barang}}</td>
+				{{-- <td> Rp {{number_format($p->total / $p->jumlah,2)}}</td> --}}
+                <td>{{$p->jumlah }}</td>
+				<td></td>
+				<td></td>
+                @endif
 			</tr>
+            @php
+              $no_transaksi_temp=$p->no_transaksi;   
+            @endphp
 			@endforeach
 		</tbody>
 	</table>

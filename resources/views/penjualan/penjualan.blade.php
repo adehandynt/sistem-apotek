@@ -173,7 +173,7 @@
                                                 <select class="form-control" id="id_rekam" name="id_rekam" data-toggle="select2" data-width="100%">
                                                     <option value="">-Pilih-</option>
                                                     @foreach ($rekam as $item)
-                                                    <option value={{$item->id_rekam_medis}}>{{$item->id_rekam_medis}}</option>
+                                                    <option value={{$item->id_rekam_medis}}>{{$item->id_rekam_medis}} - {{$item->nama_pasien}} ({{ \Carbon\Carbon::parse($item->tgl_rekam)->format('d/m/Y')}})</option>
                                                     @endforeach
                                                 </select>
                                             </div>

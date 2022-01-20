@@ -131,7 +131,7 @@ Route::post('/update-stock', [StockController::class, 'update_stock']);
 Route::post('/delete-stock', [StockController::class, 'delete_stock']);
 Route::get('/get-stock-produk', [StockController::class, 'get_stock_produk']);
 Route::get('/get-grn', [StockController::class, 'get_grn']);
-Route::get('/set-as-stock', [StockController::class, 'setAsStock']);
+Route::get('/set-as-stock', [StockController::class, 'setAsStock'])->name('set-as-stock');;
 
 Route::get('/data-pembelian', [PembelianController::class, 'v_pembelian'])->name('data-pembelian');
 Route::get('/data-pembelian-restock', [PembelianController::class, 'v_pembelian_restock'])->name('data-pembelian-restock');

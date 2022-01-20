@@ -27,7 +27,7 @@ class ExportLaba implements FromView
     public function view(): View
     {
         $tanggal = substr(decrypt($this->request->input('id')),0,7);
-        $data = DB::select("SELECT
+         $data = DB::select("SELECT
         COALESCE(labarugi.penjualan_barang,0) as penjualan_barang ,
         COALESCE(labarugi.penjualan_obat,0) as penjualan_obat ,
         COALESCE(labarugi.piutang_obat,0) as piutang_obat ,
@@ -97,12 +97,12 @@ class ExportLaba implements FromView
         WHERE
         b.created_at LIKE '".$tanggal."%'
         ) AS pendapatan_jasa_dokter,
-        ( SELECT sum( a.total ) FROM orders a
+        ( SELECT sum( b.total ) FROM orders a
         JOIN list_order b ON b.id_order = a.id_order
         JOIN barang c ON b.kode_barang = c.kode_barang
         JOIN tipe d ON d.kode_tipe = c.kode_tipe
         WHERE a.tgl_order LIKE '".$tanggal."%' AND d.jenis_barang = 'barang_lain' ) AS pembelian_barang,
-        ( SELECT sum( a.total ) FROM orders a
+        ( SELECT sum( b.total ) FROM orders a
         JOIN list_order b ON b.id_order = a.id_order
         JOIN barang c ON b.kode_barang = c.kode_barang
         JOIN tipe d ON d.kode_tipe = c.kode_tipe
@@ -119,6 +119,14 @@ class ExportLaba implements FromView
         a.tgl_keluar LIKE '".$tanggal."%'
         AND a.jenis_history = 'retur_beli'
         ) AS pengembalian_barang,
+        (
+            SELECT
+            sum( a.retur_nominal ) AS pengembalian_jual
+            FROM
+            retur_penjualan a
+            WHERE
+            a.tgl_retur LIKE '".$tanggal."%'
+            ) AS pengembalian_barang_jual,
         ( SELECT sum( jml_keluar ) FROM history_barang WHERE tgl_keluar LIKE '".$tanggal."%'
         AND jenis_history = 'obat_hilang' ) AS barang_hilang,
         ( SELECT sum( jml_keluar ) * d.harga_jual FROM

@@ -502,7 +502,7 @@ class StockController extends Controller
         'stock_opname.id_opname', '=', 'list_opname.id_opname')
         // ->join('list_opname','stock_opname.id_opname','=','list_opname.id_opname')
         ->join('barang','barang.kode_barang','=','list_opname.kode_barang')
-        ->where('list_opname.id_list_opname','like','LOPN-2022-0006%')
+        ->where('list_opname.status_sinkronasi','0')
         ->get();
        // dd($data);
         $year = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->year;
@@ -527,12 +527,12 @@ class StockController extends Controller
                     $history->save();
                     //dd($history);
                    
-                    // $list = ListOpname::where('id_list_opname',$val->id_list_opname)->firstOrFail();
-                    // $list->status_sinkronasi = 1;
-                    // $list->save();
+                    $list = ListOpname::where('id_list_opname',$val->id_list_opname)->first();
+                    $list->status_sinkronasi = 1;
+                    $list->save();
                     
             }
         }
-        //return json_encode($data);
+        return json_encode($data);
     }
 }

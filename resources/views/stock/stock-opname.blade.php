@@ -31,6 +31,8 @@
                                         <button type="button" class="btn btn-danger waves-effect waves-light"
                                             data-bs-toggle="modal" data-bs-target="#custom-modal"><i
                                                 class="mdi mdi-plus-circle me-1"></i> Stock Opname</button>
+                                                <button type="button" id="sinkronasi_stok" class="btn btn-info waves-effect waves-light"><i
+                                                    class="mdi mdi-refresh"></i> Sinkronasi Stock</button>
                                                 {{-- <button type="button" class="btn btn-danger waves-effect waves-light" id="stock-opname"><i
                                                     class="mdi mdi-plus-circle me-1"></i> Stock Opname</button> --}}
                                     </div>
@@ -647,6 +649,43 @@
                 swal.fire("Gagal, Cek Kembali Data Anda !");
             });
         }
+
+        $('#sinkronasi_stok').click(function () {
+
+            swal.fire({
+                title: "Sinkronasi Data",
+                text: "Data yang telah disinkronasi tidak dapat dikembalikan !. Lakukan Sinkronasi Setelah Proses Opname Selesai",
+                icon: "warning",
+                showCancelButton: !0,
+                confirmButtonColor: "#28bb4b",
+                cancelButtonColor: "#f34e4e",
+                confirmButtonText: "Ya",
+                cancelButtonText: "Batal"
+            }).then(function (e) {
+                if (e.value) {
+                    $.ajax({
+                        url: '{{ url('set-as-stock') }}',
+                        type: 'get',
+                        dataType: 'json',
+                        data: "",
+                        success: function (e) {
+                            Swal.fire({
+                            title: "Sukses",
+                            text: "Stock Berhasil Disinkronasi!",
+                            icon: "success"
+                        });
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        swal.fire("Gagal, Cek Kembali Data Anda !");
+                    });
+                } else {
+                    swal.fire("Sinkronasi Dibatalkan !");
+                }
+
+            });
+
+
+        });
 
         $("#form-barang").submit(function(event) {
             event.preventDefault();
