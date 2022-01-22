@@ -34,7 +34,7 @@
                 <td>{{$p->nama_barang}}</td>
 				{{-- <td> Rp {{number_format($p->total / $p->jumlah,2)}}</td> --}}
                 <td>{{$p->jumlah }}</td>
-				<td> Rp {{number_format($p->total,2)}}</td>
+				<td>{{$p->total}}</td>
 				<td>{{$p->nama_staf}}</td>
                 @php
                 $i++;  

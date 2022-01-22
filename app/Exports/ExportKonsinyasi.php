@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Exports;
-
-use App\Models\Obat;
+use App\Models\ListItem;
+use App\Models\Penjualan;
 use DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -14,78 +14,34 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Illuminate\Contracts\View\View; //Harus diimport untuk men-convert blade menjadi file excel
+use Maatwebsite\Excel\Concerns\FromView; //Harus diimport untuk men-convert blade menjadi file excel
+use Auth;
+use Illuminate\Http\Request;
 
-class ExportKonsinyasi implements FromCollection, WithHeadings, WithEvents, WithColumnFormatting
+class ExportKonsinyasi implements FromView
 {
     /**
     * @return \Illuminate\Support\Collection
     */
-    public function query()
-    {
-      
+    function __construct($request) {
+        $this->request = $request;
     }
-
-    public function collection()
+    public function view(): View
     {
-       
-    }
-
-    public function headings(): array
-    {
-        return [
-            'No',
-            'Kode Barang',
-            'Nama Barang',
-            'Produsen',
-            'Kode Tipe',
-            'Kode Satuan',
-            'Jumlah @ satuan',
-            '-',
-            'Penyimpanan',
-            'Create Date',
-            'Update Date',
-            'Supplier',
-            'Harga Beli',
-            'Margin (%)',
-            'Harga Jual',
-            'Harga Ecer',
-            'Satuan',
-            'Tipe Obat',
-            'Stok Sisa'
-
-        ];
-
-    }
-
-    public function startCell(): string
-    {
-        return 'A2';
-    }
-
-    public function registerEvents(): array
-    {
-        return [
-
-            AfterSheet::class => function (AfterSheet $event) {
-
-                $event->sheet->getDelegate()->getStyle('A1:S1')
-                    ->getFill()
-                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                    ->getStartColor()
-                    ->setARGB('FFA500');
-              
-                 $event->sheet->getDelegate()->freezePane('A2');  
-            },
-
-        ];
-    }
-
-    
-    public function columnFormats(): array
-    {
-        return [
-            'A' => NumberFormat::FORMAT_NUMBER,
-            'B' => NumberFormat::FORMAT_NUMBER,
-        ];
+        //export adalah file export.blade.php yang ada di folder views
+        return view('laporan/export_excel_konsinyasi', [
+            //data adalah value yang akan kita gunakan pada blade nanti
+            //User::all() mengambil seluruh data user dan disimpan pada variabel data
+            'data' =>Penjualan:: join('item_penjualan', 'transaksi.no_transaksi', '=', 'item_penjualan.no_transaksi')
+            ->join('barang','item_penjualan.kode_barang','=','barang.kode_barang')
+            ->join('tipe','barang.kode_tipe','=','tipe.kode_tipe')
+            ->join('history_barang','transaksi.no_transaksi','=','history_barang.id_referensi')
+            ->leftJoin('staf', 'transaksi.nip', '=', 'staf.nip')
+            ->select('transaksi.*','barang.nama_barang','history_barang.sisa','staf.nama_staf','item_penjualan.jumlah')
+            ->where('barang.kode_barang','like',decrypt($this->request->id).'%')
+            ->get()
+        ]);
     }
 }
+

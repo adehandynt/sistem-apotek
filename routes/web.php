@@ -232,3 +232,6 @@ Route::get('/export-excel-pembelian',[LaporanController::class, 'export_excel_pe
 Route::get('/export-excel-penjualan',[LaporanController::class, 'export_excel_penjualan']);
 Route::post('/export-excel-penjualan-params',[LaporanController::class, 'export_excel_penjualan_params']);
 Route::get('/export-excel-labarugi',[LaporanController::class, 'export_excel_laba']);
+Route::get('/export-excel-narkotika',[LaporanController::class, 'export_excel_narkotika']);
+Route::get('/export-excel-bpjs',[LaporanController::class, 'export_excel_bpjs']);
+Route::get('/export-excel-konsinyasi',[LaporanController::class, 'export_excel_konsinyasi']);

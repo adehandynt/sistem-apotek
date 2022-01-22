@@ -6,6 +6,9 @@ use App\Exports\ExportPembelian;
 use App\Exports\ExportPembelianParams;
 use App\Exports\ExportPenjualanParams;
 use App\Exports\ExportLaba;
+use App\Exports\ExportNarkotika;
+use App\Exports\ExportBpjs;
+use App\Exports\ExportKonsinyasi;
 use Illuminate\Http\Request;
 use App\Models\Penjualan;
 use App\Models\Obat;
@@ -104,7 +107,7 @@ class LaporanController extends Controller
             ->get();
             for ($i = 0; $i < count($data); $i++) {
                 $data[$i]->no=$i+1;
-                    $data[$i]->action = '<a href="cetak-pdf-narkotika?id=' . encrypt($data[$i]->kode_barang) . '" class="action-icon" data-id="' . $data[$i]->kode_barang . '"> <i class="mdi mdi-printer-check"></i></a>';
+                    $data[$i]->action = '<a href="cetak-pdf-narkotika?id=' . encrypt($data[$i]->kode_barang) . '" class="action-icon" data-id="' . $data[$i]->kode_barang . '"> <i class="mdi mdi-printer-check"></i></a><a href="export-excel-narkotika?id=' .  encrypt($data[$i]->kode_barang) . '" class="action-icon" data-id="' . $data[$i]->kode_barang . '"> <i class="mdi mdi-file-excel"></i></i></a>';
             }
             
         }elseif($request->type=='konsinyasi'){
@@ -133,7 +136,7 @@ class LaporanController extends Controller
             ->get();
             for ($i = 0; $i < count($data); $i++) {
                 $data[$i]->no=$i+1;
-                    $data[$i]->action = '<a href="cetak-pdf-konsinyasi?id=' . encrypt($data[$i]->kode_barang) . '" class="action-icon" data-id="' . $data[$i]->kode_barang . '"> <i class="mdi mdi-printer-check"></i></a>';
+                    $data[$i]->action = '<a href="cetak-pdf-konsinyasi?id=' . encrypt($data[$i]->kode_barang) . '" class="action-icon" data-id="' . $data[$i]->kode_barang . '"> <i class="mdi mdi-printer-check"></i></a><a href="export-excel-konsinyasi?id=' . encrypt($data[$i]->kode_barang) . '" class="action-icon" data-id="' . $data[$i]->kode_barang . '"> <i class="mdi mdi-file-excel"></i></i></a>';
             }
             
         }elseif($request->type=='bpjs'){
@@ -142,7 +145,7 @@ class LaporanController extends Controller
             ->get();
             for ($i = 0; $i < count($data); $i++) {
                 $data[$i]->no=$i+1;
-                    $data[$i]->action = '<a href="cetak-pdf-bpjs?id=' . encrypt($data[$i]->no_transaksi) . '" class="action-icon" data-id="' . $data[$i]->no_transaksi . '"> <i class="mdi mdi-printer-check"></i></a>';
+                    $data[$i]->action = '<a href="cetak-pdf-bpjs?id=' . encrypt($data[$i]->no_transaksi) . '" class="action-icon" data-id="' . $data[$i]->no_transaksi . '"> <i class="mdi mdi-printer-check"></i></a><a href="export-excel-bpjs?id=' . encrypt($data[$i]->no_transaksi) . '" class="action-icon" data-id="' . $data[$i]->no_transaksi . '"> <i class="mdi mdi-file-excel"></i></i></a>';
             }
         }elseif($request->type=='labarugi'){
             $data=Penjualan::select('transaksi.*',DB::raw('DATE(transaksi.tgl_transaksi) as dates'),DB::raw('MONTHNAME(transaksi.tgl_transaksi) as date'),DB::raw('YEAR(transaksi.tgl_transaksi) as year'),DB::raw('SUM(transaksi.total) as total'))
@@ -214,7 +217,8 @@ class LaporanController extends Controller
         ->join('barang','item_penjualan.kode_barang','=','barang.kode_barang')
         ->join('tipe','barang.kode_tipe','=','tipe.kode_tipe')
         ->leftJoin('staf', 'transaksi.nip', '=', 'staf.nip')
-        ->where('tipe.nama_tipe','Jamu')
+        ->where('tipe.nama_tipe','like','%Narkotika%')
+            ->orwhere('tipe.nama_tipe','like','%Psikotropika%')
         ->select('transaksi.*','barang.nama_barang','staf.nama_staf','item_penjualan.jumlah');
           
         if(isset($request->nama_barang)){
@@ -226,7 +230,7 @@ class LaporanController extends Controller
         if(isset($request->tahun)){
             $data->whereYear('transaksi.tgl_transaksi','=',$request->tahun);
         }
-        
+    
         // ->leftJoin(DB::raw('(SELECT * FROM history_barang where kode_barang="'.decrypt($request->input('id')).'" and jenis_history="barang_keluar" order by id_history ) AS history_barang'),
         // 'history_barang.kode_barang', '=', 'barang.kode_barang')
         $result=$data->get();
@@ -481,6 +485,23 @@ class LaporanController extends Controller
         $tanggal = \Carbon\Carbon::createFromDate($exp_tgl[0], $exp_tgl[1], 1)->format('F Y');
         
         return Excel::download(new ExportLaba($request), 'Data_laba_rugi- '.$tanggal.'.xlsx');
+    }
+    public function export_excel_konsinyasi(Request $request) 
+    {
+        $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
+        return Excel::download(new ExportKonsinyasi($request), 'Data_konsinyasi- '.$date.'.xlsx');
+    }
+
+    public function export_excel_bpjs(Request $request) 
+    {
+        $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
+        return Excel::download(new ExportBpjs($request), 'Data_bpjs- '.$date.'.xlsx');
+    }
+
+    public function export_excel_narkotika(Request $request) 
+    {
+        $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
+        return Excel::download(new ExportNarkotika($request), 'Data_narkotika- '.$date.'.xlsx');
     }
 
 }
