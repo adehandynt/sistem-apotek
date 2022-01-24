@@ -27,7 +27,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="row mb-2">
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-6">
                                         <button type="button" class="btn btn-danger waves-effect waves-light"
                                             data-bs-toggle="modal" data-bs-target="#custom-modal"><i
                                                 class="mdi mdi-plus-circle me-1"></i> Stock Opname</button>
@@ -35,6 +35,19 @@
                                                     class="mdi mdi-refresh"></i> Sinkronasi Stock</button>
                                                 {{-- <button type="button" class="btn btn-danger waves-effect waves-light" id="stock-opname"><i
                                                     class="mdi mdi-plus-circle me-1"></i> Stock Opname</button> --}}
+                                    </div>
+                                    <div class="col-lg-6 float-right">
+                                        <div class="card ribbon-box">
+                                            <div class="card-body">
+                                                <div class="ribbon ribbon-success float-end"><i class="mdi mdi-access-point me-1"></i> Update</div>
+                                                <h5 class="text-success float-start mt-0">Update Fitur</h5>
+                                                <div class="ribbon-content">
+                                                    <p class="mb-0">Fitur<b> Sinkronasi Stock</b>,<br>digunakan untuk menyesuaikan/update stock barang yang tersedia sesuai dengan.<br>
+                                                        jumlah fisik yang diinputkan pada stock opname.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
