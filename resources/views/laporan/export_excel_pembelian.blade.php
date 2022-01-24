@@ -64,9 +64,9 @@
             <td>{{$p->kode_barang.' - '.$p->nama_barang}}</td>
             <td>{{$p->jumlah}}</td>
             <td>{{$p->satuan}}</td>
-            <td> Rp {{number_format($p->harga_beli,2)}}</td>
+            <td> {{$p->harga_beli}}</td>
             <td>{{$p->diskon}} %</td>
-            <td> Rp {{number_format($p->total,2)}}</td>
+            <td>  {{$p->total,2}}</td>
         </tr>
         @endforeach
     </tbody>

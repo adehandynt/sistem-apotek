@@ -40,7 +40,7 @@
             <td>{{$p->nama_barang}}</td>
             <td>{{$p->jumlah }}</td>
             <td> {{$p->sisa}}</td>
-            <td> Rp {{number_format($p->total,2)}}</td>
+            <td> {{$p->total}}</td>
             <td>{{$p->nama_staf}}</td>
         </tr>
         @endforeach

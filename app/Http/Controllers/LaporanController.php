@@ -140,8 +140,11 @@ class LaporanController extends Controller
             }
             
         }elseif($request->type=='bpjs'){
-            $data=Penjualan::select('transaksi.*',DB::raw('DATE(transaksi.tgl_transaksi) as date'),DB::raw('SUM(transaksi.total) as total'))
-            ->whereNotNull('bpjs')
+            $data=Penjualan::select('transaksi.*',DB::raw('DATE(transaksi.tgl_transaksi) as date'),DB::raw('SUM(transaksi.total) as total'),DB::raw('MONTHNAME(transaksi.tgl_transaksi) as date'),DB::raw('YEAR(transaksi.tgl_transaksi) as year'))
+            ->whereNotNull('transaksi.bpjs')
+            ->where('transaksi.metode_pembayaran','=','bpjs')
+            ->whereNotNull('transaksi.status_transaksi')
+            ->groupBy('transaksi.no_transaksi')
             ->get();
             for ($i = 0; $i < count($data); $i++) {
                 $data[$i]->no=$i+1;
@@ -318,7 +321,11 @@ class LaporanController extends Controller
         ->join('barang','item_penjualan.kode_barang','=','barang.kode_barang')
         ->leftJoin('staf', 'transaksi.nip', '=', 'staf.nip')
         ->select('transaksi.*','barang.nama_barang','staf.nama_staf','item_penjualan.jumlah')
-        ->whereNotNull('bpjs');
+        ->whereNotNull('transaksi.bpjs')
+        ->where('transaksi.metode_pembayaran','=','bpjs')
+        ->whereNotNull('transaksi.status_transaksi');
+        // ->where('bpjs','!=',0);
+
         if(isset($request->bulan)){
             $data->whereMonth('transaksi.tgl_transaksi','=',$request->bulan);
         }

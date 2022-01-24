@@ -39,6 +39,10 @@ class ExportBpjs implements FromView
             ->select('transaksi.*','barang.nama_barang','staf.nama_staf','item_penjualan.jumlah')
             ->where('transaksi.no_transaksi','like',decrypt($this->request->id).'%')
             ->whereNotNull('bpjs')
+            ->whereNotNull('transaksi.bpjs')
+            ->where('transaksi.metode_pembayaran','=','bpjs')
+            ->whereNotNull('transaksi.status_transaksi')
+            ->groupBy('date','year')
             ->get()
         ]);
     }

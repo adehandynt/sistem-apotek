@@ -47,7 +47,7 @@
                 <td>{{ $p->id_order }}</td>
                 <td>{{ $p->nama_supplier }}</td>
                 <td>{{ $p->tgl_order }}</td>
-                <td> Rp {{ number_format($p->total,2) }}</td>
+                <td>{{ $p->total }}</td>
                 <td>{{ $p->nama_staf }}</td>
             </tr>
         @endforeach
