@@ -309,6 +309,9 @@ class StockController extends Controller
         // ->leftJoin('stok', 'stok.kode_barang', '=', 'barang.kode_barang')
         ->where('orders.id_order','=',$request->input('order_id'))
         ->select('barang.*','list_order.*')->get(); 
+
+        DB::beginTransaction();   
+        try { 
         $pembelian = Pembelian::where('id_order', '=', $request->input('order_id'))->firstOrFail();
         $pembelian->grn = $request->grn;
         $pembelian->no_faktur =  $request->faktur;
@@ -356,15 +359,19 @@ class StockController extends Controller
             // $idx++;
         }
 
-        $pembelian = Pembelian::where('id_order', '=', $request->input('order_id'))->firstOrFail();
-        $pembelian->grn = $request->grn;
-        $pembelian->no_faktur =  $request->faktur;
-        $pembelian->supplier_do =  $request->do;
-        $pembelian->status_pembelian = 1;
-        $pembelian->penerima = Auth::user()->nip;
-        $pembelian->save();
+        // $pembelian = Pembelian::where('id_order', '=', $request->input('order_id'))->firstOrFail();
+        // $pembelian->grn = $request->grn;
+        // $pembelian->no_faktur =  $request->faktur;
+        // $pembelian->supplier_do =  $request->do;
+        // $pembelian->status_pembelian = 1;
+        // $pembelian->penerima = Auth::user()->nip;
+        // $pembelian->save();
       
+        DB::commit();
         return true;
+    }catch (Exception $e) {     
+        DB::rollback();
+      }
     }
 
     public function add_stock_retur(Request $request)
@@ -381,7 +388,8 @@ class StockController extends Controller
         ->select('barang.*','list_order.*','retur_pembelian.jml_retur')->get(); 
 
         // $idx=0;
-       
+        DB::beginTransaction();   
+        try { 
         foreach($data as $val){
             $idx= array_search($val->id_list_order,$request->id_list_order);
             $id_stok = IdGenerator::generate(['table' => 'stok','field'=>'stock_id', 'length' => 9, 'prefix' =>'STK-']);
@@ -420,7 +428,11 @@ class StockController extends Controller
             // $idx++;
         }
       
+        DB::commit();
         return true;
+    }catch (Exception $e) {     
+        DB::rollback();
+      }
     }
 
     function list_stock(Request $request)
@@ -513,6 +525,8 @@ class StockController extends Controller
         if(!$opname->save()){
             return false;
         }else{
+            DB::beginTransaction();   
+            try { 
             foreach ($request->input('kode_barang') as $idx => $val) {
             $barang=Obat::Join('set_harga', 'barang.kode_barang', '=', 'set_harga.kode_barang')
             ->Join('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
@@ -571,7 +585,11 @@ class StockController extends Controller
                 $history->save();
             }
             }
+            DB::commit();
             return true;
+        }catch (Exception $e) {     
+            DB::rollback();
+          }
         }
     }
 

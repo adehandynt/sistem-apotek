@@ -239,7 +239,7 @@
             }
         });
 
-        $('#table-pesanan tbody').on('change', '.harga, .jumlah, .diskon', function() {
+        $('#table-pesanan tbody').on('change', '.harga, .jumlah, .diskon, .ppn', function() {
             let idx = $('.harga').index(this);
             if(parseFloat($('.diskon').eq(idx).val())==0){
                 let total = (parseInt($('.harga').eq(idx).val()) * parseInt($('.jumlah').eq(idx).val()));
