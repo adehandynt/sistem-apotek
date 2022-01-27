@@ -18,6 +18,7 @@ use Hash;
 use Session;
 use Auth;
 use PDF;
+use DB;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use App\Exports\ListItemExport;
 use App\Models\ReturPembelian;
@@ -179,17 +180,28 @@ class PembelianController extends Controller
     public function detail_retur(Request $request)
     {
         $id = $request->id;
-        $data = ListItem::whereIn('list_order.id_order', function ($query) use ($id) {
+        // $data = ListItem::
+        // leftjoin('barang','list_order.kode_barang','=','barang.kode_barang')
+        //     ->join('satuan', 'list_order.kode_satuan', '=', 'satuan.kode_satuan')
+        //     ->join('stok', 'list_order.kode_barang', '=', 'stok.kode_barang')
+        //     ->where('stok.id_order', '=', $id)
+        //     ->select('list_order.*', 'satuan.satuan','stok.kode_barang','stok.tgl_exp','barang.nama_barang','stok.stock_id')
+        //     ->groupBy('stok.kode_barang','stok.stock_id')
+        //     ->get();
+
+             $data = ListItem::whereIn('list_order.id_order', function ($query) use ($id) {
             $query->select('id_order')
                 ->from(with(new Pembelian)->getTable())
                 ->where('id_order', '=', $id);
         })
+        ->leftjoin('barang','list_order.kode_barang','=','barang.kode_barang')
             ->join('orders', 'orders.id_order', '=', 'list_order.id_order')
             ->join('satuan', 'list_order.kode_satuan', '=', 'satuan.kode_satuan')
             ->join('stok', 'list_order.kode_barang', '=', 'stok.kode_barang')
-            ->select('list_order.*', 'satuan.satuan','stok.kode_barang','stok.tgl_exp')
-            ->groupBy('stok.kode_barang','stok.stock_id')
+            ->select('list_order.*', 'satuan.satuan','stok.kode_barang','stok.tgl_exp','barang.nama_barang','stok.stock_id')
+            ->groupBy('stok.kode_barang')
             ->get();
+
         return json_encode($data);
     }
 
@@ -413,31 +425,60 @@ class PembelianController extends Controller
     }
 
     function retur_barang_pembelian(Request $request){
-        if(!isset($request->check_retur)){
+   
+        if(!isset($request->check_retur)||count($request->check_retur)<1){
             return false;
         }else{
             $year = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->year;
             $id = IdGenerator::generate(['table' => 'retur_pembelian', 'field' => 'id_retur_beli', 'length' => 15, 'prefix' => 'RTR-' . $year . '-']);
-            foreach ($request->check_retur as $idx => $val) {
-                $retur=new ReturPembelian;
-                $retur->id_retur_beli=$id;
-                $retur->tgl_retur=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
-                $retur->id_list_order=$request->id_list_order[$idx];
-                $retur->deskripsi=$request->deskripsi_retur[$idx];
-                $retur->status=0;
-                $retur->jml_retur=$request->jml_retur[$idx];
-                $retur->save();
-
-                $id_history = IdGenerator::generate(['table' => 'history_barang','field'=>'id_history', 'length' => 15, 'prefix' =>'HIS-'. $year . '-']);
-                $history = new HistoryBarang;
-                $history->id_history=$id_history;
-                $history->kode_barang=ListItem::where('id_list_order','=',$request->id_list_order[$idx])->select('kode_barang')->get();
-                $history->tgl_keluar=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
-                $history->jml_keluar=$request->jml_retur[$idx];
-                $history->jenis_history='retur_beli';
-                $history->id_referensi=$id;
-                $history->pic=Auth::user()->nip;
-                $history->save();
+            foreach ($request->jml_retur as $idx => $val) {
+                if($val!=0){
+                    DB::beginTransaction();   
+                    try { 
+                    $retur=new ReturPembelian;
+                    $retur->id_retur_beli=$id;
+                    $retur->tgl_retur=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
+                    $retur->id_list_order=$request->id_list_order[$idx];
+                    $retur->deskripsi=$request->deskripsi_retur[$idx];
+                    $retur->status=0;
+                    $retur->jml_retur=$request->jml_retur[$idx];
+                    $retur->save();
+    
+                    $id_history = IdGenerator::generate(['table' => 'history_barang','field'=>'id_history', 'length' => 15, 'prefix' =>'HIS-'. $year . '-']);
+                    $kode_brg=ListItem::where('id_list_order','=',$request->id_list_order[$idx])->select('kode_barang')->get();
+                  //  dd($kode_brg[0]->kode_barang);
+                    $data = Stok::leftJoin(DB::raw('(SELECT
+                    t.kode_barang,
+                    min(t.sisa) as sisa
+                       FROM
+                    ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
+                    INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
+                    AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS history_barang'),
+                   'history_barang.kode_barang', '=', 'stok.kode_barang')
+                        ->where('stok.kode_barang', '=',$kode_brg[0]->kode_barang)
+                        ->select('stok.stock_id', 'stok.jml_akumulasi',DB::raw('COALESCE(COALESCE(history_barang.sisa, stok.jml_masuk ),0) AS sisa'))
+                        // ->orderBy('history_barang.created_at', 'desc')
+                        // ->orderBy('history_barang.sisa', 'asc')
+                        ->take(1)
+                        ->get();
+    
+                     $sisa = $data[0]->sisa==0||$data[0]->sisa==null? $data[0]->jml_akumulasi:$data[0]->sisa;
+    
+                    $history = new HistoryBarang;
+                    $history->id_history=$id_history;
+                    $history->kode_barang=$kode_brg[0]->kode_barang;
+                    $history->tgl_keluar=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
+                    $history->jml_keluar=$request->jml_retur[$idx];
+                    $history->jenis_history='retur_beli';
+                    $history->id_referensi=$id;
+                    $history->sisa=$sisa -$request->jml_retur[$idx];
+                    $history->pic=Auth::user()->nip;
+                    $history->save();
+                    DB::commit();
+                    }catch (Exception $e) {     
+                        DB::rollback();
+                      }
+                }
             }
             return true;
         }

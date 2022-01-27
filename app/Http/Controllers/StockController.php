@@ -12,6 +12,7 @@ use App\Models\ListItem;
 use App\Models\Pembelian;
 use App\Models\HistoryBarang;
 use App\Models\StockOpname;
+use App\Models\ReturPembelian;
 use App\Models\ListOpname;
 use App\Models\Margin;
 use Validator;
@@ -31,6 +32,10 @@ class StockController extends Controller
             $query->where('status_pembelian','=','0')
                 ->orWhere('status_pembelian','=',null);
         })
+        ->get();
+        $res['data_retur'] = ReturPembelian::
+        where('status','=','0')
+        ->groupBy('id_retur_beli')
         ->get();
         $res['satuan'] = Satuan::get();
         $res['tipe'] = Tipe::get();
@@ -230,6 +235,31 @@ class StockController extends Controller
         return json_encode($data);
     }
 
+    public function getReturID(Request $request){
+        //dd($request->id);
+        $data = Order::Join('list_order', 'orders.id_order', '=', 'list_order.id_order')
+        ->leftJoin('barang', 'list_order.kode_barang', '=', 'barang.kode_barang')
+        ->Join('retur_pembelian', 'retur_pembelian.id_list_order', '=', 'list_order.id_list_order')
+        ->where('retur_pembelian.id_retur_beli','=',$request->id)
+        ->select('barang.*','list_order.*','retur_pembelian.jml_retur')->get();
+        $tanggal=\Carbon\Carbon::now()->add(730, 'day')->timezone('Asia/Jakarta')->format('Y-m-d');
+        for ($i = 0; $i < count($data); $i++) {
+            $data[$i]->jml_diterimas = '<input type="number" class="form-control numeric_form" name="jml_diterima[]" value="0" required/>';
+            $data[$i]->id_list_orders ='<input type="hidden" class="form-control" name="id_list_order[]" value="'.$data[$i]->id_list_order.'" required/>';
+            $data[$i]->exps ='<input type="date" class="form-control" name="exp[]" value="'.$tanggal.'"/>';
+            $data[$i]->status_receives ='<input type="hidden" class="form-control" name="id_list_order[]" value="'.$data[$i]->id_list_order.'" required/>
+            <select class="form-control" id="status_receive" name="status_receive[]" style="width:150px" required>
+                    <option value="1">Full</option>
+                    <option value="0" selected>Pending</option>
+                    <option value="2">Cancel</option>
+                </select>';
+            $data[$i]->deskripsis ='<input type="text" class="form-control" name="deskripsi[]" value="-" style="width:200px" required/>';
+            $data[$i]->action = '<a href="javascript:void(0);" data-id="' . $data[$i]->id_list_order . '"
+            class="btn btn-success btn-choose action-icon" style="color:white;font-size:12px;"> <i class="mdi mdi-shield-check"></i> Pilih</a>';
+        }
+        return json_encode($data);
+    }
+
     public function detail_list(Request $request){
         if($request->date){
             $data = Order::RightJoin('list_order', 'orders.id_order', '=', 'list_order.id_order')
@@ -333,6 +363,62 @@ class StockController extends Controller
         $pembelian->status_pembelian = 1;
         $pembelian->penerima = Auth::user()->nip;
         $pembelian->save();
+      
+        return true;
+    }
+
+    public function add_stock_retur(Request $request)
+    {
+     
+        if ($request->input('exp') == null) {
+            return false;
+        }
+       
+        $data = Order::Join('list_order', 'orders.id_order', '=', 'list_order.id_order')
+        ->leftJoin('barang', 'list_order.kode_barang', '=', 'barang.kode_barang')
+        ->Join('retur_pembelian', 'retur_pembelian.id_list_order', '=', 'list_order.id_list_order')
+        ->where('retur_pembelian.id_retur_beli','=',$request->input('retur_id'))
+        ->select('barang.*','list_order.*','retur_pembelian.jml_retur')->get(); 
+
+        // $idx=0;
+       
+        foreach($data as $val){
+            $idx= array_search($val->id_list_order,$request->id_list_order);
+            $id_stok = IdGenerator::generate(['table' => 'stok','field'=>'stock_id', 'length' => 9, 'prefix' =>'STK-']);
+            $sisa = HistoryBarang::select('sisa')->orderby('created_at','desc')->where('kode_barang','=',$val->kode_barang)->get()->first();
+            $stok = new Stok;
+            $stok->stock_id=$id_stok;
+            $stok->kode_barang=$val->kode_barang;
+            $stok->tgl_masuk=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
+            $stok->tgl_exp= $request->exp[$idx];
+            $stok->jml_masuk= $request->jml_diterima[$idx];
+            $stok->jml_akumulasi= ($sisa==null?0:$sisa->sisa) + $request->jml_diterima[$idx];
+            $stok->id_order=$val->id_order;
+            $stok->save();
+         
+            $this->addNotif(Auth::user()->nip,'Barang #'.$val->kode_barang.' telah diterima');
+
+            $item = ListItem::where('id_list_order', '=',  $request->id_list_order[$idx])->firstOrFail();
+            $item -> jumlah_diterima=$request->jml_diterima[$idx];
+            $item -> status_terima=$request->status_receive[$idx];
+            $item -> deskripsi=$request->deskripsi[$idx];
+            $item->save();
+
+            $year = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->year;
+            $id_history = IdGenerator::generate(['table' => 'history_barang','field'=>'id_history', 'length' => 15, 'prefix' =>'HIS-'. $year . '-']);
+            $history = new HistoryBarang;
+            $history->id_history=$id_history;
+            $history->kode_barang=$val->kode_barang;
+            $history->tgl_masuk=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
+            $history->jml_masuk=$request->jml_diterima[$idx];
+            $history->sisa=($sisa==null?0:$sisa->sisa)+$request->jml_diterima[$idx];
+            $history->jenis_history='barang_masuk';
+            $history->id_referensi=$request->id_list_order[$idx];
+            $history->pic=Auth::user()->nip;
+            $history->save();
+            
+            // $idx++;
+        }
       
         return true;
     }

@@ -31,6 +31,9 @@
                                         <button type="button" class="btn btn-danger waves-effect waves-light"
                                             data-bs-toggle="modal" data-bs-target="#custom-modal"><i
                                                 class="mdi mdi-plus-circle me-1"></i> Tambah Stock</button>
+                                                <button type="button" class="btn btn-info waves-effect waves-light"
+                                            data-bs-toggle="modal" data-bs-target="#custom-modal-retur"><i
+                                                class="mdi mdi-plus-circle me-1"></i> Terima Retur Barang</button>
                                     </div>
                                 </div>
 
@@ -130,6 +133,74 @@
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
+        <div class="modal fade" id="custom-modal-retur" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header bg-light">
+                        <h4 class="modal-title" id="myCenterModalLabel">Pilih Dokumen Retur</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <form id="form-retur">
+                            {{ csrf_field() }}
+                            <input type="hidden" class="form-control" id="id_hide" name="id_hide">
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">No. Dokumen Retur</label>
+                                <select class="form-control" id="retur_id" name="retur_id" required>
+                                    <option value='0'>-- Pilih Nomor Retur --</option>
+                                    @foreach ($data_retur as $item)
+                                        <option value="{{ $item->id_retur_beli }}">{{ $item->id_retur_beli }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            {{-- <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">GRN</label>
+                                <input type="text" class="form-control" id="grn_retur" name="grn" readonly required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">NO FAKTUR</label>
+                                <input type="text" class="form-control" id="faktur" name="faktur" required>
+                            </div>  
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">SUPPLIER D.O</label>
+                                <input type="text" class="form-control" id="do_retur" name="do" required>
+                            </div>  --}}
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">SCAN PRODUCT (arahkan cursor)</label>
+                                
+                                <input type="text" class="form-control" id="scan_retur" name="scan" onmouseover="this.focus();">
+                                <input type="hidden" class="form-control" id="scanHidden_retur" name="scanHidden" required>
+                            </div> 
+                            <div class="table-responsive mb-4">
+                                <table class="table table-centered table-nowrap table-striped" id="order-datatables-retur">
+                                    <thead>
+                                        <tr>
+                                            <th>Kode Barang</th>
+                                            <th>Nama Barang</th>
+                                            <th>Jumlah Retur</th>
+                                            <th>Jumlah Diterima</th>
+                                            <th>Tanggal Expired</th>
+                                            <th>Status</th>
+                                            <th>Deskripsi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-success waves-effect waves-light">Masukan
+                                    Barang</button>
+                                <button type="button" class="btn btn-danger waves-effect waves-light"
+                                    data-bs-dismiss="modal">Batal</button>
+                            </div>
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
         <div class="modal fade" id="detail-modal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
@@ -152,6 +223,7 @@
                                 <table class="table table-centered table-nowrap table-striped" id="detail-datatables">
                                     <thead>
                                         <tr>
+                                            <th>ID</th>
                                             <th>Kode Barang</th>
                                             <th>Nama Barang</th>
                                             <th>Jumlah Masuk</th>
@@ -320,7 +392,9 @@
                 $('#custom-modal').modal({backdrop: 'static', keyboard: false});
                 $('#add-modal').modal({backdrop: 'static', keyboard: false});
                 $('#order_id').prop('selectedIndex',0);
+                $('#retur_id').prop('selectedIndex',0);
                 $('#form-order')[0].reset();
+                $('#form-retur')[0].reset();
                 $(window).keydown(function(event){
                     if(event.keyCode == 13) {
                     event.preventDefault();
@@ -331,6 +405,7 @@
         
   
         $("#order_id select").val("0").change();
+        $("#retur_id select").val("0").change();
         $('#default-datatable').DataTable();
         $.fn.dataTable.render.moment = function(from, to, locale) {
             // Argument shifting
@@ -456,6 +531,65 @@
             
         });
 
+        $("#form-retur").submit(function(event) {
+            event.preventDefault();
+            swal.fire({
+                    title: "Input Penerimaan Barang ",
+                    text: "Pastikan bahwa data barang telah diisi semua dan memiliki Barcode/Kode Barang,\n Lanjutkan Proses ? ",
+                    icon: "warning",
+                    showCancelButton: !0,
+                    confirmButtonColor: "#28bb4b",
+                    cancelButtonColor: "#f34e4e",
+                    confirmButtonText: "Ya, Lanjutkan",
+                    cancelButtonText: "Batal, Periksa Kembali"
+                })
+                .then(function(e) {
+                    if(e.value){
+                        var formData = new FormData($('#form-retur')[0]);
+                        $.ajax({
+                            url: '{{ url('add-stock-retur') }}',
+                            type: 'post',
+                            data: formData,
+                            contentType: false, //untuk upload image
+                            processData: false, //untuk upload image
+                            timeout: 300000, // sets timeout to 3 seconds
+                            dataType: 'json',
+                            success: function(e) {
+                                if (e) {
+                                    Swal.fire({
+                                        title: "Sukses",
+                                        text: "Data Berhasil Diinput!",
+                                        icon: "success"
+                                    });
+                                    setTimeout(location.reload(), 2000);
+                                } else {
+                                    var text = "";
+                                    $.each(e.customMessages, function(key, value) {
+                                        text += `<br>` + value;
+                                    });
+                                    Swal.fire({
+                                        title: "Gagal",
+                                        text: text,
+                                        icon: "error"
+                                    });
+                                }
+                            }
+                        }).fail(function(jqXHR, textStatus, errorThrown) {
+                            Swal.fire({
+                                        title: "Gagal",
+                                        text: 'Reposn tidak diketahui, cek koneksi anda',
+                                        icon: "error"
+                                    });
+                        });
+                        
+                    }else{
+                        swal.fire("Input Dibatalkan, Silahkan Periksa Kembali Data Anda !");
+                    }
+
+                });
+            
+        });
+
         $('#basic-datatables tbody').on('click', '.btn-delete', function() {
             var id = $(this).data("id");
             swal.fire({
@@ -525,6 +659,107 @@
 
         $('#btn-modal').click(function(e) {
             $('#form-order')[0].reset();
+        });
+
+        $('#retur_id').change(function(e) {
+            $("#scan_retur").focus();
+            $('#order-datatables-retur ').DataTable().destroy();
+            // $.ajax({
+            //     url: '/get-grn',
+            //     type: 'get',
+            //     dataType: 'json',
+            //     data: ({
+            //         _token: "{{ csrf_token() }}"
+            //     }),
+            //     success: function(e) {
+            //         $('#grn_retur').val(e);
+            //     }
+            // }).fail(function(jqXHR, textStatus, errorThrown) {
+            //     swal.fire("Gagal Periksa Kembali Data Anda !", {
+            //         icon: "error",
+            //     });
+            // });
+
+            var table = $('#order-datatables-retur ').DataTable({
+                lengthChange: true,
+            lengthMenu:[[-1],["All"]],
+            //buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
+            buttons: [],
+            ajax: {
+                url: '/retur-list',
+                method: "POST",
+                dataSrc: "",
+                dataType: 'json',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: $(this).val()
+                }
+            },
+            "autoWidth": false,
+            columns: [{
+                    data: "kode_barang"
+                },
+                {
+                    data: "nama_barang"
+                },
+                {
+                    data: "jml_retur"
+                },
+                {
+                    data: "jml_diterimas"
+                },
+                {
+                    data: "exps"
+                },
+                {
+                    data: "status_receives"
+                },
+                {
+                    data: "deskripsis"
+                }
+            ],
+            initComplete: function() {
+                table.buttons().container()
+                    .appendTo('#example_wrapper .col-md-6:eq(0)');
+            }
+        });
+
+            $('#list-order-datatables').DataTable().destroy();
+            var table = $('#list-order-datatables').DataTable({
+                lengthChange: true,
+            lengthMenu:[[-1],["All"]],
+            //buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
+            buttons: [],
+            ajax: {
+                url: '/order-list',
+                method: "POST",
+                dataSrc: "",
+                dataType: 'json',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: $(this).val()
+                }
+            },
+            "autoWidth": false,
+            columns: [{
+                    data: "kode_barang"
+                },
+                {
+                    data: "nama_barang"
+                },
+                {
+                    data: "jumlah"
+                },
+                {
+                    data: "action"
+                }
+            ],
+            initComplete: function() {
+                table.buttons().container()
+                    .appendTo('#example_wrapper .col-md-6:eq(0)');
+            }
+        });
+
         });
 
         $('#order_id').change(function(e) {
@@ -670,6 +905,13 @@
             var table = $('#detail-datatables').DataTable({
                 lengthChange: true,
             lengthMenu:[[-1],["All"]],
+            ordering: false,
+            columnDefs: [
+            {
+                "targets": [ 0 ],
+                "visible": false,
+            },
+            ],
             //buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
             buttons: [],
             ajax: {
@@ -682,7 +924,11 @@
                     date:""
                 }
             },
-            columns: [{
+            columns: [
+                {
+                    data: "id_history"
+                },
+                {
                     data: "kode_barang"
                 },
                 {
@@ -782,6 +1028,14 @@
             $('#form-barang').hide();
         });
 
+        $('#scan_retur').on('change', function() {
+            kode = $('#scan').val();
+            $('#scanHidden_retur').val(kode);
+            if (kode != null) {
+                doStuff()
+            } 
+            $('#form-barang').hide();
+        });
         function doStuff() {
             $.ajax({
                 url: '{{ url('get-stock-produk') }}',

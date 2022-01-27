@@ -225,6 +225,8 @@ class DokterController extends Controller
     public function add_rekam(Request $request){
         $year = \Carbon\Carbon::now()->timezone('Asia/Jakarta')->year;
         $id = IdGenerator::generate(['table' => 'rekam_medis','field'=>'id_rekam_medis', 'length' => 15, 'prefix' =>'RKM-'. $year . '-']);
+        DB::beginTransaction();   
+        try { 
         $rekam=new RekamMedis;
         $rekam->id_rekam_medis=$id;
         $rekam->tekanan_darah=$request->tekanan_darah;
@@ -233,6 +235,12 @@ class DokterController extends Controller
         $rekam->nip=Auth::user()->nip;
         $rekam->nik=$request->nik;
         $rekam->medical_record_id=$request->nik;
+        $rekam->nadi=$request->nadi;
+        $rekam->suhu=$request->suhu;
+        $rekam->anamnesa=$request->anamnesa;
+        $rekam->fisik=$request->fisik;
+        $rekam->penunjang=$request->penunjang;
+        $rekam->terapi=$request->terapi;
         if(!$rekam->save()){
             return false;
         }else{
@@ -264,9 +272,12 @@ class DokterController extends Controller
                     $resep->save();
                     }
 
+                    DB::commit();
                     return true;
         }
-
+        } catch (Exception $e) {     
+            DB::rollback();
+          }
     }
 
     public function list_pasien_rekam(){

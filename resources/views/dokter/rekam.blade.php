@@ -93,11 +93,33 @@
                             <input type="text" class="form-control" id="tekanan_darah" name="tekanan_darah" placeholder="Tekanan Darah" required>
                         </div>
                         <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Saturasi Oksigen</label>
+                            <label for="name" class="form-label">Nadi</label>
+                            <input type="text" class="form-control" id="nadi" name="nadi" placeholder="Nadi" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Respirasi</label>
                             <input type="text" class="form-control" id="saturasi_oksigen" name="saturasi_oksigen" placeholder="Saturasi Oksigen" required>
                         </div>
                         <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Penyakit</label>
+                            <label for="name" class="form-label">Suhu</label>
+                            <input type="text" class="form-control" id="suhu" name="suhu" placeholder="Suhu" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Anamnesa</label>
+                            <textarea class="form-control" id="anamnesa" name="anamnesa" placeholder="Anamnesa" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Pemeriksaan Fisik</label>
+                            <textarea class="form-control" id="fisik" name="fisik" placeholder="Fisik" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Pemeriksaan Penunjang</label>
+                            <textarea class="form-control" id="penunjang" name="penunjang" placeholder="Penunjang" required></textarea>
+                        </div>
+                     
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Diagnosa</label>
                             <select class="form-control select2-multiple"  id="penyakit" name="penyakit[]" data-toggle="select2" data-width="100%" multiple="multiple" required >
                                 <option value="">-Pilih-</option>
                                 @foreach ($penyakit as $item)
@@ -105,6 +127,10 @@
                                 @endforeach
                             </select>
                           
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Terapi</label>
+                            <textarea class="form-control" id="terapi" name="terapi" placeholder="Terapi" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Tindakan</label>
@@ -192,12 +218,37 @@
                             <input type="text" class="form-control" id="tekanan_darah_detail" name="tekanan_darah" placeholder="Tekanan Darah" required readonly>
                         </div>
                         <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Saturasi Oksigen</label>
+                            <label for="name" class="form-label">Nadi</label>
+                            <input type="text" class="form-control" id="nadi_detail" name="nadi" placeholder="Nadi" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Respirasi</label>
                             <input type="text" class="form-control" id="saturasi_oksigen_detail" name="saturasi_oksigen" placeholder="Saturasi Oksigen" required readonly>
                         </div>
                         <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Penyakit</label>
+                            <label for="name" class="form-label">Suhu</label>
+                            <input type="text" class="form-control" id="suhu_detail" name="suhu" placeholder="Suhu" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Anamnesa</label>
+                            <textarea class="form-control" id="anamnesa_detail" name="anamnesa" placeholder="Anamnesa" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Pemeriksaan Fisik</label>
+                            <textarea class="form-control" id="fisik_detail" name="fisik" placeholder="Fisik" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Pemeriksaan Penunjang</label>
+                            <textarea class="form-control" id="penunjang_detail" name="penunjang" placeholder="Penunjang" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Diagnosa</label>
                             <textarea class="form-control"  id="penyakit_detail" name="penyakit" required readonly></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Terapi</label>
+                            <textarea class="form-control" id="terapi_detail" name="terapi" placeholder="Terapi" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Tindakan</label>
@@ -554,6 +605,12 @@
                     $('#nik_detail').val(e[0].nik);
                     $('#tekanan_darah_detail').val(e[0].tekanan_darah);
                     $('#saturasi_oksigen_detail').val(e[0].saturasi_oksigen);
+                    $('#nadi_detail').val(e[0].nadi);
+                    $('#suhu_detail').val(e[0].suhu);
+                    $('#anamnesa_detail').val(e[0].anamnesa);
+                    $('#fisik_detail').val(e[0].fisik);
+                    $('#penunjang_detail').val(e[0].penunjang);
+                    $('#terapi_detail').val(e[0].terapi);
                     let idx=1;
                     let temp1="";
                     let temp2="";

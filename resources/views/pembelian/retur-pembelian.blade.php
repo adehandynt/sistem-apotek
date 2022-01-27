@@ -121,11 +121,13 @@
                         <div class="col-sm-12">
                             <form id="pilih-retur">
                                 {{ csrf_field() }}
+                                <div class="table-responsive">
                             <table class="table table-centered table-nowrap mb-0" id="retur-datatables">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Pilih</th>
                                         <th>Nama / Kode Barang</th>
+                                        <th>Detail</th>
                                         <th>Jumlah</th>
                                         <th>Satuan</th>
                                         <th>Barang Diterima</th>
@@ -140,6 +142,7 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
                         <div class="text-end mt-3">
                             <button type="submit" class="btn btn-success btn-ceate-retur" style="float: right; margin-left:10px">Buat Retur Pembelian</button>
                         </div>
@@ -160,6 +163,7 @@
                 <div class="modal-body p-4">
                     <div class="row">
                         <div class="col-sm-12">
+                            <div class="table-responsive">
                             <table class="table table-centered table-nowrap mb-0" id="detail-retur-datatables">
                                 <thead class="table-light">
                                     <tr>
@@ -177,6 +181,7 @@
 
                                 </tbody>
                             </table>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -361,7 +366,7 @@
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 Swal.fire({
                             title: "Gagal",
-                            text: "Pilih Item Terlebih Dahulu",
+                            text: "Periksa Kembali Data Anda / Pilih Item Terlebih Dahulu",
                             icon: "error"
                         });
             });
@@ -371,7 +376,7 @@
             var id = $(this).data("id");
 
             $.ajax({
-                url: '/detail-order',
+                url: '/detail-order-po',
                 type: 'post',
                 dataType: 'json',
                 data: ({
@@ -380,6 +385,7 @@
                     retur:1
                 }),
                 success: function(e) {
+                    console.log(id);
                     $('#nomor-surat-pesan').val(e.order[0].id_order);
                     $('#pengaju').val(e.order[0].nama_staf);
                     $('#supplier').val(e.order[0].nama_supplier);
@@ -420,12 +426,13 @@
                                                     <label class="form-check-label" for="customCheck11">&nbsp;</label>
                                                 </div></td>
                                 <td>${value.kode_barang}</td>
+                                <td>${value.nama_barang}</td>
                                 <td>${value.jumlah}</td>
                                 <td>${value.satuan}</td>
                                 <td>${value.jumlah_diterima}</td>
                                 <td>${value.tgl_exp}</td>
-                                <td><input type="number" class="form-control" name="jml_retur[]" value="${value.jumlah-value.jumlah_diterima}" placeholder="Jumlah"> </td>
-                                <td><input type="text" class="form-control" name="deskripsi_retur[]"> </td>
+                                <td><input type="number" class="form-control" name="jml_retur[]" style="width: 90px;" value="${value.jumlah-value.jumlah_diterima}" placeholder="Jumlah"> </td>
+                                <td><input type="text" class="form-control" style="width: 250px;" name="deskripsi_retur[]"> </td>
                                 </tr>`);
                     });
                 }
