@@ -184,7 +184,7 @@ class StockController extends Controller
         AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS stok'),
         'stok.kode_barang', '=', 'barang.kode_barang')
         ->join(DB::raw('(SELECT
-        t.kode_barang,
+        t.kode_barang,t.id_history,
         min(t.sisa) as sisa
         FROM
         ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
@@ -194,15 +194,18 @@ class StockController extends Controller
         // ->leftJoin(DB::raw('(SELECT * FROM barang_keluar order by created_at desc limit 1) AS barang_keluar'),
         // 'barang_keluar.stock_id', '=', 'stok.stock_id')
         ->select('stok.*','barang.*','list_order.*',DB::raw('coalesce(history_barang.sisa,jml_akumulasi,jml_masuk) as
-        sisa'))
+        sisa'),'history_barang.id_history')
         ->groupBy('barang.kode_barang')
         ->get();
-        
+        // dd($data[0]);
         //        return view('data-master/tipe', $res);
         for ($i = 0; $i < count($data); $i++) {
             $data[$i]->action = ' <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#detail-modal" data-id="' . $data[$i]->kode_barang . '"
             class="btn-detail action-icon"> <i
-                class="mdi mdi-eye"></i></a>';
+                class="mdi mdi-eye"></i></a><a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit-stock-modal" data-id="' . $data[$i]->id_history . '"
+                data-nama="' . $data[$i]->nama_barang . '" data-stock="' . $data[$i]->sisa . '"
+                class="btn-edit-stock action-icon"> <i
+                    class="mdi mdi-square-edit-outline"></i></a>';
         }
         return json_encode($data);
     }
@@ -444,10 +447,18 @@ class StockController extends Controller
 
     function edit_stock(Request $request)
     {
-        $satuan = Stok::where('id', $request->id)
+        // $satuan = Stok::where('id', $request->id)
+        //     ->firstOrFail();
+        $stock = HistoryBarang::where('id_history', $request->id_hide)
             ->firstOrFail();
-
-        return json_encode($satuan);
+        $stock->sisa = $request->stock_barang;
+        //dd($stock);
+        if($stock->save()){
+            return true;
+        }else{
+            return false;
+        }
+        //return json_encode($satuan);
     }
 
     function update_stock(Request $request)

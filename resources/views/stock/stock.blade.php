@@ -247,6 +247,33 @@
             </div><!-- /.modal-dialog -->
         </div>
 
+        <div class="modal fade" id="edit-stock-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-light">
+                        <h4 class="modal-title" id="myCenterModalLabel">Edit Stock <span id="nama_barang_edit"></span></h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <form id="form-edit-stock">
+                            {{ csrf_field() }}
+                            <input type="hidden" class="form-control" id="id_hide_stock" name="id_hide">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Stock Barang Terakhir</label>
+                                <input type="number" class="form-control numeric_form " id="edit_stock_barang" name="stock_barang">
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-success waves-effect waves-light">Update
+                                    Stock</button>
+                                <button type="button" class="btn btn-danger waves-effect waves-light"
+                                    data-bs-dismiss="modal">Batal</button>
+                            </div>
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
         <div class="modal fade" id="add-modal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="modal-content">
@@ -964,6 +991,70 @@
                     .appendTo('#example_wrapper .col-md-6:eq(0)');
             }
         });
+        });
+
+        $('#basic-datatables tbody').on('click', '.btn-edit-stock', function() {
+            var id = $(this).data("id");
+            $('#id_hide_stock').val(id);
+            $('#nama_barang_edit').text( $(this).attr('data-nama'));
+            $('#edit_stock_barang').val( $(this).attr('data-stock'));
+           
+        });
+
+        $("#form-edit-stock").submit(function(event) {
+            event.preventDefault();
+            swal.fire({
+                    title: "Update Stock Barang ",
+                    text: "Data stock yang diperbaharui akan mengalami selisih pada history barang terakhir sesuai dengan data yang diperbaharui,\n Lanjutkan Proses ? ",
+                    icon: "warning",
+                    showCancelButton: !0,
+                    confirmButtonColor: "#28bb4b",
+                    cancelButtonColor: "#f34e4e",
+                    confirmButtonText: "Ya, Lanjutkan",
+                    cancelButtonText: "Batal dan Kembali"
+                })
+                .then(function(e) {
+                    if(e.value){
+            var formData = new FormData($('#form-edit-stock')[0]);
+                        $.ajax({
+                            url: '{{ url('edit-stock') }}',
+                            type: 'post',
+                            data: formData,
+                            contentType: false, //untuk upload image
+                            processData: false, //untuk upload image
+                            timeout: 300000, // sets timeout to 3 seconds
+                            dataType: 'json',
+                            success: function(e) {
+                                if (e) {
+                                    Swal.fire({
+                                        title: "Sukses",
+                                        text: "Data Berhasil Diperbaharui!",
+                                        icon: "success"
+                                    });
+                                    setTimeout(location.reload(), 2000);
+                                } else {
+                                    var text = "";
+                                    $.each(e.customMessages, function(key, value) {
+                                        text += `<br>` + value;
+                                    });
+                                    Swal.fire({
+                                        title: "Gagal",
+                                        text: text,
+                                        icon: "error"
+                                    });
+                                }
+                            }
+                        }).fail(function(jqXHR, textStatus, errorThrown) {
+                            Swal.fire({
+                                        title: "Gagal",
+                                        text: 'Respon tidak diketahui, cek koneksi anda',
+                                        icon: "error"
+                                    });
+                        });
+                    }else{
+                        swal.fire("Update Dibatalkan!");
+                    }
+                });
         });
 
         $('#set_date').change(function(e) {
