@@ -369,20 +369,20 @@
             $('#custom-modal-detail').modal({backdrop: 'static', keyboard: false});
         });
         $('#default-datatable').DataTable();
-
+        var dropdownParentEl = $('#custom-modal > .modal-dialog > .modal-content');
         $('#tindakan').select2({
-        dropdownParent: $('#custom-modal')
+        dropdownParent: dropdownParentEl
     });
     $('#nik').select2({
-        dropdownParent: $('#custom-modal')
+        dropdownParent: dropdownParentEl
     });
 
     $('.kode_barang').select2({
-        dropdownParent: $('#custom-modal')
+        dropdownParent:dropdownParentEl
     });
-
+  
     $('#penyakit').select2({
-        dropdownParent: $('#custom-modal')
+        dropdownParent: dropdownParentEl
     });
 
         var table = $('#rekam-datatables').DataTable({
@@ -648,8 +648,9 @@
                     $('#container_obat').append(`<select class="form-control kode_barang mb-2 mt-2" name="kode_barang[]" data-toggle="select2" data-width="100%">${x}
                                 </select>
                             <textarea class="form-control dosis mt-2 mb-2" placeholder="Dosis" name="dosis[]"></textarea>`);
+                            
                             $('.kode_barang').select2({
-                dropdownParent: $('#custom-modal')
+                dropdownParent: dropdownParentEl
             });
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
