@@ -232,6 +232,23 @@
                     </div>
                 </li>
                 @endif
+                @if(session('position')!='dokter')
+                <li class="menu-title mt-2">User Manual</li>
+                <li>
+                    <a href="#sidebarUserManual" data-bs-toggle="collapse">
+                        <i class="mdi mdi-help-circle-outline"></i>
+                        <span class="menu-arrow"></span>
+                        <span> User Manual </span>
+                    </a>
+                    <div class="collapse" id="sidebarUserManual">
+                        <ul class="nav-second-level">
+                            <li>
+                                <a href="/user-manual">Manual</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                @endif
         </div>
         <!-- End Sidebar -->
 

@@ -166,6 +166,7 @@
                                             <th class="border-top-0">Tanggal</th>
                                             <th class="border-top-0">Total</th>
                                             <th class="border-top-0">Status</th>
+                                            <th class="border-top-0">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -196,6 +197,9 @@
                                             @else
                                             <td><span class="badge rounded-pill bg-warning">BPJS</span></td>
                                             @endif
+                                            <td>
+                                                <button class="btn btn-xs btn-danger btn-hapus-transaksi" data-id="{{$val->no_transaksi}}" >Hapus</button>
+                                            </td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -475,6 +479,48 @@ $('#piutang-datatables tbody').on('click', '.btn-lunas', function() {
 
                         :
                         swal.fire("Transaksi Dibatalkan !");
+
+                });
+
+        });
+
+        $('#basic-datatables tbody').on('click', '.btn-hapus-transaksi', function() {
+            var id = $(this).data("id");
+            swal.fire({
+                    title: "Anda Yakin?",
+                    text: "Data yang di HAPUS tidak dapat dikembalikan",
+                    icon: "warning",
+                    showCancelButton: !0,
+                    confirmButtonColor: "#28bb4b",
+                    cancelButtonColor: "#f34e4e",
+                    confirmButtonText: "Ya, Mengerti!",
+                    cancelButtonText: "Batal"
+                })
+                .then(function(e) {
+                    e.value ?
+                        $.ajax({
+                            type: "POST",
+                            url: '/hapus-transaksi',
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                id: id
+                            }
+                        }).done(function(msg) {
+                            
+                            if (msg != 'error') {
+                                swal.fire("Transaksi Telah Dihapus !", {
+                                    icon: "success",
+                                });
+                                location.reload();
+                            } else {
+                                swal.fire("Transaksi Gagal Dihapus", {
+                                    icon: "error",
+                                });
+                            }
+                        })
+
+                        :
+                        swal.fire("Hapus Transaksi Dibatalkan !");
 
                 });
 

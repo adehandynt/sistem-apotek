@@ -47,6 +47,8 @@ class StockController extends Controller
     {
         $tanggal=\Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
         $tanggal = substr($tanggal,0,7);
+        $tanggal2=\Carbon\Carbon::now()->subDays(29, 'day')->timezone('Asia/Jakarta')->format('Y-m-d');
+        $tanggal2 = substr($tanggal2,0,7);
         $res['data'] = StockOpname::get();
         $res['satuan'] = Satuan::get();
         $res['tipe'] = Tipe::get();
@@ -140,7 +142,7 @@ class StockController extends Controller
      *,
      sum(jml_masuk) as jml_masuk_default,
      sum(jml_keluar) as jml_keluar_default
-        FROM history_barang group by kode_barang) AS history_barang_default'),
+        FROM history_barang where created_at LIKE "'.$tanggal2.'%"group by kode_barang) AS history_barang_default'),
    'history_barang_default.kode_barang', '=', 'barang.kode_barang')
         ->select('list_opname.*','barang.*','history_barang_catat.sisa_tercatat','history_barang.sisa',
         DB::raw('coalesce(list_opname.saldo_akhir,0) as saldo_awal'),

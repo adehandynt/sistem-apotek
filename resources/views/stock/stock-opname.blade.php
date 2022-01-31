@@ -112,9 +112,9 @@
                                         <th>Jumlah Fisik</th>
                                         <th>Masuk</th>
                                         <th>Keluar</th>
+                                        <th>Selisih</th>
                                         <th>Hilang</th>
                                         <th>Rusak</th>
-                                        <th>Selisih</th>
                                         <th>Saldo Akhir</th>
                                     </tr>
                                 </thead>
@@ -128,11 +128,11 @@
                                             <td><input type="number" class="jml_tersedia numeric_form form-control" name="jml_tersedia[]" style="width:150px;background:rgb(218, 218, 112)" value="{{$item->sisa_tercatat}}" required/></td>
                                             <td><input type="number" class="masuk numeric_form form-control" name="masuk[]" style="width:150px" value="{{$item->totalMasuk}}" required readonly/></td>
                                             <td><input type="number" class="keluar numeric_form form-control" name="keluar[]" style="width:150px" value="{{$item->totalKeluar}}" required readonly/></td>
+                                            <td><input type="number" class="selisih form-control" name="selisih[]" value="0" style="width:150px" readonly /></td>
                                             <td><input type="number" class="hilang numeric_form form-control" name="hilang[]" style="width:150px;background:rgb(218, 218, 112)" value="0" required/></td>
                                             <td><input type="number" class="rusak numeric_form form-control" name="rusak[]" style="width:150px;background:rgb(218, 218, 112)" value="0" required/></td>
-                                            <td><input type="number" class="selisih form-control" name="selisih[]" value="0" style="width:150px" readonly /></td>
-                                            {{-- <td><input type="number" class="saldo_akhir form-control" name="saldo_akhir[]" value="{{$item->saldo_awal+$item->totalMasuk-$item->totalKeluar}}" style="width:150px" readonly /></td> --}}
-                                            <td><input type="number" class="saldo_akhir form-control" name="saldo_akhir[]" value="{{$item->sisa_tercatat}}" style="width:150px" readonly /></td>
+                                            <td><input type="number" class="saldo_akhir form-control" name="saldo_akhir[]" value="{{$item->saldo_awal+$item->totalMasuk-$item->totalKeluar}}" style="width:150px" readonly /></td>
+                                            {{-- <td><input type="number" class="saldo_akhir form-control" name="saldo_akhir[]" value="{{$item->sisa_tercatat}}" style="width:150px" readonly /></td> --}}
                                         </tr>
                                     @endforeach
 
@@ -173,9 +173,9 @@
                                         <th>Jumlah Fisik</th>
                                         <th>Masuk</th>
                                         <th>Keluar</th>
+                                        <th>Selisih</th>
                                         <th>Hilang</th>
                                         <th>Rusak</th>
-                                        <th>Selisih</th>
                                         <th>Saldo Akhir</th>
                                     </tr>
                                 </thead>
@@ -501,9 +501,9 @@
                                             <td><input type="number" class="jml_tersedia numeric_form form-control" name="jml_tersedia[]" style="width:150px"value="${value.jml_fisik}" readonly/></td>
                                             <td><input type="number" class="masuk numeric_form form-control" name="masuk[]" style="width:150px" value="${value.masuk}" required readonly/></td>
                                             <td><input type="number" class="keluar numeric_form form-control" name="keluar[]" style="width:150px" value="${value.keluar}" required readonly/></td>
+                                            <td><input type="number" class="selisih numeric_form form-control" name="rusak[]" style="width:150px" value="${value.selisih}" readonly/></td>
                                             <td><input type="number" class="hilang numeric_form form-control" name="hilang[]" style="width:150px" value="${value.hilang}" readonly/></td>
                                             <td><input type="number" class="rusak numeric_form form-control" name="rusak[]" style="width:150px" value="${value.rusak}" readonly/></td>
-                                            <td><input type="number" class="selisih numeric_form form-control" name="rusak[]" style="width:150px" value="${value.selisih}" readonly/></td>
                                             <td><input type="number" class="saldo_akhir form-control" name="saldo_akhir[]" value="${value.saldo_akhir}" style="width:150px" readonly /></td>
                                             
                                         </tr>`);
@@ -519,8 +519,30 @@
         });
 
         
-        $('#order-datatables tbody').on('change', '.jml_tersedia, .hilang, .rusak', function() {
+        $('#order-datatables tbody').on('change', '.jml_tersedia', function() {
             let idx = $('.jml_tersedia').index(this);
+            let jml_tercatat=parseInt($('.jml_tercatat').eq(idx).val());
+            let jml_tersedia= parseInt($('.jml_tersedia').eq(idx).val());
+            let hilang= parseInt($('.hilang').eq(idx).val());
+            let rusak= parseInt($('.rusak').eq(idx).val());
+            $('.selisih').eq(idx).val((jml_tersedia)-jml_tercatat);
+            $('.saldo_akhir').eq(idx).val(jml_tersedia);
+
+        });
+
+        $('#order-datatables tbody').on('change', '.hilang', function() {
+            let idx = $('.hilang').index(this);
+            let jml_tercatat=parseInt($('.jml_tercatat').eq(idx).val());
+            let jml_tersedia= parseInt($('.jml_tersedia').eq(idx).val());
+            let hilang= parseInt($('.hilang').eq(idx).val());
+            let rusak= parseInt($('.rusak').eq(idx).val());
+            $('.selisih').eq(idx).val((jml_tersedia)-jml_tercatat);
+            $('.saldo_akhir').eq(idx).val(jml_tersedia);
+
+        });
+
+        $('#order-datatables tbody').on('change', '.rusak', function() {
+            let idx = $('.rusak').index(this);
             let jml_tercatat=parseInt($('.jml_tercatat').eq(idx).val());
             let jml_tersedia= parseInt($('.jml_tersedia').eq(idx).val());
             let hilang= parseInt($('.hilang').eq(idx).val());

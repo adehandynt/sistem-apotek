@@ -189,13 +189,14 @@ class DashboardController extends Controller
     }
     public function GraphData()
     {
-        $terjual= Penjualan::select('transaksi.*',DB::raw('MONTHNAME(transaksi.tgl_transaksi) as date'),DB::raw('SUM(transaksi.total) as total'))
+        $terjual= Penjualan::select('transaksi.*',DB::raw('MONTHNAME(transaksi.tgl_transaksi) as date'),DB::raw('MONTH(transaksi.tgl_transaksi) as dateAngka'),DB::raw('SUM(transaksi.total) as total'))
         ->where(function ($query) {
             $query->where('status_transaksi','=','lunas')
                 ->orWhere('status_transaksi','=',null);
         })
         
             ->groupBy('date')
+            ->orderBy('dateAngka')
             ->get()
             ->take(7);
                 
@@ -232,5 +233,30 @@ class DashboardController extends Controller
         }else{
             return 'error';
         }
+    }
+
+    public function hapus_transaksi(Request $request){
+        
+        DB::beginTransaction();   
+        try { 
+            $transaksi = Penjualan::where('no_transaksi', $request->id)
+            ->first();
+        $transaksi->delete();
+        $penjualan = ItemPenjualan::where('no_transaksi', $request->id)
+            ->first();
+        $penjualan->delete();
+        $history = HistoryBarang::where('id_referensi', $request->id)
+            ->first();
+        $history->delete();
+      
+            DB::commit();
+            return 'success';
+       
+      
+        }catch (Exception $e) {     
+            DB::rollback();
+            return 'error';
+          }
+       
     }
 }

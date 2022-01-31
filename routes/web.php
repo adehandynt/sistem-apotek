@@ -58,6 +58,10 @@ Route::get('/data-pasien', function () {
 Route::get('/data-tindakan', function () {
     return view('dokter/tindakan');
 });
+
+Route::get('/user-manual', function () {
+    return view('main/usermanual');
+});
 Route::get('/data-penyakit', [DokterController::class, 'v_penyakit']);
 Route::get('/data-jasa', [JasaController::class, 'v_jasa']);
 
@@ -221,6 +225,7 @@ Route::post('/add-jasa', [JasaController::class, 'add_jasa']);
 Route::get('/list-jasa', [JasaController::class, 'v_list_jasa']);
 Route::post('/edit-jasa', [JasaController::class, 'edit_jasa']);
 Route::post('/update-jasa', [JasaController::class, 'update_jasa']);
+Route::post('/hapus-transaksi', [DashboardController::class, 'hapus_transaksi']);
 
 Route::post('/print-bill', [ReceiptController::class, 'print']);
 Route::get('/data-margin', [MarginController::class, 'margin_page']);
