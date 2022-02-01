@@ -103,6 +103,24 @@
                         </ul>
                     </div>
                 </li>
+                <li class="menu-title mt-2">Pasien</li>
+                <li>
+                    <a href="#sidebarDataPasien" data-bs-toggle="collapse">
+                        <i class="mdi mdi-account-group"></i>
+                        <span class="menu-arrow"></span>
+                        <span> Pasien </span>
+                    </a>
+                    <div class="collapse" id="sidebarDataPasien">
+                        <ul class="nav-second-level">
+                            <li>
+                                <a href="/data-antrian">Antrian</a>
+                            </li>
+                            <li>
+                                <a href="/data-pasien">Pasien</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
                  @endif
                 @if(session('position')=='owner' || session('position')=='manager' || session('position')=='ass_apoteker' || session('position')=='apoteker')
                 <li class="menu-title mt-2">Stock</li>

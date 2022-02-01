@@ -123,7 +123,7 @@ class ReceiptController extends Controller
                     $jasa->save();
 
                     $list_alat=AlatJasa::where('id_list_jasa', '=', $request->input('nama_jasa')[$idx])->get();
-                    foreach ($list_alat as $idx => $val) {
+                    foreach ($list_alat as $idxs => $vals) {
                         // $data = Stok::leftJoin('history_barang', 'history_barang.kode_barang', '=', 'stok.kode_barang')
                         // ->where('stok.kode_barang', '=',$val->kode_barang)
                         // ->select('stok.stock_id', 'stok.jml_akumulasi', DB::raw('COALESCE(COALESCE(history_barang.sisa, stok.jml_masuk ),0) AS sisa'))
@@ -140,7 +140,7 @@ class ReceiptController extends Controller
                 INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
                 AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS history_barang'),
                'history_barang.kode_barang', '=', 'stok.kode_barang')
-                    ->where('stok.kode_barang', '=',$val->kode_barang)
+                    ->where('stok.kode_barang', '=',$vals->kode_barang)
                     ->select('stok.stock_id', 'stok.jml_akumulasi',DB::raw('COALESCE(COALESCE(history_barang.sisa, stok.jml_masuk ),0) AS sisa'))
                     // ->orderBy('history_barang.created_at', 'desc')
                     // ->orderBy('history_barang.sisa', 'asc')
@@ -153,8 +153,9 @@ class ReceiptController extends Controller
                         $id_history = IdGenerator::generate(['table' => 'history_barang','field'=>'id_history', 'length' => 15, 'prefix' =>'HIS-'. $year . '-']);
                         $history = new HistoryBarang;
                         $history->id_history=$id_history;
-                        $history->kode_barang=$val->kode_barang;
+                        $history->kode_barang=$vals->kode_barang;
                         $history->tgl_keluar=\Carbon\Carbon::now()->timezone('Asia/Jakarta');
+                        //dd( $request->input('jml_jasa')[$idx]);
                         $history->jml_keluar= $request->input('jml_jasa')[$idx];
                         $history->jenis_history='barang_keluar_jasa';
                         $history->id_referensi=$id;
