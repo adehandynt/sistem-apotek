@@ -84,7 +84,7 @@ class PembelianController extends Controller
             if ($data[$i]->status == 1) {
                 $data[$i]->stat_pengajuan = '<h5><span class="badge bg-soft-success text-success"><i class="mdi mdi-shield-check"></i> Disetujui</span></h5>';
                 $data[$i]->stat_pembelian = $data[$i]->status_pembelian == 1 ? ' <h5><span class="badge bg-soft-success text-success"><i class="mdi mdi-shield-check"></i> Diterima</span></h5>' : '<h5><span class="badge bg-soft-danger text-danger"><i class="mdi mdi-clock-outline"></i> Belum Diterima</span></h5>';
-                $data[$i]->action .= '<a href="cetak-pdf?id=' . encrypt($data[$i]->id) . '" class="action-icon" data-id="' . $data[$i]->id . '"> <i class="mdi mdi-printer-check"></i></a>';
+                $data[$i]->action .= '<a href="cetak-pdf?id=' . encrypt($data[$i]->id) . '" class="action-icon" data-id="' . $data[$i]->id . '"> <i class="mdi mdi-printer-check"></i></a><a href="export-excel-pembelian?id=' . encrypt($data[$i]->id) . '" class="action-icon" data-id="' . $data[$i]->id . '"> <i class="mdi mdi-file-excel"></i></a>';
             } elseif ($data[$i]->status == 2) {
                 $data[$i]->stat_pengajuan = '<h5><span class="badge bg-soft-danger text-danger"><i class="mdi mdi-close-circle-outline"></i> Ditolak</span></h5>';
                 $data[$i]->stat_pembelian = '<h5><span class="badge bg-soft-warning text-warning"><i class="mdi mdi-bitcoin"></i> Menunggu Persetujuan</span></h5>';
