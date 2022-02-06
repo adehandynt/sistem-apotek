@@ -89,6 +89,43 @@
     
             </div>
             <!-- end row -->
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title mb-3">Pendapatan Staf Hari Ini</h4>
+
+                            <div class="table-responsive">
+                                <table class="table table-centered table-nowrap table-hover mb-0" id="pendapatan-datatables">
+                                    <thead>
+                                        <tr>
+                                            <th class="border-top-0">NIP</th>
+                                            <th class="border-top-0">Nama Staf</th>
+                                            <th class="border-top-0">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($pendapatan_staf as $key => $val)
+                                        <tr>
+                                            <td>
+                                                <span class="ms-2">{{$val->nip}}</span>
+                                            </td>
+                                            <td>
+                                                <span class="ms-2">{{$val->nama_staf}}</span>
+                                            </td>
+                                            <td>
+                                                <span class="ms-2">Rp {{number_format($val->pendapatan,2)}}</span>
+                                            </td>
+
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div> <!-- end table-responsive -->
+                        </div>
+                    </div> <!-- end card-->
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-xl-12">
@@ -142,6 +179,7 @@
                                     </h2>
                                 </div>
                             </div>
+                            
                             <div id="revenue-chart" class="apex-charts mt-3" data-colors="#7e57c2,#4fc6e1"></div>
                         </div>
                     </div> <!-- end card -->
@@ -208,6 +246,7 @@
                         </div>
                     </div> <!-- end card-->
                 </div>
+              
                 <div class="col-xl-6">
                     <div class="card">
                         <div class="card-body">

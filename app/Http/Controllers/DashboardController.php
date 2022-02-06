@@ -155,8 +155,6 @@ class DashboardController extends Controller
             $query->where('status_transaksi','=','lunas')
                 ->orWhere('status_transaksi','=',null);
         })
-
-         
          ->groupBy('date')
          ->get();
          $dateBefore = \Carbon\Carbon::now()->subDays(30, 'day')->timezone('Asia/Jakarta')->format('Y-m-d');
@@ -180,10 +178,18 @@ class DashboardController extends Controller
         having
 			tgl <
 	DATE_FORMAT( NOW(), "%Y-%m" ) )x');
+
+    $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
+    $pendapatanStaf = Penjualan::join('staf', 'staf.nip', '=', 'transaksi.nip')
+    ->where('transaksi.tgl_transaksi','like', $date.'%')
+    ->select('staf.*',DB::raw('sum(transaksi.total) as pendapatan'))
+    ->groupBy('staf.nip')
+    ->get();
  
          $ret['lalu']=$pendapatan_lalu;
          $ret['sekarang']=$pendapatan_ini;
          $ret['rata']=$rata[0]->total;
+         $ret['pendapatan_staf']=$pendapatanStaf;
         // dd($ret);
         return view('dashboard/dashboard',$ret);
     }
@@ -258,5 +264,14 @@ class DashboardController extends Controller
             return 'error';
           }
        
+    }
+
+    public function pendapatan_staf(Request $request){
+        $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
+        $pendapatan = Penjualan::join('staf', 'staf.nip', '=', 'transaksi.nip')
+        ->where('tgl_transaksi','like', $date.'%')
+        ->select('transaksi.*',DB::raw('sum(transaksi.total) as pendapatan'))
+        ->groupBy('staf.nip');
+
     }
 }
