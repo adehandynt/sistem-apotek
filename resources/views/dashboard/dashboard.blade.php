@@ -105,6 +105,19 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @if(count($pendapatan_staf)<1)
+                                        <tr>
+                                            <td>
+                                                -
+                                            </td>
+                                            <td>
+                                                -
+                                            </td>
+                                            <td>
+                                                -
+                                            </td>
+                                        </tr>
+                                            @endif
                                         @foreach ($pendapatan_staf as $key => $val)
                                         <tr>
                                             <td>
