@@ -18,11 +18,11 @@
                     <i class="fe-maximize noti-icon"></i>
                 </a>
             </li>
-            
+            @if(session('position')=='manager'|| session('position')=='owner' )
             <li class="dropdown notification-list topbar-dropdown">
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     <i class="fe-bell noti-icon"></i>
-                    <span class="badge bg-danger rounded-circle noti-icon-badge">0</span>
+                    <span class="badge bg-danger rounded-circle noti-icon-badge" id="count_notif"></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-lg">
     
@@ -31,36 +31,26 @@
                         <h5 class="m-0">
                             <span class="float-end">
                                 <a href="" class="text-dark">
-                                    <small>Clear All</small>
+                                    {{-- <small>Clear All</small> --}}
                                 </a>
                             </span>Notification
                         </h5>
                     </div>
     
-                    {{-- <div class="noti-scroll" data-simplebar>
-    
-    
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-primary">
-                                <i class="mdi mdi-comment-account-outline"></i>
-                            </div>
-                            <p class="notify-details">Caleb Flakelar commented on Admin
-                                <small class="text-muted">1 min ago</small>
-                            </p>
-                        </a>
-    
+                    <div class="noti-scroll" data-simplebar>
+                        <div id="list-notif"></div>
       
-                    </div> --}}
+                    </div>
     
                     <!-- All-->
-                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                    {{-- <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
                         View all
                         <i class="fe-arrow-right"></i>
-                    </a>
+                    </a> --}}
     
                 </div>
             </li>
+            @endif
     
             <li class="dropdown notification-list topbar-dropdown">
                 <a class="nav-link dropdown-toggle nav-user me-0 waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">

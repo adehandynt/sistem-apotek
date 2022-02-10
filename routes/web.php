@@ -242,3 +242,4 @@ Route::get('/export-excel-labarugi',[LaporanController::class, 'export_excel_lab
 Route::get('/export-excel-narkotika',[LaporanController::class, 'export_excel_narkotika']);
 Route::get('/export-excel-bpjs',[LaporanController::class, 'export_excel_bpjs']);
 Route::get('/export-excel-konsinyasi',[LaporanController::class, 'export_excel_konsinyasi']);
+Route::get('/notification-list', [DashboardController::class, 'notif_list']);

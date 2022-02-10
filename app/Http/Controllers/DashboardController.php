@@ -17,6 +17,7 @@ use App\Models\Staf;
 use App\Models\ReturJual;
 use App\Models\HistoryBarang;
 use App\Models\RekamMedis;
+use App\Models\notification;
 use App\Models\Pasien;
 use Validator;
 use Hash;
@@ -273,5 +274,13 @@ class DashboardController extends Controller
         ->select('transaksi.*',DB::raw('sum(transaksi.total) as pendapatan'))
         ->groupBy('staf.nip');
 
+    }
+
+    public function notif_list(Request $request){
+        $data = notification::
+        where('status','=',0)
+        ->orderBy('id','desc')
+        ->get()->take(10);
+        return json_encode($data);
     }
 }

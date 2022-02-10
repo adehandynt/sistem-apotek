@@ -51,5 +51,32 @@ var startTimer = function() {
   timer = setTimeout(window.location.href = "{{ route('logout')}}", 6000);
 }
 
+$.ajax({
+    type: "GET",
+    url: '/notification-list',
+    data: {
+        _token: "{{ csrf_token() }}",
+    },
+    dataType: 'json',
+
+}).done(function (msg) {
+  var list=$('#list-notif');
+  var count=$('#count_notif');
+var element =``;
+for(let i=0;i<msg.length;i++){
+element+=`<a title="${msg[i].perihal}" href="/pembelian" class="dropdown-item notify-item">
+                            <div class="notify-icon bg-primary">
+                                <i class="mdi mdi-comment-account-outline"></i>
+                            </div>
+                            <p class="notify-details">${msg[i].perihal}
+                                <small class="text-muted">${msg[i].tgl_notif}</small>
+                            </p>
+                        </a>`;
+}
+    //count.html(msg.length);
+    list.html(element);
+})
+
+
    </script>
    @yield('script');
