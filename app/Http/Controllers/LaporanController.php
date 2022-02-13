@@ -192,6 +192,7 @@ class LaporanController extends Controller
         ->leftJoin('staf', 'transaksi.nip', '=', 'staf.nip')
         ->select('transaksi.*','barang.nama_barang','staf.nama_staf','item_penjualan.jumlah')
         ->where('tgl_transaksi','like',decrypt($request->input('id')).'%')
+        ->orderBy('transaksi.no_transaksi')
         ->get();
         $res['data']=$data;
         $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
@@ -257,6 +258,7 @@ class LaporanController extends Controller
         if(isset($request->tahun)){
             $data->whereYear('transaksi.tgl_transaksi','=',$request->tahun);
         }
+        $data->orderBy('transaksi.no_transaksi');
         $res['data']=$data->get();
         $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
         $pdf = PDF::loadview('laporan/export_pdf_penjualan', $res);
@@ -270,7 +272,8 @@ class LaporanController extends Controller
         ->join('history_barang','transaksi.no_transaksi','=','history_barang.id_referensi')
         ->leftJoin('staf', 'transaksi.nip', '=', 'staf.nip')
         ->select('transaksi.*','barang.nama_barang','history_barang.sisa','staf.nama_staf','item_penjualan.jumlah')
-        ->where('barang.kode_barang','like',decrypt($request->input('id')).'%');
+        ->where('barang.kode_barang','like',decrypt($request->input('id')).'%')
+        ->orderBy('transaksi.no_transaksi');
         
         $res['data']=$data->get();
         $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
@@ -296,6 +299,7 @@ class LaporanController extends Controller
             $data->whereYear('transaksi.tgl_transaksi','=',$request->tahun);
         }
         $data->whereNotNull('barang.konsinyasi');
+        $data->orderBy('transaksi.no_transaksi');
         $res['data']=$data->get();
         $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
         $pdf = PDF::loadview('laporan/export_pdf_konsinyasi', $res);
@@ -309,6 +313,7 @@ class LaporanController extends Controller
         ->select('transaksi.*','barang.nama_barang','staf.nama_staf','item_penjualan.jumlah')
         ->where('transaksi.no_transaksi','like',decrypt($request->input('id')).'%')
         ->whereNotNull('bpjs')
+        ->orderBy('transaksi.no_transaksi')
         ->get();
         $res['data']=$data;
         $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
@@ -332,6 +337,7 @@ class LaporanController extends Controller
         if(isset($request->tahun)){
             $data->whereYear('transaksi.tgl_transaksi','=',$request->tahun);
         }
+        $data->orderBy('transaksi.no_transaksi');
         $res['data']=$data->get();
         $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
         $pdf = PDF::loadview('laporan/export_pdf_bpjs', $res);

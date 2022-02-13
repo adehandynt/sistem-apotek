@@ -34,6 +34,7 @@ class ExportPenjualan implements FromView
             ->leftJoin('staf', 'transaksi.nip', '=', 'staf.nip')
             ->select('transaksi.*','barang.nama_barang','staf.nama_staf','item_penjualan.jumlah')
             ->where('tgl_transaksi','like',decrypt($this->request->id).'%')
+            ->orderBy('transaksi.no_transaksi')
             ->get()
         ]);
     }

@@ -198,7 +198,7 @@ class DokterController extends Controller
             return false;
         }else{
             return true;
-        }
+        } 
     }
 
     public function v_medis()
@@ -211,12 +211,22 @@ class DokterController extends Controller
         ->select('pasien.*')
         ->get();
         $res['penyakit'] = Penyakit::get();
-        $res['obat'] =  Obat::Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
+        $res['obat'] = Obat::leftJoin('stok', 'barang.kode_barang', '=', 'stok.kode_barang')
+        ->leftJoin(DB::raw('(SELECT
+                t.kode_barang,
+                min(t.sisa) as sisa
+                   FROM
+                ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
+                INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
+                AND t.created_at = r.MaxTime GROUP BY t.kode_barang) AS history_barang'),
+               'history_barang.kode_barang', '=', 'barang.kode_barang')
+        ->Join('set_harga', 'barang.kode_barang', '=', 'set_harga.kode_barang')
+        ->Join('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
+        ->Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
         ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
-        ->Join('stok', 'barang.kode_barang', '=', 'stok.kode_barang')
-        ->leftJoin(DB::raw('(SELECT * FROM barang_keluar order by created_at desc limit 1) AS barang_keluar'),
-        'barang_keluar.stock_id', '=', 'stok.stock_id')
-        ->select('barang.*','stok.tgl_exp','barang_keluar.sisa','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe')
+        ->select('barang.*','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe',DB::raw('COALESCE(COALESCE(history_barang.sisa, stok.jml_masuk ),0) AS sisa'))
+        ->where('sisa','!=','0')
+        ->groupBy('kode_barang')
         ->get();
         $res['tindakan'] = Tindakan::get();
         return view('dokter/rekam',$res);
