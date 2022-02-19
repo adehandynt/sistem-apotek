@@ -224,7 +224,7 @@ class DokterController extends Controller
         ->Join('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
         ->Join('tipe', 'barang.kode_tipe', '=', 'tipe.kode_tipe')
         ->Join('satuan', 'barang.kode_satuan', '=', 'satuan.kode_satuan')
-        ->select('barang.*','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe',DB::raw('COALESCE(COALESCE(history_barang.sisa, stok.jml_masuk ),0) AS sisa'))
+        ->select('barang.*','satuan.satuan','satuan.kode_satuan','tipe.nama_tipe','tipe.kode_tipe',DB::raw('COALESCE(history_barang.sisa,0) AS sisa'))
         ->where('sisa','!=','0')
         ->groupBy('kode_barang')
         ->get();
