@@ -47,7 +47,7 @@ class StockController extends Controller
     {
         $tanggal=\Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
         $tanggal = substr($tanggal,0,7);
-        $tanggal2=\Carbon\Carbon::now()->subDays(29, 'day')->timezone('Asia/Jakarta')->format('Y-m-d');
+        $tanggal2=\Carbon\Carbon::now()->subDays(27, 'day')->timezone('Asia/Jakarta')->format('Y-m-d');
         $tanggal2 = substr($tanggal2,0,7);
         $res['data'] = StockOpname::get();
         $res['satuan'] = Satuan::get();
@@ -148,8 +148,10 @@ class StockController extends Controller
         DB::raw('coalesce(list_opname.saldo_akhir,0) as saldo_awal'),
         DB::raw('coalesce(history_barang_masuk.totalMasuk,history_barang_default.jml_masuk_default,0) as totalMasuk'),
         DB::raw('coalesce(history_barang_keluar.totalKeluar,history_barang_default.jml_keluar_default,0) as totalKeluar'))
-        ->whereNull('list_opname.id_list_opname')
-        ->orWhere('list_opname.created_at','NOT LIKE',$tanggal."%")
+        ->where(function ($query) use ($tanggal) {
+            $query->whereNull('list_opname.id_list_opname')
+            ->orWhere('list_opname.created_at','NOT LIKE',$tanggal."%");
+        })
         ->orderBy('barang.nama_barang','asc')
         ->get();
         return view('stock/stock-opname',$res);
