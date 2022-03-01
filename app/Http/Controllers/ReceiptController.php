@@ -16,6 +16,7 @@ use App\Models\RekamMedis;
 use App\Models\Resep;
 use App\Models\AlatJasa;
 use App\Models\JasaDokter;
+use App\Models\Obat;
 use DB;
 use Auth;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
@@ -55,13 +56,26 @@ class ReceiptController extends Controller
         } else {
             if ($request->input('kode_barang') != null) {
             foreach ($request->input('kode_barang') as $idx => $val) {
+                $id_harga =Obat::where('barang.kode_barang', $request->input('kode_barang')[$idx])
+                ->leftJoin(DB::raw('(SELECT
+                t.*
+            FROM
+                ( SELECT *, max( created_at ) AS MaxTime FROM harga GROUP BY kode_barang ) r
+                INNER JOIN harga t ON t.kode_barang = r.kode_barang 
+                AND t.created_at = r.MaxTime 
+            GROUP BY
+                t.kode_barang ORDER BY t.id) AS harga'),
+                'barang.kode_barang', '=', 'harga.kode_barang')
+                ->select('harga.id_harga','harga.harga_jual')->get()->first();
+                
                 $id_item = IdGenerator::generate(['table' => 'item_penjualan', 'field' => 'id_item', 'length' => 9, 'prefix' => 'ITM']);
                 $item = new ItemPenjualan;
                 $item->id_item = $id_item;
                 $item->no_transaksi = $id;
                 $item->kode_barang = $request->input('kode_barang')[$idx];
                 $item->jumlah = $request->input('jml_barang')[$idx];
-
+                $item->id_harga = $id_harga->id_harga;
+                $item->harga_item = $id_harga->harga_jual;
                 $item->save();
 
                 $data = Stok::leftJoin(DB::raw('(SELECT
@@ -169,13 +183,26 @@ class ReceiptController extends Controller
 
             if ($request->input('nama_racik')[0] != null) {
                 foreach ($request->input('nama_racik') as $idx => $val) {
+                    $id_harga =Obat::where('barang.kode_barang', $request->input('id_obat_racik')[$idx])
+                    ->leftJoin(DB::raw('(SELECT
+                    t.*
+                FROM
+                    ( SELECT *, max( created_at ) AS MaxTime FROM harga GROUP BY kode_barang ) r
+                    INNER JOIN harga t ON t.kode_barang = r.kode_barang 
+                    AND t.created_at = r.MaxTime 
+                GROUP BY
+                    t.kode_barang ORDER BY t.id) AS harga'),
+                    'barang.kode_barang', '=', 'harga.kode_barang')
+                    ->select('harga.id_harga','harga.harga_jual')->get()->first();
+
                     $id_item = IdGenerator::generate(['table' => 'item_penjualan', 'field' => 'id_item', 'length' => 9, 'prefix' => 'ITM']);
                     $item = new ItemPenjualan;
                     $item->id_item = $id_item;
                     $item->no_transaksi = $id;
                     $item->kode_barang = $request->input('id_obat_racik')[$idx];
                     $item->jumlah = $request->input('jml_racik')[$idx];
-    
+                    $item->id_harga = $id_harga->id_harga;
+                    $item->harga_item = $id_harga->harga_jual;
                     $item->save();
     
                     $data = Stok::leftJoin(DB::raw('(SELECT

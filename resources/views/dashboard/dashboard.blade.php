@@ -18,7 +18,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="text-end">
-                                        <h3 class="text-dark mt-1">Rp <span data-plugin="counterup">{{number_format($penjualan[0]->penjualan,2)}}</span></h3>
+                                        <h3 class="text-dark mt-1">Rp <span data-plugin="counterup">{{number_format(($penjualan[0]->penjualan-$penjualan[0]->retur),2)}}</span></h3>
                                         <p class="text-muted mb-1 text-truncate">Pendapatan, Hari ini</p>
                                     </div>
                                 </div>

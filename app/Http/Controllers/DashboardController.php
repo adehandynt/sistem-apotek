@@ -41,14 +41,14 @@ class DashboardController extends Controller
             return redirect('/penjualan');
         }
         $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
-        $penjualan=Penjualan::select(DB::raw('sum(total) as penjualan'))
-        ->where('tgl_transaksi','like', $date.'%')
+        $penjualan=Penjualan::leftjoin(DB::raw('(SELECT no_transaksi, sum(retur_nominal) as retur_nominal FROM retur_penjualan GROUP BY no_transaksi) AS retur_penjualan'),
+       'retur_penjualan.no_transaksi', '=', 'transaksi.no_transaksi')
+       ->select(DB::raw('sum(transaksi.total) as penjualan'),DB::raw('coalesce(sum(retur_penjualan.retur_nominal),0) as retur'))
+        ->where('transaksi.tgl_transaksi','like', $date.'%')
         ->where(function ($query) {
-            $query->where('status_transaksi','=','lunas')
-                ->orWhere('status_transaksi','=',null);
+            $query->where('transaksi.status_transaksi','=','lunas')
+                ->orWhere('transaksi.status_transaksi','=',null);
         })
-
-        
         ->get();
         $ret['penjualan']=$penjualan;
 
@@ -139,22 +139,26 @@ class DashboardController extends Controller
             $lastYear=$date->subYears()->format('Y');
         }
 
-         $pendapatan_lalu = Penjualan::select(DB::raw('MONTHNAME(transaksi.tgl_transaksi) as date'),DB::raw('coalesce(SUM(transaksi.total),0) as total'))
-         ->where('tgl_transaksi','like',$lastYear.'-'.$lastMonth.'%')
+         $pendapatan_lalu = Penjualan::leftjoin(DB::raw('(SELECT no_transaksi, sum(retur_nominal) as retur_nominal FROM retur_penjualan GROUP BY no_transaksi) AS retur_penjualan'),
+         'retur_penjualan.no_transaksi', '=', 'transaksi.no_transaksi')
+         ->select(DB::raw('MONTHNAME(transaksi.tgl_transaksi) as date'),DB::raw('coalesce(SUM(transaksi.total),0)-coalesce(sum(retur_penjualan.retur_nominal),0) as total'))
+         ->where('transaksi.tgl_transaksi','like',$lastYear.'-'.$lastMonth.'%')
          ->where(function ($query) {
-            $query->where('status_transaksi','=','lunas')
-                ->orWhere('status_transaksi','=',null);
+            $query->where('transaksi.status_transaksi','=','lunas')
+                ->orWhere('transaksi.status_transaksi','=',null);
         })
 
          
          ->groupBy('date')
          ->get();
 
-         $pendapatan_ini = Penjualan::select(DB::raw('MONTHNAME(transaksi.tgl_transaksi) as date'),DB::raw('coalesce(SUM(transaksi.total),0) as total'))
-         ->where('tgl_transaksi','like',$year.'-'.$thisMonth.'%')
+         $pendapatan_ini = Penjualan:: leftjoin(DB::raw('(SELECT no_transaksi, sum(retur_nominal) as retur_nominal FROM retur_penjualan GROUP BY no_transaksi) AS retur_penjualan'),
+         'retur_penjualan.no_transaksi', '=', 'transaksi.no_transaksi')
+         ->select(DB::raw('MONTHNAME(transaksi.tgl_transaksi) as date'),DB::raw('coalesce(SUM(transaksi.total),0)-coalesce(sum(retur_penjualan.retur_nominal),0) as total'))
+         ->where('transaksi.tgl_transaksi','like',$year.'-'.$thisMonth.'%')
          ->where(function ($query) {
-            $query->where('status_transaksi','=','lunas')
-                ->orWhere('status_transaksi','=',null);
+            $query->where('transaksi.status_transaksi','=','lunas')
+                ->orWhere('transaksi.status_transaksi','=',null);
         })
          ->groupBy('date')
          ->get();
@@ -196,7 +200,10 @@ class DashboardController extends Controller
     }
     public function GraphData()
     {
-        $terjual= Penjualan::select('transaksi.*',DB::raw('MONTHNAME(transaksi.tgl_transaksi) as date'),DB::raw('MONTH(transaksi.tgl_transaksi) as dateAngka'),DB::raw('SUM(transaksi.total) as total'))
+        $terjual= Penjualan::
+        leftjoin(DB::raw('(SELECT no_transaksi, sum(retur_nominal) as retur_nominal FROM retur_penjualan GROUP BY no_transaksi) AS retur_penjualan'),
+       'retur_penjualan.no_transaksi', '=', 'transaksi.no_transaksi')
+       ->select('transaksi.*',DB::raw('MONTHNAME(transaksi.tgl_transaksi) as date'),DB::raw('MONTH(transaksi.tgl_transaksi) as dateAngka'),DB::raw('SUM(transaksi.total) - coalesce(sum(retur_penjualan.retur_nominal),0) as total'))
         ->where(function ($query) {
             $query->where('status_transaksi','=','lunas')
                 ->orWhere('status_transaksi','=',null);

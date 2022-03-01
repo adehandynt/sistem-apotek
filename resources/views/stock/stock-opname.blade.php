@@ -131,8 +131,8 @@
                                             <td><input type="number" class="selisih form-control" name="selisih[]" value="0" style="width:150px" readonly /></td>
                                             <td><input type="number" class="hilang numeric_form form-control" name="hilang[]" style="width:150px;background:rgb(218, 218, 112)" value="0" required/></td>
                                             <td><input type="number" class="rusak numeric_form form-control" name="rusak[]" style="width:150px;background:rgb(218, 218, 112)" value="0" required/></td>
-                                            {{-- <td><input type="number" class="saldo_akhir form-control" name="saldo_akhir[]" value="{{$item->saldo_awal+$item->totalMasuk-$item->totalKeluar}}" style="width:150px" readonly /></td> --}}
-                                            <td><input type="number" class="saldo_akhir form-control" name="saldo_akhir[]" value="{{$item->sisa_tercatat}}" style="width:150px" readonly /></td>
+                                            <td><input type="number" class="saldo_akhir form-control" name="saldo_akhir[]" value="{{$item->saldo_awal+$item->totalMasuk-$item->totalKeluar}}" style="width:150px" readonly /></td>
+                                            {{-- <td><input type="number" class="saldo_akhir form-control" name="saldo_akhir[]" value="{{$item->sisa_tercatat}}" style="width:150px" readonly /></td> --}}
                                         </tr>
                                     @endforeach
 
