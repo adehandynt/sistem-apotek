@@ -203,7 +203,7 @@
 
 
             <div class="row">
-                <div class="col-xl-6">
+                <div class="col-xl-12">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="header-title mb-3">History Penjualan</h4>
@@ -260,7 +260,7 @@
                     </div> <!-- end card-->
                 </div>
               
-                <div class="col-xl-6">
+                {{-- <div class="col-xl-6">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="header-title mb-3">Produk Terlaris</h4>
@@ -301,7 +301,7 @@
                             </div> <!-- end table-responsive -->
                         </div>
                     </div> <!-- end card-->
-                </div>
+                </div> --}}
                 <div class="col-xl-6">
                     <div class="card">
                         <div class="card-body">
