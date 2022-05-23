@@ -71,6 +71,7 @@ Route::get('/add-data-staf', [StafController::class, 'v_add_staf']);
 Route::post('/add-staf', [StafController::class, 'add_staf'])->name('add-staf');
 Route::post('/edit-staf', [StafController::class, 'edit_staf'])->name('edit-staf');
 Route::post('/update-staf', [StafController::class, 'update_staf']);
+Route::post('/delete-staf', [StafController::class, 'delete_staf']);
 Route::get('/data-supplier', function () {
     return view('data-master/supplier');
 });
@@ -225,6 +226,7 @@ Route::post('/add-jasa', [JasaController::class, 'add_jasa']);
 Route::get('/list-jasa', [JasaController::class, 'v_list_jasa']);
 Route::post('/edit-jasa', [JasaController::class, 'edit_jasa']);
 Route::post('/update-jasa', [JasaController::class, 'update_jasa']);
+Route::post('/delete-jasa', [JasaController::class, 'delete_jasa']);
 Route::post('/hapus-transaksi', [DashboardController::class, 'hapus_transaksi']);
 
 Route::post('/print-bill', [ReceiptController::class, 'print']);

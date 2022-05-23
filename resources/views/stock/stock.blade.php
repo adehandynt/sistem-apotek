@@ -231,9 +231,10 @@
                                             <th>Jumlah Keluar</th>
                                             <th>Tanggal Keluar</th>
                                             <th>Sisa</th>
-                                            {{-- <th>No Referensi</th> --}}
+                                            
                                             <th>PIC</th>
                                             <th>Deskripsi</th>
+                                            <th>No Referensi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -984,6 +985,9 @@
                 },
                 {
                     data: "jenis_history"
+                },
+                {
+                    data: "id_referensi"
                 }
             ],
             initComplete: function() {
@@ -1099,6 +1103,9 @@
                 },
                 {
                     data: "nip"
+                },
+                {
+                    data: "id_referensi"
                 }
             ],
             initComplete: function() {

@@ -359,7 +359,7 @@ class StockController extends Controller
             $history->jml_masuk=$request->jml_diterima[$idx];
             $history->sisa=($sisa==null?0:$sisa->sisa)+$request->jml_diterima[$idx];
             $history->jenis_history='barang_masuk';
-            $history->id_referensi=$request->id_list_order[$idx];
+            $history->id_referensi=$val->id_order;
             $history->pic=Auth::user()->nip;
             $history->save();
             

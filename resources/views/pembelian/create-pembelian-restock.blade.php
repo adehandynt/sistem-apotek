@@ -144,6 +144,9 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
+                                    <div class="col-lg-8 ">
+                                        <h2>Grand Total : <span id="grandTotal"> 0 </span></h2>
+                                    </div>
                                     <div class="col-lg-12 ">
                                         <button class="btn btn-success" style="float: right; margin-left:10px">Simpan</button>
                                 <a class="btn btn-warning" href="{{url('/pembelian')}}" style="float: right;">Kembali</a>
@@ -250,6 +253,14 @@
             }
         });
         $('.nama_barang').select2();
+
+        function sumGrandTotal(){
+            var sum = 0;
+            $('.total').each(function(){
+                sum += parseFloat(this.value);
+            });
+            $('#grandTotal').text(sum.toLocaleString("id-ID", {style:"currency", currency:"IDR"}))
+        }
         $('#table-pesanan tbody').on('change', '.harga, .jumlah, .diskon, .ppn', function() {
             let idx = $('.harga').index(this);
             if(parseFloat($('.diskon').eq(idx).val())==0){
@@ -259,7 +270,7 @@
                 let total = (parseInt($('.harga').eq(idx).val())-(parseInt($('.harga').eq(idx).val())*(parseFloat($('.diskon').eq(idx).val())/100))) * parseInt($('.jumlah').eq(idx).val())
                 $('.total').eq(idx).val(total + (total*(parseFloat($('.ppn').eq(idx).val())/100)));
             }
-            
+            sumGrandTotal();
         });
 
         $('#table-pesanan tbody').on('change', '.nama_barang', function() {
@@ -291,7 +302,7 @@
         $('#table-pesanan tbody').on('click', '.btn-delete', function() {
             let idx = $('.btn-delete').index(this);
             $(this).closest("tr").remove();
-
+            sumGrandTotal();
         });
 
     </script>

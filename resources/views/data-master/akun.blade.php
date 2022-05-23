@@ -334,12 +334,12 @@
             var status = $(this).attr('data-status')=='1' ? '0':'1';
             swal.fire({
                     title: "Anda Yakin?",
-                    text: "Akun tidak akan dapat digunakan selama berstatus Non-Aktif",
+                    text: "Akun tidak akan dapat digunakan selama berstatus Non-Aktif, dan Dapat diakses jika ber status Aktif",
                     icon: "warning",
                     showCancelButton: !0,
                     confirmButtonColor: "#28bb4b",
                     cancelButtonColor: "#f34e4e",
-                    confirmButtonText: "Ya, Non-Aktifkan!",
+                    confirmButtonText: "Ya, Ubah Status Akun!",
                     cancelButtonText: "Batal"
                 })
                 .then(function(e) {

@@ -44,7 +44,12 @@ class DashboardController extends Controller
         $penjualan=Penjualan::leftjoin(DB::raw('(SELECT no_transaksi, sum(retur_nominal) as retur_nominal FROM retur_penjualan GROUP BY no_transaksi) AS retur_penjualan'),
        'retur_penjualan.no_transaksi', '=', 'transaksi.no_transaksi')
        ->select(DB::raw('sum(transaksi.total) as penjualan'),DB::raw('coalesce(sum(retur_penjualan.retur_nominal),0) as retur'))
-        ->where('transaksi.tgl_transaksi','like', $date.'%')
+        // ->where('transaksi.tgl_transaksi','like', $date.'%')
+        ->where(function ($query) use ($date) {
+            $query->where('transaksi.tgl_transaksi','like', $date.'%')
+                ->orWhere('transaksi.created_at','like', $date.'%')
+                ->orWhere('transaksi.updated_at','like', $date.'%');
+        })
         ->where(function ($query) {
             $query->where('transaksi.status_transaksi','=','lunas')
                 ->orWhere('transaksi.status_transaksi','=',null);
@@ -67,9 +72,11 @@ class DashboardController extends Controller
         ->get();
         $ret['terjual']=$terjual;
 
-        $pasien=RekamMedis::select(DB::raw('count(id) as pasien'))
-        ->where('tgl_rekam','like', $date.'%')
+        $pasien=RekamMedis::select(DB::raw('coalesce(count(distinct(id_rekam_medis)),0) as pasien'))
+        ->where('tgl_rekam','like',$date.'%')
+        //  ->groupBy('id_rekam_medis')
         ->get();
+     
         $ret['pasien']=$pasien;
         
         $date = \Carbon\Carbon::now()->add(120, 'day')->timezone('Asia/Jakarta')->format('Y-m-d');

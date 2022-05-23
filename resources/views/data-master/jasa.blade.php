@@ -328,7 +328,7 @@
                     e.value ?
                         $.ajax({
                             type: "POST",
-                            url: '/delete-satuan',
+                            url: '/delete-jasa',
                             data: {
                                 _token: "{{ csrf_token() }}",
                                 id: id

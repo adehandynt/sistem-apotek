@@ -112,4 +112,17 @@ class JasaController extends Controller
         }
     }
 
+    function delete_jasa(Request $request){
+        $list = ListJasa::where('id_list_jasa', $request->id)
+        ->first();
+        $simpan = $list->delete();
+        if ($simpan) {
+            Session::flash('success', 'Hapus berhasil! Silahkan periksa data terbaru');
+            return true;
+        } else {
+            Session::flash('errors', ['' => 'Hapus gagal! Silahkan ulangi kembali']);
+            return false;
+        }
+    }
+
 }

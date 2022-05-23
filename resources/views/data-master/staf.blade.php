@@ -86,9 +86,7 @@
                                                             class="mdi mdi-account-details"></i></button>
                                                 </td>
                                                 <td>
-                                                    <a href="javascript:void(0);" class="action-icon" data-id="{{$item->id}}"> <i
-                                                            class="mdi mdi-square-edit-outline"></i></a>
-                                                    <a href="javascript:void(0);" class="action-icon"  data-id="{{$item->id}}"> <i
+                                                    <a href="javascript:void(0);" class="action-icon delete-staf"  data-id="{{$item->id}}"> <i
                                                             class="mdi mdi-delete"></i></a>
                                                 </td>
                                             </tr>
@@ -177,7 +175,7 @@
                                             <label for="product-meta-title" class="form-label">Pendidikan
                                                 Terakhir</label>
                                             <input type="text" class="form-control"
-                                                placeholder="Nama Staf" id="pend_terakhir" name="pendidikan">
+                                                placeholder="Pendidikan Staf" id="pend_terakhir" name="pendidikan">
                                         </div>
 
                                         <div class="mb-3">
@@ -270,6 +268,50 @@ $('#basic-datatable tbody').on('click', '.data-lengkap', function() {
             errorAlertServer('Response Not Found, Please Check Your Data');
         });
 });
+
+$('#basic-datatable tbody').on('click', '.delete-staf', function() {
+            var id = $(this).data("id");
+            swal.fire({
+                    title: "Anda Yakin?",
+                    text: "Data yang dihapus tidak dapat dikembalikan",
+                    icon: "warning",
+                    showCancelButton: !0,
+                    confirmButtonColor: "#28bb4b",
+                    cancelButtonColor: "#f34e4e",
+                    confirmButtonText: "Ya, Hapus!",
+                    cancelButtonText: "Batal"
+                })
+                .then(function(e) {
+                    e.value ?
+                        $.ajax({
+                            type: "POST",
+                            url: '/delete-staf',
+                            dataType: 'json',
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                id: id
+                            }
+                        }).done(function(msg) {
+                            //$('#basic-datatable').DataTable().ajax.reload();
+                            if (msg != 'error') {
+                                swal.fire("Your Data has been deleted!", {
+                                    icon: "success",
+                                });
+                                location.reload();
+                            } else {
+                                swal.fire("Your Data has Failed to delete!", {
+                                    icon: "error",
+                                });
+                            }
+                        })
+
+                        :
+                        swal.fire("Data anda aman !");
+
+                });
+
+        });
+
   </script>
 @endsection
 

@@ -170,4 +170,17 @@ class StafController extends Controller
             return redirect()->route('data-staf');
         }
     }
+
+    function delete_staf(Request $request)
+    {
+        $staf = Staf::findOrFail($request->id);
+        $simpan = $staf->delete();
+        if ($simpan) {
+            Session::flash('success', 'Hapus berhasil! Silahkan periksa data terbaru');
+            return true;
+        } else {
+            Session::flash('errors', ['' => 'Hapus gagal! Silahkan ulangi kembali']);
+            return false;
+        }
+    }
 }

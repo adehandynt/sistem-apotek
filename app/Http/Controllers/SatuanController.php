@@ -50,8 +50,7 @@ class SatuanController extends Controller
         }
 
         $id = IdGenerator::generate(['table' => 'satuan','field'=>'kode_satuan', 'length' => 9, 'prefix' =>'STN-']);
-        $list = Satuan::updateOrCreate(['kode_satuan' => $id], [
-            'satuan' => $request->satuan,
+        $list = Satuan::updateOrCreate(['satuan' => $request->satuan], [
             'akronim' =>  $request->akronim,
         ]);
         $simpan = $list->save();
