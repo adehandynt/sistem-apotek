@@ -114,9 +114,7 @@ class DashboardController extends Controller
          ->get();
 
          $ret['produk']=$produk;
-         DB::enableQueryLog();
-         $terlaris = ItemPenjualan::join('barang', 'item_penjualan.kode_barang', '=', 'barang.kode_barang')
-         ->join(DB::raw('(SELECT
+         $terlaris = Obat::join(DB::raw('(SELECT
          t.kode_barang,
          t.sisa 
             FROM
@@ -128,7 +126,6 @@ class DashboardController extends Controller
          ->groupBy('barang.kode_barang')
          ->orderBy('sisa','DESC')
          ->get();
-         dd(DB::getQueryLog());
          $ret['terlaris']=$terlaris;
 
 
