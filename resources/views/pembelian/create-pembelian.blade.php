@@ -138,6 +138,13 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
+                                    <div class="col-lg-8 ">
+                                        <h4>Diskon Total Pembelian : <input style="width:100px" step="any" value='0' min='0' max='100' name="accumulation_disc" id="accumulation_disc" required> %</h4>
+                                        <span>*Diskon Total Digunakan Apabila PO hanya terdapat diskon secara keseluruhan</span>
+                                    </div><hr>
+                                    <div class="col-lg-8 ">
+                                        <h2>Grand Total : <span id="grandTotal"> 0 </span></h2>
+                                    </div>
                                     <div class="col-lg-12 ">
                                         <button class="btn btn-success" style="float: right; margin-left:10px">Simpan</button>
                                 <a class="btn btn-warning" href="{{url('/pembelian')}}" style="float: right;">Kembali</a>
@@ -189,6 +196,20 @@
                     }
                 });
         });
+
+        function sumGrandTotal(){
+            var sum = 0;
+            $('.total').each(function(){
+                sum += parseFloat(this.value);
+            });
+            if($('#accumulation_disc').val()!=''||$('#accumulation_disc').val()!=0){
+                let percent = $('#accumulation_disc').val()/100;
+                sum = sum-(sum*percent);
+                $('#grandTotal').text(sum.toLocaleString("id-ID", {style:"currency", currency:"IDR"}))
+            }else{
+                $('#grandTotal').text(sum.toLocaleString("id-ID", {style:"currency", currency:"IDR"}))
+            }
+        }
 
         $('#btn-barang').click(function(e) {
             var numItems = $('.nama_barang').length;
@@ -248,13 +269,19 @@
                 let total = (parseInt($('.harga').eq(idx).val())-(parseInt($('.harga').eq(idx).val())*(parseFloat($('.diskon').eq(idx).val())/100))) * parseInt($('.jumlah').eq(idx).val())
                 $('.total').eq(idx).val(total + (total*(parseFloat($('.ppn').eq(idx).val())/100)));
             }
+
+            sumGrandTotal();
             
         });
 
         $('#table-pesanan tbody').on('click', '.btn-delete', function() {
             let idx = $('.btn-delete').index(this);
             $(this).closest("tr").remove();
+            sumGrandTotal();
+        });
 
+        $('#accumulation_disc').change(function() {
+            sumGrandTotal();
         });
 
     </script>

@@ -238,11 +238,14 @@ class PembelianController extends Controller
         $pembelian->order_by = $request->pengaju;
         $pembelian->status = 0;
         $pembelian->id_supplier = $request->supplier;
+        $pembelian->diskon_akumulasi = $request->accumulation_disc;
         if (!$pembelian->save()) {
             return redirect()->back()->with('alert-fail', 'Data Pengajuan Gagal Dibuat');
         }
+        
         $totDiskon = 0;
         $totTotal = 0;
+        $non_disc_total=0;
         foreach ($request->nama_barang as $idx => $val) {
             $id = IdGenerator::generate(['table' => 'list_order', 'field' => 'id_list_order', 'length' => 12, 'prefix' => 'IOD-']);
             $item = new ListItem;
@@ -257,12 +260,14 @@ class PembelianController extends Controller
             $item->ppn = $request->ppn[$idx];
             $totDiskon += ($request->harga[$idx] * ($request->diskon[$idx] / 100))* $request->jumlah[$idx];
             $totTotal += (($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx])+ (($request->harga[$idx] - ($request->harga[$idx] * ($request->diskon[$idx] / 100))) * $request->jumlah[$idx]) *($request->ppn[$idx] / 100) ;
+            $non_disc_total += (($request->harga[$idx]  * $request->jumlah[$idx])+ (($request->harga[$idx] * $request->jumlah[$idx]) *($request->ppn[$idx] / 100))) ;
             $item->save();
         }
 
         $pembelian = Pembelian::where('id_order', '=', $nomor_surat)->firstOrFail();
-        $pembelian->total = $totTotal;
-        $pembelian->diskon_order = $totDiskon;
+        $pembelian->total = $request->accumulation_disc != '0' || $request->accumulation_disc !='' || $request->accumulation_disc != 0 ? $non_disc_total-($non_disc_total*$request->accumulation_disc/100):$totTotal;
+        $pembelian->diskon_order = $request->accumulation_disc === '0' || $request->accumulation_disc ==='' || $request->accumulation_disc === 0 ?$totDiskon:($non_disc_total*$request->accumulation_disc/100);
+
         $pembelian->save();
         $this->addNotif(Auth::user()->nip,'Telah Menginput Daftar Pembelian Baru');
         return redirect('/pembelian')->with('alert-success', 'Data Pengajuan Berhasil Dibuat');

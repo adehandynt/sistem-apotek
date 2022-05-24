@@ -78,6 +78,7 @@
                                             </div>
                                         </div>
                                 </div>
+                                
                                 <div class="table-responsive mt-4">
                                     <table class="table table-borderless table-nowrap table-centered mb-0"
                                         id="table-pesanan">
@@ -144,6 +145,11 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
+                                    <div class="col-lg-8 ">
+                                        <h4>Diskon Total Pembelian : <input style="width:100px" step="any" value='0' min='0' max='100' name="accumulation_disc" id="accumulation_disc" required> %</h4>
+                                        <span>*Diskon Total Digunakan Apabila PO hanya terdapat diskon secara keseluruhan</span>
+                                    </div>
+                                    <hr>
                                     <div class="col-lg-8 ">
                                         <h2>Grand Total : <span id="grandTotal"> 0 </span></h2>
                                     </div>
@@ -259,7 +265,13 @@
             $('.total').each(function(){
                 sum += parseFloat(this.value);
             });
-            $('#grandTotal').text(sum.toLocaleString("id-ID", {style:"currency", currency:"IDR"}))
+            if($('#accumulation_disc').val()!=''||$('#accumulation_disc').val()!=0){
+                let percent = $('#accumulation_disc').val()/100;
+                sum = sum-(sum*percent);
+                $('#grandTotal').text(sum.toLocaleString("id-ID", {style:"currency", currency:"IDR"}))
+            }else{
+                $('#grandTotal').text(sum.toLocaleString("id-ID", {style:"currency", currency:"IDR"}))
+            }
         }
         $('#table-pesanan tbody').on('change', '.harga, .jumlah, .diskon, .ppn', function() {
             let idx = $('.harga').index(this);
@@ -302,6 +314,10 @@
         $('#table-pesanan tbody').on('click', '.btn-delete', function() {
             let idx = $('.btn-delete').index(this);
             $(this).closest("tr").remove();
+            sumGrandTotal();
+        });
+
+        $('#accumulation_disc').change(function() {
             sumGrandTotal();
         });
 
