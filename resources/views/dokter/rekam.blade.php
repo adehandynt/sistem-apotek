@@ -159,7 +159,7 @@
                             </div>
                         </div>
                         <div class="text-end">
-                            <button type="submit" class="btn btn-success waves-effect waves-light">Simpan</button>
+                            <button type="submit" id="btn-simpan" class="btn btn-success waves-effect waves-light">Simpan</button>
                             <button type="button" class="btn btn-danger waves-effect waves-light" data-bs-dismiss="modal">Batal</button>
                         </div>
                     </form>
@@ -439,6 +439,7 @@
         $("#form-rekam").submit(function(event) {
             event.preventDefault();
             var formData = new FormData($('#form-rekam')[0]);
+            $('#btn-simpan').prop('disabled', true);
             $.ajax({
                 url: '{{ url('add-rekam') }}',
                 type: 'post',
@@ -460,7 +461,7 @@
                         $('#tindakan').val("");
                         $('#kode_barang').val("");
                         $('#penyakit').val("");
-                        setTimeout(function(){   location.reload(); }, 2000);    
+                        setTimeout(function(){   location.reload();  $('#btn-simpan').prop('disabled', false);}, 2000);  
                     } else {
                         var text = "";
                         $.each(e.customMessages, function(key, value) {

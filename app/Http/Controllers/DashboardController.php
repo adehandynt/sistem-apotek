@@ -114,25 +114,22 @@ class DashboardController extends Controller
          ->get();
 
          $ret['produk']=$produk;
-
-        //  $terlaris = ItemPenjualan::join('barang', 'item_penjualan.kode_barang', '=', 'barang.kode_barang')
-        //  ->join('tipe', 'tipe.kode_tipe', '=', 'barang.kode_tipe')
-        //  ->join('set_harga', 'barang.kode_barang', '=', 'set_harga.kode_barang')
-        //  ->join('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
-        //  ->join(DB::raw('(SELECT
-        //  t.kode_barang,
-        //  t.sisa 
-        //     FROM
-        //  ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
-        //  INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
-        //  AND t.created_at = r.MaxTime) AS history_barang'),
-        // 'history_barang.kode_barang', '=', 'barang.kode_barang')
-        //  ->select('tipe.nama_tipe','history_barang.sisa','harga.harga_jual','barang.*',DB::raw('sum(item_penjualan.jumlah) as jumlah_produk'))
-        //  ->groupBy('item_penjualan.kode_barang')
-        //  ->orderBy('jumlah_produk','DESC')
-        //  ->get();
-
-        //  $ret['terlaris']=$terlaris;
+         DB::enableQueryLog();
+         $terlaris = ItemPenjualan::join('barang', 'item_penjualan.kode_barang', '=', 'barang.kode_barang')
+         ->join(DB::raw('(SELECT
+         t.kode_barang,
+         t.sisa 
+            FROM
+         ( SELECT kode_barang, MAX( created_at ) AS MaxTime, created_at FROM history_barang GROUP BY kode_barang ) r
+         INNER JOIN history_barang t ON t.kode_barang = r.kode_barang 
+         AND t.created_at = r.MaxTime) AS history_barang'),
+        'history_barang.kode_barang', '=', 'barang.kode_barang')
+         ->select('history_barang.sisa','barang.*')
+         ->groupBy('barang.kode_barang')
+         ->orderBy('sisa','DESC')
+         ->get();
+         dd(DB::getQueryLog());
+         $ret['terlaris']=$terlaris;
 
 
          $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta');
