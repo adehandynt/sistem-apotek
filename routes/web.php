@@ -38,7 +38,7 @@ Route::post('register', [AuthController::class, 'register']);
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-});
+
 
 Route::get('/pembelian', function () {
     return view('pembelian/pembelian');
@@ -245,3 +245,4 @@ Route::get('/export-excel-narkotika',[LaporanController::class, 'export_excel_na
 Route::get('/export-excel-bpjs',[LaporanController::class, 'export_excel_bpjs']);
 Route::get('/export-excel-konsinyasi',[LaporanController::class, 'export_excel_konsinyasi']);
 Route::get('/notification-list', [DashboardController::class, 'notif_list']);
+});
