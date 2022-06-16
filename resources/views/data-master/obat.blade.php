@@ -113,7 +113,7 @@
                                     </div>
 
                                     <div class="text-end">
-                                        <button type="submit" class="btn btn-success waves-effect waves-light">Save</button>
+                                        <button type="submit" id="btn-save" class="btn btn-success waves-effect waves-light">Save</button>
                                         <button type="reset" class="btn btn-danger waves-effect waves-light">Cancel</button>
                                     </div>
                                 </form>
@@ -339,6 +339,20 @@
 
                 });
 
+        });
+
+        $('#nama_barang').on('input', function() {
+            var nospecial=/^[^*|\":<>[\]{}`\\()';@&$]+$/;
+            if (!nospecial.test($(this).val())) { 
+                Swal.fire({
+                            title: "Terdapat Kesalahan",
+                            text: "Nama Barang Tidak Boleh Mengandung Spesial Karakter (`~[{ }]=_+;:'/?><|)",
+                            icon: "error"
+                        });
+                        $('#btn-save').prop('disabled', true);
+             }else{
+                $('#btn-save').prop('disabled', false);
+             }
         });
 
         $('#basic-datatables tbody').on('click', '.btn-update', function() {
