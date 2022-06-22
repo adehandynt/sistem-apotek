@@ -331,14 +331,30 @@ class DokterController extends Controller
         ->Join('barang', 'resep.kode_barang', '=', 'barang.kode_barang')
         ->Join('set_harga', 'barang.kode_barang', '=', 'set_harga.kode_barang')
         ->Join('harga', 'set_harga.id_harga', '=', 'harga.id_harga')
-        ->Join('list_tindakan', 'list_tindakan.id_rekam_medis', '=', 'rekam_medis.id_rekam_medis')
-        ->Join('tindakan', 'list_tindakan.id_tindakan', '=', 'tindakan.id_tindakan')
+ 
         ->where('resep.id_rekam_medis',$request->id)
         ->orderBy('harga.created_at','DESC')
-        ->select('rekam_medis.id_rekam_medis','barang.nama_barang','harga.margin','harga.harga_beli','resep.*','harga.harga_eceran','harga.harga_jual','tindakan.biaya',DB::raw('SUM(tindakan.biaya) as total_dokter'))
+        ->select('rekam_medis.id_rekam_medis','barang.nama_barang','harga.margin','harga.harga_beli','resep.*','harga.harga_eceran','harga.harga_jual' )
         ->groupBy('rekam_medis.id_rekam_medis','resep.kode_barang')
         ->get();
 
+        $totaltindakan = Tindakan :: Join('list_tindakan', 'tindakan.id_tindakan','=','list_tindakan.id_tindakan')
+        ->where('list_tindakan.id_rekam_medis',$request->id)
+        ->select('tindakan.biaya',DB::raw('SUM(tindakan.biaya) as total_dokter'))
+        ->groupBy('list_tindakan.id_tindakan' )
+        ->get();
+   
+        $total_dokter = 0;
+
+        foreach ($totaltindakan as $total){
+            $total_dokter += $total->total_dokter;
+        }
+
+        $data = $data->map(function($item) use ($total_dokter) {
+            $item->total_dokter=$total_dokter;
+            return $item;
+         });
+       
         return json_encode($data);
     }
 
