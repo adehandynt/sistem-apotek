@@ -186,10 +186,11 @@ class DashboardController extends Controller
 	DATE_FORMAT( NOW(), "%Y-%m" ) )x');
 
     $date= \Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('Y-m-d');
-    $pendapatanStaf = Penjualan::join('staf', 'staf.nip', '=', 'transaksi.nip')
+    $pendapatanStaf = Penjualan::leftjoin('retur_penjualan', 'retur_penjualan.no_transaksi', '=', 'transaksi.no_transaksi')
+    ->join('staf', 'staf.nip', '=', 'transaksi.nip')
     ->where('transaksi.tgl_transaksi','like', $date.'%')
-    ->select('staf.*',DB::raw('sum(transaksi.total) as pendapatan'))
-    ->groupBy('staf.nip')
+    ->select('staf.*',DB::raw('sum(transaksi.total) as pendapatan'),DB::raw('coalesce(sum(retur_penjualan.retur_nominal),0) as retur'))
+    ->groupBy('transaksi.nip')
     ->get();
  
          $ret['lalu']=$pendapatan_lalu;

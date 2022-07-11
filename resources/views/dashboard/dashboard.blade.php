@@ -101,12 +101,20 @@
                                         <tr>
                                             <th class="border-top-0">NIP</th>
                                             <th class="border-top-0">Nama Staf</th>
-                                            <th class="border-top-0">Total</th>
+                                            <th class="border-top-0">Pendapatan</th>
+                                            <th class="border-top-0">Retur</th>
+                                            <th class="border-top-0">Total Pendapatan</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @if(count($pendapatan_staf)<1)
                                         <tr>
+                                            <td>
+                                                -
+                                            </td>
+                                            <td>
+                                                -
+                                            </td>
                                             <td>
                                                 -
                                             </td>
@@ -128,6 +136,12 @@
                                             </td>
                                             <td>
                                                 <span class="ms-2">Rp {{number_format($val->pendapatan,2)}}</span>
+                                            </td>
+                                            <td>
+                                                <span class="ms-2">Rp {{number_format($val->retur,2)}}</span>
+                                            </td>
+                                            <td>
+                                                <span class="ms-2"><b>Rp {{number_format($val->pendapatan-$val->retur,2)}}</b></span>
                                             </td>
 
                                         </tr>
