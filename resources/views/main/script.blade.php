@@ -35,6 +35,16 @@
     this.value = this.value.replace(/[^0-9]/g, '');
 });
 
+$('.disc_form').on('input', function (event) { 
+  if(!onlyNumbers(this.value)){
+    this.value = this.value.replace(/[^0-9]/g, '');
+  }
+});
+
+function onlyNumbers(str) {
+  return /^[0-9.,]+$/.test(str);
+}
+
 const numInputs = document.querySelectorAll('input[type=number]')
 
 numInputs.forEach(function(input) {

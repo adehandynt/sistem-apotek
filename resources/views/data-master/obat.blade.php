@@ -103,7 +103,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="company" class="form-label">Diskon (%)</label>
-                                        <input type="number" class="form-control numeric_form" value="0" id="diskon" name="diskon"
+                                        <input type="number" class="form-control disc_form" value="0" id="diskon" name="diskon"
                                             placeholder="Diskon Harga" required>
                                     </div>
                                     <div class="mb-3">
